@@ -41,6 +41,9 @@
 </p>
 
 ---
+### NOTICE OF MODIFICATION
+
+This project was forked from [Nebula](https://github.com/NebulaSS13/Nebula) on 09 December 2024.
 
 ### NOTICE OF MODIFICATION
 
@@ -62,7 +65,7 @@ Please see [/docs/SECURITY.md](/docs/SECURITY.md) for this repository's security
 
 ### LICENSE
 
-The code for Nebula13 is licensed under the [GNU Affero General Public License v3](http://www.gnu.org/licenses/agpl.html), which can be found in full in [/LICENSE](/LICENSE).
+The code for Errai is licensed under the [GNU Affero General Public License v3](http://www.gnu.org/licenses/agpl.html), which can be found in full in [/LICENSE](/LICENSE).
 
 Code with a git authorship date prior to `1420675200 +0000` (2015/01/08 00:00 GMT) is licensed under the GNU General Public License version 3, which can be found in full in [/docs/GPL3.txt](/docs/GPL3.txt)
 
