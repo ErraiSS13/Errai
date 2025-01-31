@@ -24,6 +24,7 @@
 	#include "../../../mods/content/pheromones/_pheromones.dme"
 	#include "../../../mods/content/supermatter/_supermatter.dme"
 	#include "../../../mods/content/xenobiology/_xenobiology.dme"
+//	#include "../../../mods/content/standard_jobs/_standard_jobs.dme"
 
 	#include "../../../mods/mobs/dionaea/_dionaea.dme"
 //	#include "../../../mods/mobs/borers/_borers.dme"
@@ -63,51 +64,59 @@
 
 	// Map files.
 	// Common files.
+	#include "../common/mapping_colors.dm"
 	#include "../common/common_areas.dm"
+	#include "../common/turfs.dm"
 
 	// Shipmap files.
+	#include "shipmap_access.dm"
+	#include "shipmap_areas.dm"
+	#include "shipmap_closets.dm"
+
 	// Jobs.
 //	#include "jobs/_goals.dm"
-//	#include "jobs/_jobs.dm"
-//	#include "jobs/captain.dm"
-//	#include "jobs/command.dm"
-//	#include "jobs/civilian.dm"
-//	#include "jobs/engineering.dm"
-//	#include "jobs/supply.dm"
-//	#include "jobs/medical.dm"
-//	#include "jobs/science.dm"
-//	#include "jobs/security.dm"
-//	#include "jobs/synthetics.dm"
+	#include "jobs/_jobs.dm"
+	#include "jobs/command.dm"
+	#include "jobs/civilian.dm"
+	#include "jobs/service.dm"
+	#include "jobs/engineering.dm"
+	#include "jobs/supply.dm"
+	#include "jobs/medical.dm"
+	#include "jobs/research.dm"
+	#include "jobs/security.dm"
+	#include "jobs/synthetics.dm"
 
 	// Outfits.
-//	#include "outfits/_pda.dm"
-//	#include "outfits/cargo.dm"
-//	#include "outfits/civilian.dm"
-//	#include "outfits/command.dm"
-//	#include "outfits/engineering.dm"
-//	#include "outfits/medical.dm"
-//	#include "outfits/science.dm"
-//	#include "outfits/security.dm"
+	#include "outfits/civilian.dm"
+	#include "outfits/service.dm"
+	#include "outfits/command.dm"
+	#include "outfits/engineering.dm"
+	#include "outfits/supply.dm"
+	#include "outfits/medical.dm"
+	#include "outfits/research.dm"
+	#include "outfits/security.dm"
+	#include "outfits/synthetics.dm"
 
 	// Misc.
-//	#include "exodus_announcements.dm"
-//	#include "exodus_antagonism.dm"
-//	#include "exodus_cameras.dm"
-//	#include "spaceship_areas.dm"
-//	#include "exodus_elevator.dm"
-//	#include "spaceship_departments.dm"
-//	#include "spaceship_jobs.dm"
+	#include "shipmap_announcements.dm"
+	#include "shipmap_antagonism.dm"
+	#include "shipmap_cameras.dm"
+	#include "shipmap_elevator.dm"
+	#include "shipmap_departments.dm"
+	#include "shipmap_jobs.dm"
 //	#include "exodus_loadout.dm"
-//	#include "spaceship_overmap.dm"
+	#include "shipmap_overmap.dm"
 	#include "shipmap_overrides.dm"
-//	#include "exodus_setup.dm"
-//	#include "spaceship_shuttles.dm"
-//	#include "exodus_unit_testing.dm"
+	#include "shipmap_objects.dm"
+	#include "shipmap_command_report.dm"
+	#include "shipmap_shuttles.dm"
+	#include "shipmap_unit_testing.dm"
 
 	// Map files.
 	#include "shipmap-1.dmm"
 	#include "shipmap-2.dmm"
 	#include "shipmap-3.dmm"
+	#include "shipmap-transit.dmm"
 
 	#define USING_MAP_DATUM /datum/map/shipmap
 
