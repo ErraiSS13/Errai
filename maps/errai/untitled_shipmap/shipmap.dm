@@ -63,6 +63,7 @@
 
 	// Map files.
 	// Common files.
+	#include "../common/mapping_colors.dm"
 	#include "../common/common_areas.dm"
 
 	// Shipmap files.
