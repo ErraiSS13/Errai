@@ -29,3 +29,8 @@
 	area_coherency_test_subarea_count = list(
 
 	)
+
+	disconnected_wires_test_exempt_turfs = list(
+		list(99, 118, 1, WEST),
+		list(157, 118, 1, EAST)
+	)

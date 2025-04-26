@@ -45,7 +45,7 @@
 		access_janitor,
 		access_maint_tunnels,
 		access_emergency_storage,
-		
+
 		// Basic access.
 		access_engine,
 		access_research,
@@ -64,6 +64,7 @@
 
 /datum/job/shipmap/counselor
 	title = "Counselor"
+	hud_icon_state = "hud_counselor"
 	supervisors = "the First Officer"
 	description = "You tend to the crew's mental, and possibly spiritual, well being."
 	selection_color = "#88b764"

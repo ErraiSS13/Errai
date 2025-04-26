@@ -1,7 +1,7 @@
 // Defaults for jobs on the ship.
 /datum/job/shipmap
 	abstract_type = /datum/job/shipmap
-	hud_icon = 'maps/errai/untitled_shipmap/shipmap_hud.dmi'
+	hud_icon = 'maps/shipmap/shipmap_hud.dmi'
 	skill_points = 20
 	min_skill = list(SKILL_LITERACY = SKILL_ADEPT)
 	max_skill = list(

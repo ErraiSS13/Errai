@@ -8,8 +8,10 @@
 	name = "Shipmap - Job - Assistant"
 
 /decl/outfit/job/shipmap/civilian/passenger
+	name = "Shipmap - Job - Passenger"
 
 /decl/outfit/job/shipmap/civilian/journalist
+	name = "Shipmap - Job - Journalist"
 	uniform = /obj/item/clothing/pants/formal/red/outfit
 	shoes = /obj/item/clothing/shoes/dress
 

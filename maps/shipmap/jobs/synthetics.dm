@@ -7,7 +7,7 @@
 	supervisors = "your laws"
 	selection_color = "#2c2c2c"
 	hud_icon = null
-	hud_icon = "hudblank"
+	hud_icon_state = "hudblank"
 	department_types = list(/decl/department/synthetics)
 	outfit_type = /decl/outfit/job/shipmap/synthetics/ai
 	total_positions = 0 // Not used for AI, see is_position_available below and modules/mob/living/silicon/ai/latejoin.dm
@@ -61,7 +61,8 @@
 	loadout_allowed = FALSE
 	account_allowed = FALSE
 	economic_power = 0
-	hud_icon = "hudblank"
+	hud_icon = null
+	hud_icon_state = "hudblank"
 	skill_points = 0
 	no_skill_buffs = TRUE
 	guestbanned = TRUE
