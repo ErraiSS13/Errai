@@ -35,7 +35,7 @@
  */
 /obj/structure/closet/chefcloset
 	name = "chef's closet"
-	desc = "It's a storage unit for foodservice garments."
+	desc = "It's a storage unit for food service garments."
 	closet_appearance = /decl/closet_appearance/wardrobe/black
 
 /obj/structure/closet/chefcloset/WillContain()
@@ -43,7 +43,7 @@
 		/obj/item/clothing/dress/sun,
 		/obj/item/clothing/pants/slacks/black = 2,
 		/obj/item/clothing/shirt/button = 2,
-		/obj/item/clothing/neck/tie/bow/color/red = 2,
+		/obj/item/clothing/neck/tie/bow/red = 2,
 		/obj/item/clothing/suit/jacket/vest/blue = 2,
 		/obj/item/radio/headset/headset_service = 2,
 		/obj/item/box/mousetraps = 2,

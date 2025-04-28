@@ -14,7 +14,7 @@ on:
 env:
   BYOND_MAJOR: "515"
   BYOND_MINOR: "1643"
-  SPACEMAN_DMM_VERSION: suite-1.8
+  SPACEMAN_DMM_VERSION: suite-1.9
 
 jobs:
   DreamChecker:
@@ -32,6 +32,7 @@ jobs:
         run: |
           set -o pipefail
           ~/dreamchecker 2>&1 | tee ${GITHUB_WORKSPACE}/output-annotations.txt
+          ./test/lint-all-modpacks.sh nebula.dme
       - name: Annotate Lints
         uses: yogstation13/DreamAnnotate@v2
         if: always()
@@ -56,11 +57,6 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
-      - name: Setup Cache
-        uses: actions/cache@v3
-        with:
-          path: $HOME/spaceman_dmm/$SPACEMAN_DMM_VERSION
-          key: ${{ runner.os }}-spacemandmm-${{ env.SPACEMAN_DMM_VERSION }}
       - name: Install OpenDream
         uses: robinraju/release-downloader@v1.9
         with:
@@ -69,7 +65,7 @@ jobs:
           fileName: "DMCompiler_linux-x64.tar.gz"
           extract: true
       - name: Run OpenDream
-        run: ./DMCompiler_linux-x64/DMCompiler nebula.dme --suppress-unimplemented --skip-anything-typecheck --version=${BYOND_MAJOR}.${BYOND_MINOR} | python tools/od_annotator/__main__.py "$@"
+        run: ./DMCompiler_linux-x64/DMCompiler nebula.dme --define=UNIT_TEST --suppress-unimplemented --skip-anything-typecheck --version=${BYOND_MAJOR}.${BYOND_MINOR} | bash test/annotate_od.sh
   Code:
     runs-on: ubuntu-22.04
     steps:

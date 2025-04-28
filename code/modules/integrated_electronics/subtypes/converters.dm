@@ -109,6 +109,7 @@
 
 /obj/item/integrated_circuit/converter/lowercase
 	name = "lowercase string converter"
+	// i'm not fixing the capitalization here to fit style guides because it's funny actually
 	desc = "this circuit will cause a string to come out in all lowercase."
 	icon_state = "lowercase"
 	inputs = list("input" = IC_PINTYPE_STRING)
@@ -128,6 +129,7 @@
 
 /obj/item/integrated_circuit/converter/uppercase
 	name = "uppercase string converter"
+	// see capitalization note above
 	desc = "THIS WILL CAUSE A STRING TO COME OUT IN ALL UPPERCASE."
 	icon_state = "uppercase"
 	inputs = list("input" = IC_PINTYPE_STRING)
@@ -392,7 +394,7 @@
 
 /obj/item/integrated_circuit/converter/hsv2hex
 	name = "hsv to hexadecimal"
-	desc = "This circuit can convert a HSV (Hue, Saturation, and Value) color to a Hexadecimal RGB color."
+	desc = "This circuit can convert an HSV (Hue, Saturation, and Value) color to a Hexadecimal RGB color."
 	extended_desc = "The first pin controls tint (0-359), the second pin controls how intense the tint is (0-255), and the third controls how bright the tint is (0 for black, 127 for normal, 255 for white)."
 	icon_state = "hsv-hex"
 	inputs = list(
@@ -409,8 +411,8 @@
 	var/hue = get_pin_data(IC_INPUT, 1)
 	var/saturation = get_pin_data(IC_INPUT, 2)
 	var/value = get_pin_data(IC_INPUT, 3)
-	if(isnum(hue)&&isnum(saturation)&&isnum(value))
-		result = HSVtoRGB(hsv(AngleToHue(hue),saturation,value))
+	if(isnum(hue) && isnum(saturation) && isnum(value))
+		result = hsv(hue, saturation, value)
 
 	set_pin_data(IC_OUTPUT, 1, result)
 	push_data()
@@ -418,7 +420,7 @@
 
 /obj/item/integrated_circuit/converter/rgb2hex
 	name = "rgb to hexadecimal"
-	desc = "This circuit can convert a RGB (Red, Green, Blue) color to a Hexadecimal RGB color."
+	desc = "This circuit can convert an RGB (Red, Green, Blue) color to a Hexadecimal RGB color."
 	extended_desc = "The first pin controls red amount, the second pin controls green amount, and the third controls blue amount. They all go from 0-255."
 	icon_state = "rgb-hex"
 	inputs = list(
