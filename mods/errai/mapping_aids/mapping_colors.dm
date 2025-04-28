@@ -14,6 +14,22 @@
 	color = /decl/flooring/tiling/mono/dark::color
 	icon_state = /decl/flooring/tiling/mono/dark::icon_base
 
+/turf/floor/tiled/old_tile
+	color = /decl/flooring/tiling/new_tile::color
+	icon_state = /decl/flooring/tiling/new_tile::icon_base
+
+/turf/floor/tiled/old_tile/dark
+	color = /decl/flooring/tiling/new_tile/dark::color
+	icon_state = /decl/flooring/tiling/new_tile/dark::icon_base
+
+/turf/floor/tiled/old_cargo
+	color = /decl/flooring/tiling/new_tile/cargo_one::color
+	icon_state = /decl/flooring/tiling/new_tile/cargo_one::icon_base
+
+/turf/floor/tiled/old_cargo/dark
+	color = /decl/flooring/tiling/new_tile/cargo_one/dark::color
+	icon_state = /decl/flooring/tiling/new_tile/cargo_one/dark::icon_base
+
 /turf/floor/tiled/techfloor
 	color = /decl/flooring/tiling/tech::color
 	icon_state = /decl/flooring/tiling/tech::icon_base
@@ -116,16 +132,16 @@
 
 // Medical.
 /obj/machinery/door/airlock/medical
-	color = COLOR_DEEP_SKY_BLUE
+	color = COLOR_PALE_GREEN_GRAY
 
 /obj/machinery/door/airlock/glass/medical
-	color = COLOR_DEEP_SKY_BLUE
+	color = COLOR_PALE_GREEN_GRAY
 
 /obj/machinery/door/airlock/double/medical
-	color = COLOR_DEEP_SKY_BLUE
+	color = COLOR_PALE_GREEN_GRAY
 
 /obj/machinery/door/airlock/double/glass/medical
-	color = COLOR_DEEP_SKY_BLUE
+	color = COLOR_PALE_GREEN_GRAY
 
 
 // Virology.

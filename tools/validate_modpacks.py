@@ -12,7 +12,8 @@ MODPACK_ROOTS = [
     r'mods/content/*/*.dme',
     r'mods/gamemodes/*/*.dme',
     r'mods/mobs/*/*.dme',
-    r'mods/species/*/*.dme'
+    r'mods/species/*/*.dme',
+    r'mods/errai/*/*.dme'
     # Example nested modpack configuration:
     # r'mods/some_downstream/*/*.dme'
 ]

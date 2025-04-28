@@ -1,6 +1,6 @@
 #ifndef MODPACK_ERRAI
 #define MODPACK_ERRAI
 // BEGIN_INCLUDE
-
+#include "mapping_aids/mapping_colors.dm"
 // END INCLUDE
 #endif
