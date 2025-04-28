@@ -53,7 +53,7 @@
 /turf/floor/tiled,
 /area/ship/errai/hallway/deck_two_aft_hallway)
 "aep" = (
-/obj/structure/bed/chair/wood/walnut{
+/obj/structure/chair/wood/walnut{
 	dir = 8
 	},
 /turf/floor/laminate/walnut,
@@ -631,7 +631,7 @@
 /turf/floor/tiled/white,
 /area/ship/errai/medical/treatment_center)
 "aFZ" = (
-/obj/structure/bed/chair/wood/walnut{
+/obj/structure/chair/wood/walnut{
 	dir = 4
 	},
 /obj/effect/floor_decal/spline/plain/black{
@@ -818,8 +818,7 @@
 	autoset_access = 0
 	},
 /obj/machinery/door/window/brigdoor/westright{
-	autoset_access = 0;
-	req_access = list("ACCESS_MEDICAL_EQUIP")
+	autoset_access = 0
 	},
 /obj/structure/sign/warning/nosmoking_2{
 	pixel_y = 32
@@ -1321,8 +1320,7 @@
 /obj/machinery/button/blast_door{
 	id_tag = "armory_shutters";
 	dir = 8;
-	pixel_x = 24;
-	req_access = list("ACCESS_ARMORY")
+	pixel_x = 24
 	},
 /obj/item/box/flashbangs,
 /obj/machinery/alarm{
@@ -1399,7 +1397,7 @@
 /area/ship/errai/research/corridor)
 "bkC" = (
 /obj/effect/floor_decal/chapel,
-/obj/structure/bed/chair/bench/mahogany{
+/obj/structure/chair/bench/mahogany{
 	dir = 8
 	},
 /turf/floor/tiled/dark,
@@ -1630,7 +1628,6 @@
 "bvM" = (
 /obj/structure/rack,
 /obj/machinery/door/window/brigdoor/southleft{
-	req_access = list("ACCESS_ARMORY");
 	autoset_access = 0
 	},
 /obj/item/box/ammo/shotgunshells,
@@ -2437,7 +2434,7 @@
 /turf/floor/reinforced/airless,
 /area/ship/errai/maintenance/incinerator)
 "cmK" = (
-/obj/structure/bed/chair/shuttle/white{
+/obj/structure/chair/shuttle/white{
 	dir = 8
 	},
 /obj/machinery/light/small/red,
@@ -3336,7 +3333,7 @@
 /obj/structure/sign/department/examroom{
 	pixel_y = 32
 	},
-/obj/item/cane,
+/obj/item/cane/aluminium,
 /obj/item/clothing/neck/stethoscope,
 /obj/item/box/rxglasses,
 /obj/item/box/gloves{
@@ -3576,7 +3573,7 @@
 /obj/effect/floor_decal/chapel{
 	dir = 4
 	},
-/obj/structure/bed/chair/bench/mahogany{
+/obj/structure/chair/bench/mahogany{
 	dir = 8
 	},
 /turf/floor/tiled/dark,
@@ -3613,8 +3610,7 @@
 	pixel_x = 0;
 	pixel_y = -22;
 	name = "Mech Bay Access";
-	dir = 1;
-	req_access = list("ACCESS_ROBOTICS")
+	dir = 1
 	},
 /obj/effect/floor_decal/industrial/warning/corner{
 	dir = 8
@@ -4304,8 +4300,7 @@
 	autoset_access = 0
 	},
 /obj/machinery/door/window/brigdoor/westright{
-	autoset_access = 0;
-	req_access = list("ACCESS_SECURITY")
+	autoset_access = 0
 	},
 /obj/item/bell,
 /turf/floor/tiled/techmaint,
@@ -4624,7 +4619,7 @@
 /area/ship/errai/medical/chemistry)
 "dPY" = (
 /obj/effect/floor_decal/corner/grey/diagonal,
-/obj/structure/bed/chair/office/dark{
+/obj/structure/chair/office/dark{
 	dir = 8
 	},
 /turf/floor/tiled/dark,
@@ -5232,7 +5227,7 @@
 /area/ship/errai/medical/operating_room)
 "eno" = (
 /obj/effect/floor_decal/corner/grey/diagonal,
-/obj/structure/bed/chair/office/light{
+/obj/structure/chair/office/light{
 	dir = 4
 	},
 /turf/floor/tiled/white,
@@ -5657,7 +5652,7 @@
 /turf/floor/plating/airless,
 /area/ship/errai/shuttle/escape_pod/pod_5)
 "ezQ" = (
-/obj/structure/bed/chair/office/light{
+/obj/structure/chair/office/light{
 	dir = 4
 	},
 /obj/machinery/button/alternate/door{
@@ -5884,6 +5879,9 @@
 	dir = 4
 	},
 /obj/effect/catwalk_plated/dark,
+/obj/machinery/firealarm{
+	pixel_y = 24
+	},
 /turf/floor/plating,
 /area/ship/errai/commons/cryo)
 "ePR" = (
@@ -5910,7 +5908,7 @@
 /obj/effect/floor_decal/chapel{
 	dir = 8
 	},
-/obj/structure/bed/chair/bench/mahogany{
+/obj/structure/chair/bench/mahogany{
 	dir = 8
 	},
 /turf/floor/tiled/dark,
@@ -6138,7 +6136,7 @@
 /turf/floor/tiled/dark,
 /area/ship/errai/hallway/deck_two_aft_starboard_hallway)
 "fct" = (
-/obj/structure/bed/chair/shuttle/white{
+/obj/structure/chair/shuttle/white{
 	dir = 4
 	},
 /obj/machinery/light/small/red{
@@ -6207,7 +6205,7 @@
 /turf/floor/tiled,
 /area/ship/errai/hallway/stairwell/deck_two_fore)
 "fdX" = (
-/obj/structure/bed/chair/wood/walnut{
+/obj/structure/chair/wood/walnut{
 	dir = 4
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
@@ -6557,8 +6555,7 @@
 "fqc" = (
 /obj/machinery/door/airlock/engineering{
 	name = "Engineering Substation";
-	autoset_access = 0;
-	req_access = list(list("ACCESS_ENGINE_EQUIP", "ACCESS_ATMOS"))
+	autoset_access = 0
 	},
 /obj/machinery/door/firedoor,
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
@@ -7045,7 +7042,7 @@
 /turf/floor/tiled/white,
 /area/ship/errai/medical/operating_room)
 "fFM" = (
-/obj/structure/bed/chair/office/comfy/red,
+/obj/structure/chair/office/comfy/red,
 /obj/effect/floor_decal/borderfloorblack{
 	dir = 5
 	},
@@ -7339,7 +7336,7 @@
 /turf/floor/tiled/dark,
 /area/ship/errai/medical/operation_observation)
 "fVu" = (
-/obj/structure/bed/chair{
+/obj/structure/chair{
 	dir = 4
 	},
 /turf/floor/tiled/old_tile/dark,
@@ -8100,11 +8097,11 @@
 /obj/effect/floor_decal/industrial/shutoff{
 	dir = 4
 	},
-/obj/machinery/button/access/exterior{
+/obj/abstract/airlock_helper/button,
+/obj/machinery/button/access/interior{
 	dir = 1;
 	pixel_y = -22
 	},
-/obj/abstract/airlock_helper/button,
 /turf/floor/tiled/white,
 /area/ship/errai/research/gas_mixing)
 "gBp" = (
@@ -8275,7 +8272,7 @@
 /turf/floor/tiled/white,
 /area/ship/errai/research/foyer)
 "gKc" = (
-/obj/structure/bed/chair/office/comfy,
+/obj/structure/chair/office/comfy,
 /obj/effect/floor_decal/borderfloorwhite{
 	dir = 8
 	},
@@ -8483,7 +8480,7 @@
 	pixel_x = 24;
 	pixel_y = 8
 	},
-/obj/structure/bed/chair{
+/obj/structure/chair{
 	dir = 1
 	},
 /obj/effect/floor_decal/floordetail/pryhole,
@@ -8583,7 +8580,7 @@
 /turf/floor/tiled/dark,
 /area/ship/errai/hallway/deck_two_aft_starboard_hallway)
 "hbT" = (
-/obj/structure/bed/chair/office/comfy,
+/obj/structure/chair/office/comfy,
 /obj/effect/floor_decal/borderfloorwhite{
 	dir = 4
 	},
@@ -8597,7 +8594,6 @@
 /obj/machinery/door/airlock/security{
 	autoset_access = 0;
 	name = "Brig";
-	req_access = list("ACCESS_SEC_DOORS");
 	id_tag = "security_brig_door"
 	},
 /obj/machinery/door/firedoor,
@@ -10001,8 +9997,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
 /obj/machinery/door/airlock/engineering{
 	name = "Engineering Substation";
-	autoset_access = 0;
-	req_access = list(list("ACCESS_ENGINE_EQUIP", "ACCESS_ATMOS"))
+	autoset_access = 0
 	},
 /obj/machinery/door/firedoor,
 /obj/structure/disposalpipe/segment,
@@ -10585,7 +10580,7 @@
 /turf/floor/tiled/techfloor,
 /area/ship/errai/engineering/thruster/main/port)
 "iKw" = (
-/obj/structure/bed/chair/office/comfy/red{
+/obj/structure/chair/office/comfy/red{
 	dir = 4
 	},
 /obj/effect/floor_decal/borderfloorblack{
@@ -10637,7 +10632,7 @@
 /obj/item/dice,
 /obj/item/dice/d20,
 /obj/item/radio/intercom/locked/entertainment{
-	pixel_y = 30
+	pixel_y = 20
 	},
 /obj/item/coin/iron,
 /obj/effect/floor_decal/borderfloor{
@@ -11780,9 +11775,7 @@
 /turf/floor/tiled/dark/monotile,
 /area/ship/errai/research/robotics)
 "jEf" = (
-/obj/machinery/smartfridge/secure/medbay{
-	req_access = list("ACCESS_MEDICAL_EQUIP")
-	},
+/obj/machinery/smartfridge/secure/medbay,
 /turf/floor/plating,
 /area/ship/errai/medical/chemistry)
 "jFS" = (
@@ -11843,7 +11836,7 @@
 /turf/floor/tiled/monotile,
 /area/ship/errai/hallway/deck_two_aft_starboard_hallway)
 "jJZ" = (
-/obj/structure/bed/chair/office/light{
+/obj/structure/chair/office/light{
 	dir = 8
 	},
 /obj/effect/floor_decal/borderfloorwhite{
@@ -12340,7 +12333,7 @@
 /turf/floor/tiled,
 /area/ship/errai/commons/exercise)
 "kgc" = (
-/obj/structure/bed/chair{
+/obj/structure/chair{
 	dir = 4
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
@@ -12951,7 +12944,7 @@
 /obj/effect/floor_decal/chapel{
 	dir = 1
 	},
-/obj/structure/bed/chair/bench/mahogany{
+/obj/structure/chair/bench/mahogany{
 	dir = 8
 	},
 /obj/abstract/landmark/start/shipmap/assistant,
@@ -13395,7 +13388,7 @@
 /turf/floor/tiled/dark,
 /area/ship/errai/medical/morgue)
 "kTJ" = (
-/obj/structure/bed/chair/shuttle/white{
+/obj/structure/chair/shuttle/white{
 	dir = 8
 	},
 /obj/machinery/light/small/red,
@@ -14523,7 +14516,7 @@
 /turf/floor/tiled/dark,
 /area/ship/errai/hallway/deck_two_fore_port_hallway)
 "lNz" = (
-/obj/structure/bed/chair{
+/obj/structure/chair{
 	dir = 8
 	},
 /turf/floor/tiled/old_tile/dark,
@@ -15459,7 +15452,7 @@
 /turf/floor/tiled/white,
 /area/ship/errai/research/corridor)
 "mze" = (
-/obj/structure/bed/chair/wood/walnut{
+/obj/structure/chair/wood/walnut{
 	dir = 8
 	},
 /obj/item/radio/intercom{
@@ -15606,7 +15599,7 @@
 /area/ship/errai/research/xeno_studies)
 "mIy" = (
 /obj/effect/floor_decal/chapel,
-/obj/structure/bed/chair/bench/mahogany{
+/obj/structure/chair/bench/mahogany{
 	dir = 8
 	},
 /obj/item/radio/intercom{
@@ -16329,7 +16322,7 @@
 /turf/floor/tiled/steel_grid,
 /area/ship/errai/commons/restroom)
 "nrv" = (
-/obj/structure/bed/chair/wood/walnut{
+/obj/structure/chair/wood/walnut{
 	dir = 8
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
@@ -16449,7 +16442,7 @@
 /turf/floor/tiled/white,
 /area/ship/errai/research/research_and_development)
 "nuT" = (
-/obj/structure/bed/chair/shuttle/white{
+/obj/structure/chair/shuttle/white{
 	dir = 4
 	},
 /obj/item/radio/intercom{
@@ -17001,7 +16994,7 @@
 /turf/floor/plating,
 /area/ship/errai/maintenance/atmospherics)
 "nMY" = (
-/obj/structure/bed/chair/wood/walnut{
+/obj/structure/chair/wood/walnut{
 	dir = 4
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
@@ -17262,7 +17255,7 @@
 /obj/effect/floor_decal/chapel{
 	dir = 1
 	},
-/obj/structure/bed/chair/bench/mahogany{
+/obj/structure/chair/bench/mahogany{
 	dir = 8
 	},
 /turf/floor/tiled/dark,
@@ -17341,8 +17334,7 @@
 /obj/machinery/button/blast_door{
 	id_tag = "armory_shutters";
 	dir = 4;
-	pixel_x = -24;
-	req_access = list("ACCESS_ARMORY")
+	pixel_x = -24
 	},
 /obj/machinery/alarm{
 	dir = 1;
@@ -17464,7 +17456,7 @@
 	pixel_x = -28;
 	pixel_y = 4
 	},
-/obj/structure/bed/chair/office/comfy{
+/obj/structure/chair/office/comfy{
 	dir = 1
 	},
 /obj/effect/floor_decal/spline/plain/black{
@@ -18039,7 +18031,7 @@
 /turf/floor/tiled/freezer,
 /area/ship/errai/commons/pool)
 "oHW" = (
-/obj/structure/bed/chair/bench/mahogany{
+/obj/structure/chair/bench/mahogany{
 	dir = 8
 	},
 /turf/floor/tiled/dark,
@@ -18136,7 +18128,7 @@
 	id_tag = "prison_riot_control";
 	use_power = 1
 	},
-/obj/structure/bed/chair,
+/obj/structure/chair,
 /turf/floor/tiled/dark,
 /area/ship/errai/security/brig)
 "oLx" = (
@@ -18215,7 +18207,7 @@
 /turf/floor/tiled/dark/monotile,
 /area/ship/errai/research/robotics)
 "oOJ" = (
-/obj/structure/bed/chair{
+/obj/structure/chair{
 	dir = 4
 	},
 /obj/machinery/power/apc{
@@ -18659,7 +18651,7 @@
 /turf/floor/plating,
 /area/ship/errai/maintenance/service)
 "pcZ" = (
-/obj/structure/bed/chair{
+/obj/structure/chair{
 	dir = 8
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
@@ -18750,8 +18742,7 @@
 	icon_state = "1-2"
 	},
 /obj/machinery/door/airlock/science{
-	autoset_access = 0;
-	req_access = list("ACCESS_RESEARCH")
+	autoset_access = 0
 	},
 /turf/floor/tiled/steel_grid,
 /area/ship/errai/research/corridor)
@@ -18976,8 +18967,7 @@
 	},
 /obj/machinery/door/airlock/engineering{
 	name = "Engineering Substation";
-	autoset_access = 0;
-	req_access = list(list("ACCESS_ENGINE_EQUIP", "ACCESS_ATMOS"))
+	autoset_access = 0
 	},
 /obj/machinery/door/firedoor,
 /turf/floor/plating,
@@ -19018,8 +19008,7 @@
 	autoset_access = 0
 	},
 /obj/machinery/door/window/brigdoor/eastleft{
-	autoset_access = 0;
-	req_access = list("ACCESS_CHEMISTRY")
+	autoset_access = 0
 	},
 /obj/structure/sign/department/chemistry{
 	pixel_y = 32
@@ -19250,7 +19239,7 @@
 	directional_offset = null;
 	pixel_x = 10
 	},
-/obj/structure/bed/chair/bench/mahogany{
+/obj/structure/chair/bench/mahogany{
 	dir = 8
 	},
 /turf/floor/tiled/dark,
@@ -19668,7 +19657,7 @@
 /turf/floor/plating,
 /area/ship/errai/maintenance/service)
 "pVN" = (
-/obj/structure/bed/chair/office/comfy/black,
+/obj/structure/chair/office/comfy/black,
 /obj/machinery/atmospherics/unary/vent_scrubber/on{
 	dir = 8
 	},
@@ -19698,7 +19687,7 @@
 "pXr" = (
 /obj/structure/table,
 /obj/item/chems/spray/antiseptic,
-/obj/item/chems/glass/rag,
+/obj/item/chems/rag,
 /obj/machinery/power/apc{
 	dir = 4;
 	name = "east bump";
@@ -19760,7 +19749,6 @@
 "pZu" = (
 /obj/machinery/door/airlock/security{
 	autoset_access = 0;
-	req_access = list("ACCESS_SEC_DOORS");
 	id_tag = "security_brig_door"
 	},
 /obj/machinery/door/firedoor,
@@ -19879,7 +19867,7 @@
 /turf/floor/tiled/white/monotile,
 /area/ship/errai/research/xeno_studies)
 "qcR" = (
-/obj/structure/bed/chair{
+/obj/structure/chair{
 	dir = 4
 	},
 /obj/item/radio/intercom{
@@ -20629,7 +20617,7 @@
 /turf/floor/tiled/dark,
 /area/ship/errai/hallway/stairwell/deck_two_aft)
 "qLg" = (
-/obj/structure/bed/chair/office/dark{
+/obj/structure/chair/office/dark{
 	dir = 1
 	},
 /obj/structure/cable/green{
@@ -21101,7 +21089,7 @@
 /turf/floor/reinforced,
 /area/ship/errai/research/xeno_cell/three)
 "rcB" = (
-/obj/structure/bed/chair/armchair/brown,
+/obj/structure/chair/armchair/brown,
 /turf/floor/carpet,
 /area/ship/errai/service/chapel)
 "rcL" = (
@@ -21575,7 +21563,7 @@
 /turf/floor/tiled/dark/monotile,
 /area/ship/errai/research/robotics)
 "ryU" = (
-/obj/structure/bed/chair/wood/walnut{
+/obj/structure/chair/wood/walnut{
 	dir = 4
 	},
 /obj/machinery/light{
@@ -21994,6 +21982,10 @@
 /obj/effect/floor_decal/industrial/outline/grey,
 /obj/effect/floor_decal/industrial/fire,
 /obj/structure/disposalpipe/trunk{
+	dir = 1
+	},
+/obj/structure/extinguisher_cabinet{
+	pixel_y = -29;
 	dir = 1
 	},
 /turf/floor/tiled/white/monotile,
@@ -22466,9 +22458,6 @@
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
 	dir = 4
-	},
-/obj/machinery/firealarm{
-	pixel_y = 24
 	},
 /obj/effect/floor_decal/borderfloor{
 	dir = 5
@@ -23408,8 +23397,7 @@
 	id_tag = "mech_bay_shutters";
 	pixel_x = 0;
 	pixel_y = 32;
-	name = "Mech Bay Access";
-	req_access = list("ACCESS_ROBOTICS")
+	name = "Mech Bay Access"
 	},
 /obj/effect/floor_decal/industrial/warning/corner{
 	dir = 1
@@ -26347,7 +26335,7 @@
 /turf/floor/tiled,
 /area/ship/errai/hallway/deck_two_fore_hallway)
 "vsM" = (
-/obj/structure/bed/chair/wood/walnut{
+/obj/structure/chair/wood/walnut{
 	dir = 8
 	},
 /obj/effect/floor_decal/spline/plain/black{
@@ -27357,8 +27345,7 @@
 "waf" = (
 /obj/machinery/door/airlock/engineering{
 	name = "Engineering Substation";
-	autoset_access = 0;
-	req_access = list(list("ACCESS_ENGINE_EQUIP", "ACCESS_ATMOS"))
+	autoset_access = 0
 	},
 /obj/machinery/door/firedoor,
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
@@ -28367,13 +28354,13 @@
 /area/ship/errai/security/reception)
 "wWq" = (
 /obj/effect/floor_decal/industrial/fire,
-/obj/machinery/button/access/exterior{
-	dir = 1;
-	pixel_y = -22
-	},
 /obj/abstract/airlock_helper/button,
 /obj/machinery/atmospherics/pipe/simple/visible/yellow,
 /obj/machinery/meter,
+/obj/machinery/button/access/interior{
+	dir = 1;
+	pixel_y = -22
+	},
 /turf/floor/tiled/techmaint,
 /area/ship/errai/maintenance/incinerator)
 "wWD" = (
@@ -28720,8 +28707,7 @@
 	},
 /obj/machinery/door/airlock/engineering{
 	name = "Engineering Substation";
-	autoset_access = 0;
-	req_access = list(list("ACCESS_ENGINE_EQUIP", "ACCESS_ATMOS"))
+	autoset_access = 0
 	},
 /obj/machinery/door/firedoor,
 /turf/floor/tiled/steel_grid,
@@ -29268,7 +29254,7 @@
 /turf/floor/tiled,
 /area/ship/errai/hallway/deck_two_center_hallway)
 "xGg" = (
-/obj/structure/bed/chair/shuttle/white{
+/obj/structure/chair/shuttle/white{
 	dir = 8
 	},
 /obj/machinery/oxygen_pump{
@@ -29407,7 +29393,6 @@
 	dir = 4
 	},
 /obj/machinery/door/window/brigdoor/southright{
-	req_access = list("ACCESS_ARMORY");
 	autoset_access = 0
 	},
 /obj/effect/floor_decal/borderfloorblack{
@@ -29488,7 +29473,7 @@
 	dir = 1;
 	color = "#eeeeee"
 	},
-/obj/structure/bed/chair/wheelchair,
+/obj/structure/chair/wheelchair,
 /turf/floor/tiled/white,
 /area/ship/errai/medical/exam_room)
 "xQL" = (
@@ -29517,7 +29502,7 @@
 /turf/floor/laminate/walnut,
 /area/ship/errai/commons/dormitory)
 "xRI" = (
-/obj/structure/bed/chair/shuttle/white{
+/obj/structure/chair/shuttle/white{
 	dir = 4
 	},
 /obj/machinery/status_display{
