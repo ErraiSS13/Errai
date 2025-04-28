@@ -615,8 +615,7 @@
 /obj/machinery/door/firedoor,
 /obj/machinery/door/airlock/engineering{
 	name = "Engineering Substation";
-	autoset_access = 0;
-	req_access = list(list("ACCESS_ENGINE_EQUIP", "ACCESS_ATMOS"))
+	autoset_access = 0
 	},
 /obj/structure/disposalpipe/segment,
 /turf/floor/plating,
@@ -1065,7 +1064,7 @@
 /turf/floor/tiled,
 /area/ship/errai/supply/mining)
 "aUC" = (
-/obj/structure/bed/chair/shuttle{
+/obj/structure/chair/shuttle{
 	dir = 1
 	},
 /turf/floor/tiled/monotile,
@@ -1226,7 +1225,7 @@
 	dir = 4
 	},
 /obj/effect/floor_decal/steeldecal/steel_decals_central7,
-/obj/structure/bed/chair{
+/obj/structure/chair{
 	dir = 8
 	},
 /turf/floor/tiled,
@@ -1261,14 +1260,17 @@
 	icon_state = "4-8"
 	},
 /obj/abstract/airlock_helper/door/ext_door,
+/obj/machinery/button/access/exterior{
+	pixel_y = 20
+	},
+/obj/abstract/airlock_helper/button,
 /turf/floor/tiled/steel_grid,
 /area/ship/errai/hallway/deck_three_port_docking_hallway)
 "bcf" = (
 /obj/machinery/door/firedoor,
 /obj/machinery/door/airlock/engineering{
 	name = "Engineering Substation";
-	autoset_access = 0;
-	req_access = list(list("ACCESS_ENGINE_EQUIP", "ACCESS_ATMOS"))
+	autoset_access = 0
 	},
 /obj/structure/disposalpipe/segment{
 	dir = 4
@@ -1513,8 +1515,7 @@
 	id_tag = "reactor_power_room_shutters";
 	pixel_x = 0;
 	pixel_y = 30;
-	name = "Reactor Access";
-	req_access = list("ACCESS_ENGINE_EQUIP")
+	name = "Reactor Access"
 	},
 /obj/effect/floor_decal/industrial/warning/corner{
 	dir = 1
@@ -2149,7 +2150,7 @@
 /obj/machinery/light{
 	dir = 4
 	},
-/obj/structure/bed/chair/shuttle{
+/obj/structure/chair/shuttle{
 	dir = 1
 	},
 /turf/floor/tiled/monotile,
@@ -2374,8 +2375,7 @@
 	},
 /obj/machinery/door/window/northright{
 	name = "Engineering Voidsuits";
-	autoset_access = 0;
-	req_access = list("ACCESS_ENGINE_EQUIP")
+	autoset_access = 0
 	},
 /turf/floor/tiled/old_tile/dark,
 /area/ship/errai/engineering/eva)
@@ -2396,7 +2396,7 @@
 /turf/space,
 /area/space)
 "cgr" = (
-/obj/structure/bed/chair/shuttle/white{
+/obj/structure/chair/shuttle/white{
 	dir = 8
 	},
 /obj/machinery/oxygen_pump{
@@ -2725,8 +2725,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
 /obj/machinery/door/airlock/double/glass/engineering{
 	name = "Engineering Storage";
-	autoset_access = 0;
-	req_access = list("ACCESS_ENGINE_EQUIP")
+	autoset_access = 0
 	},
 /turf/floor/tiled/steel_grid,
 /area/ship/errai/engineering/storage)
@@ -2750,7 +2749,6 @@
 	},
 /obj/machinery/door/airlock/hatch/maintenance{
 	autoset_access = 0;
-	req_access = list("ACCESS_ENGINE_EQUIP");
 	name = "Reactor Access"
 	},
 /turf/floor/tiled/steel_grid,
@@ -2887,9 +2885,7 @@
 /obj/item/cash/c100,
 /obj/item/cash/c100,
 /obj/item/cash/c100,
-/obj/structure/closet/crate/secure{
-	req_access = list("ACCESS_VAULT")
-	},
+/obj/structure/closet/crate/secure,
 /turf/floor/tiled/dark,
 /area/ship/errai/supply/vault)
 "cJG" = (
@@ -3019,7 +3015,6 @@
 	},
 /obj/machinery/door/window/southleft{
 	autoset_access = 0;
-	req_access = list(list("ACCESS_EVA", "ACCESS_QUARTERMASTER"));
 	name = "General"
 	},
 /obj/item/clothing/shoes/magboots,
@@ -3942,8 +3937,7 @@
 	},
 /obj/machinery/door/window/southleft{
 	autoset_access = 0;
-	name = "Medical";
-	req_access = list(list("ACCESS_MEDICAL_EQUIP", "ACCESS_QUARTERMASTER"))
+	name = "Medical"
 	},
 /obj/item/clothing/mask/breath,
 /obj/item/clothing/mask/breath,
@@ -4009,7 +4003,6 @@
 "dNS" = (
 /obj/structure/table/reinforced,
 /obj/machinery/door/window/northright{
-	req_access = list("ACCESS_ENGINE_EQUIP");
 	name = "Engineering Foyer";
 	autoset_access = 0
 	},
@@ -4593,7 +4586,7 @@
 /turf/floor/tiled/steel_grid,
 /area/ship/errai/shuttle/escape_pod/pod_11)
 "etZ" = (
-/obj/structure/bed/chair/shuttle/white{
+/obj/structure/chair/shuttle/white{
 	dir = 4
 	},
 /obj/machinery/light/small/red{
@@ -4624,8 +4617,7 @@
 /obj/machinery/door/firedoor,
 /obj/machinery/door/airlock/glass/engineering{
 	name = "Engineering Monitoring Room";
-	autoset_access = 0;
-	req_access = list(list("ACCESS_ENGINE_EQUIP", "ACCESS_ATMOS"))
+	autoset_access = 0
 	},
 /obj/structure/cable/green{
 	icon_state = "4-8"
@@ -5023,7 +5015,7 @@
 /turf/floor/tiled/techfloor,
 /area/ship/errai/engineering/reactor)
 "eNr" = (
-/obj/structure/bed/chair/shuttle{
+/obj/structure/chair/shuttle{
 	dir = 1
 	},
 /turf/floor/tiled/monotile,
@@ -5068,8 +5060,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
 /obj/machinery/door/airlock/engineering{
 	name = "Engineering Substation";
-	autoset_access = 0;
-	req_access = list(list("ACCESS_ENGINE_EQUIP", "ACCESS_ATMOS"))
+	autoset_access = 0
 	},
 /obj/effect/catwalk_plated/dark,
 /obj/structure/disposalpipe/segment,
@@ -5705,8 +5696,7 @@
 	},
 /obj/machinery/door/window/southleft{
 	autoset_access = 0;
-	name = "Mining";
-	req_access = list("ACCESS_MINING")
+	name = "Mining"
 	},
 /obj/item/clothing/mask/breath,
 /obj/item/clothing/mask/breath,
@@ -5770,8 +5760,7 @@
 "fAh" = (
 /obj/machinery/door/firedoor,
 /obj/machinery/door/airlock/maintenance{
-	autoset_access = 0;
-	req_access = list(list("ACCESS_ENGINE_EQUIP", "ACCESS_ATMOS"))
+	autoset_access = 0
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden,
 /turf/floor/plating,
@@ -6146,7 +6135,7 @@
 /turf/floor/tiled/dark,
 /area/ship/errai/hallway/hangar_hallway)
 "fWd" = (
-/obj/structure/bed/chair/shuttle/white{
+/obj/structure/chair/shuttle/white{
 	dir = 8
 	},
 /obj/machinery/light/small/red,
@@ -6587,8 +6576,7 @@
 "gwX" = (
 /obj/machinery/door/airlock/glass/engineering{
 	name = "Engine Monitoring Room";
-	autoset_access = 0;
-	req_access = list("ACCESS_ENGINE_EQUIP")
+	autoset_access = 0
 	},
 /obj/machinery/door/firedoor,
 /turf/floor/tiled/steel_grid,
@@ -6855,8 +6843,7 @@
 /obj/structure/window/reinforced,
 /obj/machinery/door/window/northright{
 	name = "Atmospherics Voidsuits";
-	autoset_access = 0;
-	req_access = list("ACCESS_ATMOS")
+	autoset_access = 0
 	},
 /turf/floor/tiled/old_tile/dark,
 /area/ship/errai/engineering/eva)
@@ -7067,7 +7054,7 @@
 /turf/floor/plating,
 /area/ship/errai/supply/tech_storage)
 "gSr" = (
-/obj/structure/bed/chair/shuttle/blue{
+/obj/structure/chair/shuttle/blue{
 	dir = 1
 	},
 /turf/floor/tiled/steel_grid,
@@ -7093,8 +7080,7 @@
 /obj/structure/window/reinforced,
 /obj/machinery/door/window/northleft{
 	name = "Atmospherics Voidsuits";
-	autoset_access = 0;
-	req_access = list("ACCESS_ATMOS")
+	autoset_access = 0
 	},
 /obj/effect/floor_decal/spline/plain/black{
 	dir = 9
@@ -7439,8 +7425,7 @@
 	},
 /obj/machinery/door/airlock/engineering{
 	name = "Engineering Substation";
-	autoset_access = 0;
-	req_access = list(list("ACCESS_ENGINE_EQUIP", "ACCESS_ATMOS"))
+	autoset_access = 0
 	},
 /obj/machinery/door/firedoor,
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
@@ -7820,8 +7805,7 @@
 	},
 /obj/machinery/door/airlock/engineering{
 	name = "Engineering Substation";
-	autoset_access = 0;
-	req_access = list(list("ACCESS_ENGINE_EQUIP", "ACCESS_ATMOS"))
+	autoset_access = 0
 	},
 /turf/floor/plating,
 /area/ship/errai/engineering/atmospherics/deck_three)
@@ -7954,7 +7938,6 @@
 /obj/machinery/door/airlock/double/glass/engineering{
 	dir = 8;
 	name = "Engineering Starboard Hallway";
-	req_access = list("ACCESS_ENGINEERING");
 	autoset_access = 0
 	},
 /turf/floor/tiled/steel_grid,
@@ -8657,8 +8640,7 @@
 /obj/machinery/door/firedoor,
 /obj/machinery/door/airlock/engineering{
 	name = "Engineering Substation";
-	autoset_access = 0;
-	req_access = list(list("ACCESS_ENGINE_EQUIP", "ACCESS_ATMOS"))
+	autoset_access = 0
 	},
 /obj/structure/disposalpipe/segment,
 /turf/floor/plating,
@@ -9593,7 +9575,7 @@
 /turf/floor/plating,
 /area/ship/errai/maintenance/engineering_starboard)
 "juO" = (
-/obj/structure/bed/chair{
+/obj/structure/chair{
 	dir = 8
 	},
 /obj/effect/floor_decal/spline/plain/orange{
@@ -9845,8 +9827,7 @@
 "jIw" = (
 /obj/machinery/door/firedoor,
 /obj/machinery/door/airlock/maintenance{
-	autoset_access = 0;
-	req_access = list(list("ACCESS_ENGINE_EQUIP", "ACCESS_ATMOS"))
+	autoset_access = 0
 	},
 /turf/floor/plating,
 /area/ship/errai/engineering/eva)
@@ -9921,7 +9902,7 @@
 /turf/floor/tiled,
 /area/ship/errai/hallway/deck_three_aft_hallway)
 "jOE" = (
-/obj/structure/bed/chair/shuttle/white{
+/obj/structure/chair/shuttle/white{
 	dir = 8
 	},
 /obj/machinery/light/small/red,
@@ -10010,7 +9991,7 @@
 /turf/floor/tiled,
 /area/ship/errai/engineering/foyer)
 "jRE" = (
-/obj/structure/bed/chair/shuttle/white{
+/obj/structure/chair/shuttle/white{
 	dir = 8
 	},
 /obj/machinery/oxygen_pump{
@@ -10130,7 +10111,7 @@
 /turf/floor/tiled,
 /area/ship/errai/engineering/workshop)
 "jXH" = (
-/obj/structure/bed/chair/shuttle{
+/obj/structure/chair/shuttle{
 	dir = 1
 	},
 /obj/machinery/light{
@@ -10199,7 +10180,6 @@
 	},
 /obj/machinery/door/airlock/hatch/maintenance{
 	autoset_access = 0;
-	req_access = list("ACCESS_ENGINE_EQUIP");
 	name = "Reactor Access"
 	},
 /turf/floor/tiled/steel_grid,
@@ -10531,9 +10511,7 @@
 "kqN" = (
 /obj/item/screwdriver/gold,
 /obj/item/crowbar/gold,
-/obj/structure/closet/crate/secure{
-	req_access = list("ACCESS_VAULT")
-	},
+/obj/structure/closet/crate/secure,
 /turf/floor/tiled/dark,
 /area/ship/errai/supply/vault)
 "kro" = (
@@ -10838,7 +10816,7 @@
 /turf/space,
 /area/space)
 "kIs" = (
-/obj/structure/bed/chair/shuttle/white{
+/obj/structure/chair/shuttle/white{
 	dir = 4
 	},
 /obj/item/radio/intercom{
@@ -10864,7 +10842,6 @@
 /obj/structure/window/reinforced,
 /obj/structure/closet/crate/secure/shuttle{
 	dir = 4;
-	req_access = list("ACCESS_SHUTTLE_PILOT");
 	name = "pilot's storage compartment"
 	},
 /obj/item/radio_beacon,
@@ -10914,7 +10891,6 @@
 /obj/effect/floor_decal/industrial/hatch/yellow,
 /obj/machinery/door/airlock/hatch/maintenance{
 	autoset_access = 0;
-	req_access = list("ACCESS_ENGINE_EQUIP");
 	name = "Reactor Access"
 	},
 /turf/floor/tiled/steel_grid,
@@ -11784,8 +11760,7 @@
 /area/ship/errai/engineering/foyer)
 "lCu" = (
 /obj/machinery/door/airlock/maintenance{
-	autoset_access = 0;
-	req_access = list(list("ACCESS_ENGINE_EQUIP", "ACCESS_ATMOS"))
+	autoset_access = 0
 	},
 /obj/machinery/door/firedoor,
 /obj/machinery/atmospherics/pipe/simple/hidden,
@@ -12251,9 +12226,7 @@
 /turf/wall/r_wall/prepainted,
 /area/ship/errai/engineering/atmospherics/deck_three)
 "lSS" = (
-/obj/structure/closet/secure_closet{
-	req_access = list("ACCESS_VAULT")
-	},
+/obj/structure/closet/secure_closet,
 /obj/machinery/camera/network/mining,
 /turf/floor/tiled/dark,
 /area/ship/errai/supply/vault)
@@ -12492,8 +12465,7 @@
 	},
 /obj/machinery/door/window/southleft{
 	autoset_access = 0;
-	name = "Pilot";
-	req_access = list("ACCESS_SHUTTLE_PILOT")
+	name = "Pilot"
 	},
 /obj/item/clothing/mask/breath,
 /obj/item/clothing/mask/breath,
@@ -12780,7 +12752,7 @@
 	},
 /area/ship/errai/hallway/hangar_hallway)
 "mnr" = (
-/obj/structure/bed/chair/shuttle/white{
+/obj/structure/chair/shuttle/white{
 	dir = 8
 	},
 /obj/machinery/light/small/red,
@@ -12923,7 +12895,7 @@
 /turf/floor/tiled/techfloor/grid,
 /area/ship/errai/hallway/deck_three_port_docking_hallway)
 "mtl" = (
-/obj/structure/bed/chair/shuttle/blue{
+/obj/structure/chair/shuttle/blue{
 	dir = 1
 	},
 /turf/floor/tiled/steel_grid,
@@ -12986,8 +12958,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/machinery/door/airlock/double/glass/engineering{
 	name = "Engineering Workshop";
-	autoset_access = 0;
-	req_access = list("ACCESS_ENGINE_EQUIP")
+	autoset_access = 0
 	},
 /obj/structure/cable/green{
 	icon_state = "1-2"
@@ -13363,8 +13334,7 @@
 	name = "Vault Door Bolt Control";
 	pixel_x = 24;
 	pixel_y = -4;
-	dir = 8;
-	req_access = list("ACCESS_VAULT")
+	dir = 8
 	},
 /obj/machinery/atmospherics/unary/vent_pump/on{
 	dir = 8
@@ -13744,7 +13714,7 @@
 /obj/structure/cable/blue{
 	icon_state = "4-8"
 	},
-/obj/structure/bed/chair/shuttle/blue{
+/obj/structure/chair/shuttle/blue{
 	dir = 1
 	},
 /turf/floor/tiled/steel_grid,
@@ -13769,8 +13739,7 @@
 /obj/machinery/door/firedoor,
 /obj/machinery/door/airlock/engineering{
 	name = "Engineering Substation";
-	autoset_access = 0;
-	req_access = list(list("ACCESS_ENGINE_EQUIP", "ACCESS_ATMOS"))
+	autoset_access = 0
 	},
 /turf/floor/plating,
 /area/ship/errai/maintenance/substation/atmospherics)
@@ -13949,7 +13918,7 @@
 	pixel_y = -32;
 	dir = 1
 	},
-/obj/structure/bed/chair/shuttle{
+/obj/structure/chair/shuttle{
 	dir = 1
 	},
 /turf/floor/tiled/monotile,
@@ -14045,7 +14014,6 @@
 /area/ship/errai/engineering/eva)
 "nCS" = (
 /obj/machinery/door/window/brigdoor/southleft{
-	req_access = list("ACCESS_EVA");
 	autoset_access = 0
 	},
 /obj/structure/cable/blue{
@@ -14194,8 +14162,7 @@
 /obj/machinery/door/firedoor,
 /obj/machinery/door/airlock/glass/engineering{
 	name = "Engineering Monitoring Room";
-	autoset_access = 0;
-	req_access = list(list("ACCESS_ENGINE_EQUIP", "ACCESS_ATMOS"))
+	autoset_access = 0
 	},
 /turf/floor/tiled/steel_grid,
 /area/ship/errai/engineering/reception)
@@ -14500,8 +14467,7 @@
 	},
 /obj/machinery/door/airlock/engineering{
 	name = "Engineering Substation";
-	autoset_access = 0;
-	req_access = list(list("ACCESS_ENGINE_EQUIP", "ACCESS_ATMOS"))
+	autoset_access = 0
 	},
 /obj/structure/cable/orange{
 	icon_state = "1-2"
@@ -14524,7 +14490,7 @@
 /turf/floor/tiled,
 /area/ship/errai/engineering/starboard_hallway)
 "oep" = (
-/obj/structure/bed/chair/shuttle/white{
+/obj/structure/chair/shuttle/white{
 	dir = 4
 	},
 /obj/machinery/status_display{
@@ -14909,8 +14875,7 @@
 	},
 /obj/machinery/door/firedoor,
 /obj/machinery/door/window/brigdoor/westright{
-	autoset_access = 0;
-	req_access = list("ACCESS_CARGO")
+	autoset_access = 0
 	},
 /obj/item/bell,
 /turf/floor/tiled/techfloor/grid,
@@ -15569,7 +15534,7 @@
 	dir = 4;
 	icon_state = "pipe-c"
 	},
-/obj/structure/bed/chair/office/dark{
+/obj/structure/chair/office/dark{
 	dir = 4
 	},
 /obj/abstract/landmark/start/shipmap/supply_technician,
@@ -15611,7 +15576,6 @@
 	id_tag = "hangar_one_storage";
 	pixel_x = 0;
 	pixel_y = -22;
-	req_access = list(list("ACCESS_CARGO", "ACCESS_MINING", "ACCESS_XENOARCH"));
 	dir = 1
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
@@ -15792,7 +15756,7 @@
 /turf/floor/tiled/techmaint,
 /area/ship/errai/supply/warehouse)
 "piS" = (
-/obj/structure/bed/chair{
+/obj/structure/chair{
 	dir = 8
 	},
 /obj/item/radio/intercom{
@@ -16097,8 +16061,7 @@
 /obj/machinery/door/firedoor,
 /obj/machinery/door/airlock/engineering{
 	name = "Engineering Locker Room";
-	autoset_access = 0;
-	req_access = list(list("ACCESS_ENGINE_EQUIP", "ACCESS_ATMOS"))
+	autoset_access = 0
 	},
 /turf/floor/tiled/steel_grid,
 /area/ship/errai/engineering/workshop)
@@ -16454,7 +16417,7 @@
 /turf/floor/plating/airless,
 /area/ship/errai/maintenance/supply_starboard)
 "pHm" = (
-/obj/structure/bed/chair/shuttle/white{
+/obj/structure/chair/shuttle/white{
 	dir = 4
 	},
 /obj/machinery/light/small/red{
@@ -16520,8 +16483,7 @@
 	},
 /obj/machinery/door/window/southleft{
 	autoset_access = 0;
-	name = "Security";
-	req_access = list(list("ACCESS_BRIG", "ACCESS_QUARTERMASTER"))
+	name = "Security"
 	},
 /obj/item/clothing/mask/breath,
 /obj/item/clothing/mask/breath,
@@ -16820,7 +16782,6 @@
 	},
 /obj/machinery/door/airlock/hatch/maintenance{
 	autoset_access = 0;
-	req_access = list("ACCESS_ENGINE_EQUIP");
 	name = "Reactor Access"
 	},
 /turf/floor/tiled/steel_grid,
@@ -16963,8 +16924,7 @@
 "qgT" = (
 /obj/machinery/door/airlock/engineering{
 	name = "Reactor Gas Handling";
-	autoset_access = 0;
-	req_access = list("ACCESS_ENGINE_EQUIP")
+	autoset_access = 0
 	},
 /obj/machinery/door/firedoor,
 /obj/machinery/atmospherics/pipe/simple/hidden/black,
@@ -17312,8 +17272,7 @@
 	pixel_x = 0;
 	pixel_y = -22;
 	name = "Reactor Access";
-	dir = 1;
-	req_access = list("ACCESS_ENGINE_EQUIP")
+	dir = 1
 	},
 /obj/effect/floor_decal/borderfloor{
 	dir = 8
@@ -17343,8 +17302,7 @@
 /obj/machinery/door/firedoor,
 /obj/machinery/door/airlock/engineering{
 	name = "Engineering Substation";
-	autoset_access = 0;
-	req_access = list(list("ACCESS_ENGINE_EQUIP", "ACCESS_ATMOS"))
+	autoset_access = 0
 	},
 /obj/structure/cable/green{
 	icon_state = "4-8"
@@ -17537,8 +17495,7 @@
 /obj/machinery/door/firedoor,
 /obj/machinery/door/airlock/glass/engineering{
 	name = "Engineering EVA";
-	autoset_access = 0;
-	req_access = list(list("ACCESS_ENGINE_EQUIP", "ACCESS_ATMOS"))
+	autoset_access = 0
 	},
 /turf/floor/tiled/steel_grid,
 /area/ship/errai/engineering/eva)
@@ -17555,7 +17512,6 @@
 /obj/machinery/door/firedoor,
 /obj/machinery/door/airlock/hatch/maintenance{
 	autoset_access = 0;
-	req_access = list("ACCESS_ENGINE_EQUIP");
 	name = "Reactor Access"
 	},
 /turf/floor/tiled/steel_grid,
@@ -17607,8 +17563,7 @@
 "qGK" = (
 /obj/machinery/door/firedoor,
 /obj/machinery/door/airlock/maintenance{
-	autoset_access = 0;
-	req_access = list(list("ACCESS_ENGINE_EQUIP", "ACCESS_ATMOS"))
+	autoset_access = 0
 	},
 /turf/floor/plating,
 /area/ship/errai/engineering/restroom)
@@ -17760,7 +17715,7 @@
 /turf/floor/tiled/techfloor,
 /area/ship/errai/engineering/reactor)
 "qSD" = (
-/obj/structure/bed/chair/shuttle{
+/obj/structure/chair/shuttle{
 	dir = 1
 	},
 /obj/machinery/computer/ship/navigation/telescreen{
@@ -18030,8 +17985,7 @@
 	},
 /obj/machinery/door/airlock/engineering{
 	name = "Engineering Substation";
-	autoset_access = 0;
-	req_access = list(list("ACCESS_ENGINE_EQUIP", "ACCESS_ATMOS"))
+	autoset_access = 0
 	},
 /turf/floor/plating,
 /area/ship/errai/maintenance/substation/deck_three)
@@ -18643,7 +18597,6 @@
 /obj/item/radio_beacon,
 /obj/structure/closet/crate/secure/shuttle{
 	dir = 8;
-	req_access = list("ACCESS_SHUTTLE_PILOT");
 	name = "pilot's storage compartment"
 	},
 /obj/effect/floor_decal/steeldecal/steel_decals_central7,
@@ -18853,7 +18806,6 @@
 /obj/effect/floor_decal/industrial/hatch/yellow,
 /obj/machinery/door/airlock/hatch/maintenance{
 	autoset_access = 0;
-	req_access = list("ACCESS_ENGINE_EQUIP");
 	name = "Reactor Access"
 	},
 /turf/floor/tiled/steel_grid,
@@ -18883,7 +18835,7 @@
 /turf/floor/tiled/techfloor,
 /area/ship/errai/supply/general_eva)
 "rSf" = (
-/obj/structure/bed/chair/shuttle{
+/obj/structure/chair/shuttle{
 	dir = 1
 	},
 /obj/machinery/light{
@@ -19951,8 +19903,7 @@
 	},
 /obj/machinery/door/window/northleft{
 	name = "Engineering Voidsuits";
-	autoset_access = 0;
-	req_access = list("ACCESS_ENGINE_EQUIP")
+	autoset_access = 0
 	},
 /turf/floor/tiled/old_tile/dark,
 /area/ship/errai/engineering/eva)
@@ -20344,8 +20295,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
 /obj/machinery/door/airlock/engineering{
 	name = "Engineering Substation";
-	autoset_access = 0;
-	req_access = list(list("ACCESS_ENGINE_EQUIP", "ACCESS_ATMOS"))
+	autoset_access = 0
 	},
 /obj/structure/cable{
 	icon_state = "1-2"
@@ -20643,8 +20593,7 @@
 /obj/machinery/door/firedoor,
 /obj/machinery/door/airlock/glass/engineering{
 	name = "Engine Monitoring Room";
-	autoset_access = 0;
-	req_access = list("ACCESS_ENGINE_EQUIP")
+	autoset_access = 0
 	},
 /turf/floor/tiled/steel_grid,
 /area/ship/errai/engineering/reactor_monitoring)
@@ -20957,8 +20906,7 @@
 	id_tag = "reactor_filter_room_shutters";
 	pixel_x = 0;
 	pixel_y = 32;
-	name = "Reactor Access";
-	req_access = list("ACCESS_ENGINE_EQUIP")
+	name = "Reactor Access"
 	},
 /obj/effect/floor_decal/industrial/warning/corner{
 	dir = 4
@@ -21377,9 +21325,7 @@
 /obj/machinery/light/small{
 	dir = 4
 	},
-/obj/structure/closet/crate/secure{
-	req_access = list("ACCESS_VAULT")
-	},
+/obj/structure/closet/crate/secure,
 /turf/floor/tiled/dark,
 /area/ship/errai/supply/vault)
 "unf" = (
@@ -21714,7 +21660,7 @@
 /turf/floor/tiled,
 /area/ship/errai/engineering/atmospherics/deck_three)
 "uBg" = (
-/obj/structure/bed/chair/shuttle{
+/obj/structure/chair/shuttle{
 	dir = 1
 	},
 /obj/machinery/computer/ship/navigation/telescreen{
@@ -21831,7 +21777,7 @@
 /turf/floor/tiled,
 /area/ship/errai/hallway/stairwell/deck_three_aft)
 "uEN" = (
-/obj/structure/bed/chair{
+/obj/structure/chair{
 	dir = 4
 	},
 /obj/abstract/landmark/start/shipmap/ship_pilot,
@@ -21871,7 +21817,7 @@
 /obj/structure/cable/blue{
 	icon_state = "4-8"
 	},
-/obj/structure/bed/chair/shuttle/blue{
+/obj/structure/chair/shuttle/blue{
 	dir = 1
 	},
 /turf/floor/tiled/steel_grid,
@@ -22140,7 +22086,6 @@
 	id_tag = "hangar_two_storage";
 	pixel_x = 0;
 	pixel_y = -22;
-	req_access = list(list("ACCESS_CARGO", "ACCESS_ATMOS"));
 	dir = 1
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
@@ -22331,8 +22276,7 @@
 	dir = 4
 	},
 /obj/machinery/door/window/brigdoor/eastright{
-	autoset_access = 0;
-	req_access = list("ACCESS_CHIEF_ENGINEER")
+	autoset_access = 0
 	},
 /obj/machinery/button/alternate/door/bolts{
 	desc = "A remote control-switch for the engine core airlock hatch bolts.";
@@ -22712,6 +22656,11 @@
 /obj/effect/floor_decal/steeldecal/steel_decals10{
 	dir = 4
 	},
+/obj/machinery/button/access/interior{
+	dir = 4;
+	pixel_x = -20
+	},
+/obj/abstract/airlock_helper/button,
 /turf/floor/tiled,
 /area/ship/errai/hallway/deck_three_port_docking_hallway)
 "vyk" = (
@@ -22925,7 +22874,6 @@
 "vGq" = (
 /obj/structure/table/reinforced,
 /obj/machinery/door/window/northleft{
-	req_access = list("ACCESS_ENGINE_EQUIP");
 	name = "Engineering Foyer";
 	autoset_access = 0
 	},
@@ -22983,8 +22931,7 @@
 	},
 /obj/machinery/door/firedoor,
 /obj/machinery/door/airlock/maintenance{
-	autoset_access = 0;
-	req_access = list("ACCESS_ENGINE_EQUIP")
+	autoset_access = 0
 	},
 /turf/floor/plating,
 /area/ship/errai/engineering/reactor_filtering)
@@ -23375,8 +23322,7 @@
 	pixel_x = 0;
 	pixel_y = -22;
 	name = "Reactor Access";
-	dir = 1;
-	req_access = list("ACCESS_ENGINE_EQUIP")
+	dir = 1
 	},
 /obj/effect/floor_decal/industrial/radiation/corner{
 	dir = 8;
@@ -23832,7 +23778,7 @@
 /turf/floor,
 /area/ship/errai/shuttle/two)
 "wEV" = (
-/obj/structure/bed/chair/shuttle/white{
+/obj/structure/chair/shuttle/white{
 	dir = 4
 	},
 /obj/machinery/status_display{
@@ -24048,7 +23994,7 @@
 /turf/floor/tiled,
 /area/ship/errai/hallway/deck_three_aft_hallway)
 "wLx" = (
-/obj/structure/bed/chair/shuttle/white{
+/obj/structure/chair/shuttle/white{
 	dir = 4
 	},
 /obj/item/radio/intercom{
@@ -24335,8 +24281,7 @@
 /obj/machinery/door/firedoor,
 /obj/machinery/door/airlock/engineering{
 	name = "SMES Access";
-	autoset_access = 0;
-	req_access = list("ACCESS_ENGINE_EQUIP")
+	autoset_access = 0
 	},
 /obj/structure/cable{
 	icon_state = "1-2"
@@ -24810,7 +24755,7 @@
 /turf/floor/plating,
 /area/ship/errai/hallway/deck_three_fore_port_hallway)
 "xCi" = (
-/obj/structure/bed/chair/shuttle/white{
+/obj/structure/chair/shuttle/white{
 	dir = 8
 	},
 /obj/machinery/light/small/red,
@@ -24895,7 +24840,7 @@
 	},
 /obj/structure/table/steel,
 /obj/item/stack/material/sheet/mapped/steel/thirty,
-/obj/item/stack/material/rods{
+/obj/item/stack/material/rods/mapped/steel{
 	amount = 10
 	},
 /turf/floor/tiled,
@@ -25371,7 +25316,7 @@
 /turf/floor/plating,
 /area/ship/errai/maintenance/supply_port)
 "yaA" = (
-/obj/structure/bed/chair/comfy/yellow{
+/obj/structure/chair/comfy/yellow{
 	dir = 1
 	},
 /obj/abstract/landmark/start/shipmap/engineer,
@@ -25381,7 +25326,7 @@
 /obj/machinery/light{
 	dir = 8
 	},
-/obj/structure/bed/chair/shuttle{
+/obj/structure/chair/shuttle{
 	dir = 1
 	},
 /obj/item/radio/intercom{
@@ -25406,8 +25351,7 @@
 /obj/machinery/door/firedoor,
 /obj/machinery/door/airlock/glass/engineering{
 	name = "Engineering EVA";
-	autoset_access = 0;
-	req_access = list(list("ACCESS_ENGINE_EQUIP", "ACCESS_ATMOS"))
+	autoset_access = 0
 	},
 /turf/floor/tiled/steel_grid,
 /area/ship/errai/engineering/eva)
@@ -25555,7 +25499,6 @@
 /area/ship/errai/engineering/storage)
 "yjC" = (
 /obj/machinery/door/window/brigdoor/southright{
-	req_access = list("ACCESS_EVA");
 	autoset_access = 0
 	},
 /obj/structure/cable/blue{
