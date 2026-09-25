@@ -26,7 +26,6 @@
 	var/can_flip = TRUE
 	var/is_flipped = FALSE
 	var/decl/material/additional_reinf_material
-	var/base_type = /obj/structure/table
 
 	var/top_surface_noun = "tabletop"
 
@@ -342,11 +341,10 @@
 	var/flip_mod = ""
 	if(left_neighbor_blend && right_neighbor_blend)
 		flip_type = 2
-		icon_state = "flip[flip_type]"
 	else if(left_neighbor_blend || right_neighbor_blend)
 		flip_type = 1
 		flip_mod = (left_neighbor_blend ? "+" : "-")
-		icon_state = "flip[flip_type][flip_mod]"
+	icon_state = "flip[flip_type][flip_mod]"
 
 	var/image/I
 	if(reinf_material)
@@ -458,12 +456,13 @@
 		cover = get_step(loc, get_dir(from, loc))
 	if(!cover)
 		return 1
-	if (get_dist(P.starting, loc) <= 1) //Tables won't help you if people are THIS close
+	if (get_dist(P.starting_ref?.resolve(), loc) <= 1) //Tables won't help you if people are THIS close
 		return 1
 
 	var/chance = 20
-	if(ismob(P.original) && get_turf(P.original) == cover)
-		var/mob/M = P.original
+	var/atom/original = P.original_ref?.resolve()
+	if(ismob(original) && get_turf(original) == cover)
+		var/mob/M = original
 		if (M.current_posture.prone)
 			chance += 20				//Lying down lets you catch less bullets
 	if(is_flipped)
@@ -652,7 +651,7 @@
 /obj/structure/table/handle_default_wrench_attackby(var/mob/user, var/obj/item/wrench)
 	return !reinf_material && ..()
 
-/obj/structure/table/handle_default_welder_attackby(var/mob/user, var/obj/item/weldingtool/welder)
+/obj/structure/table/handle_default_welder_attackby(var/mob/user, var/obj/item/welder)
 	return !reinf_material && ..()
 
 /obj/structure/table/handle_default_crowbar_attackby(var/mob/user, var/obj/item/crowbar)
@@ -707,26 +706,6 @@
 /obj/structure/table/glass/pglass
 	color = "#8f29a3"
 	reinf_material = /decl/material/solid/glass/borosilicate
-
-/obj/structure/table/holotable
-	icon_state = "holo_preview"
-	holographic = TRUE
-	color = COLOR_OFF_WHITE
-	material = /decl/material/solid/metal/aluminium/holographic
-	reinf_material = /decl/material/solid/metal/aluminium/holographic
-
-/obj/structure/table/holo_plastictable
-	icon_state = "holo_preview"
-	holographic = TRUE
-	color = COLOR_OFF_WHITE
-	material = /decl/material/solid/organic/plastic/holographic
-	reinf_material = /decl/material/solid/organic/plastic/holographic
-
-/obj/structure/table/holo_woodentable
-	holographic = TRUE
-	icon_state = "holo_preview"
-	material = /decl/material/solid/organic/wood/holographic
-	reinf_material = /decl/material/solid/organic/wood/holographic
 
 //wood wood wood
 /obj/structure/table/wood
@@ -904,6 +883,7 @@
 	reinf_material = /decl/material/solid/organic/wood/walnut
 	storage = /datum/storage/structure/desk
 	bound_width = 64
+	appearance_flags = /obj/structure/table::appearance_flags & ~TILE_BOUND
 	material_alteration = MAT_FLAG_ALTERATION_ALL
 	can_flip = FALSE
 	top_surface_noun = "desktop"
@@ -979,6 +959,7 @@
 	icon = 'icons/obj/structures/dresser.dmi'
 	icon_state = "dresser"
 	bound_width = 32
+	appearance_flags = /obj/structure/table::appearance_flags
 	top_surface_noun = "surface"
 	tabletop_height = 15
 	mob_offset = 18

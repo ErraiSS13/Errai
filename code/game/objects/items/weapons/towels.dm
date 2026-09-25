@@ -7,7 +7,7 @@
 	slot_flags = SLOT_HEAD | SLOT_LOWER_BODY | SLOT_OVER_BODY
 	_base_attack_force = 1
 	w_class = ITEM_SIZE_NORMAL
-	attack_verb = list("whipped")
+	attack_verb = "whipped"
 	hitsound = 'sound/weapons/towelwhip.ogg'
 	material = /decl/material/solid/organic/cloth
 	material_alteration = MAT_FLAG_ALTERATION_ALL
@@ -17,8 +17,8 @@
 	var/additional_description
 
 /obj/item/towel/Initialize()
+	chem_volume = round(50 * (w_class / ITEM_SIZE_NORMAL)) // larger towels have more room, smaller ones have less
 	. = ..()
-	initialize_reagents()
 
 /obj/item/towel/Destroy()
 	if(is_processing)
@@ -27,7 +27,7 @@
 
 // Does not rely on ATOM_IS_OPEN_CONTAINER because we want to be able to pour in but not out.
 /obj/item/towel/can_be_poured_into(atom/source)
-	return (reagents?.maximum_volume > 0)
+	return (REAGENT_MAXIMUM_VOLUME(reagents) > 0)
 
 /obj/item/towel/proc/update_material_description()
 	if(!istype(material) || !(material_alteration & MAT_FLAG_ALTERATION_DESC))
@@ -39,9 +39,11 @@
 
 /obj/item/towel/get_examine_strings(mob/user, distance, infix, suffix)
 	. = ..()
-	if(reagents?.total_volume && distance <= 1)
+	var/total_vol = REAGENT_TOTAL_VOLUME(reagents)
+	if(total_vol && distance <= 1)
+		var/max_vol = REAGENT_MAXIMUM_VOLUME(reagents)
 		var/liquid_adjective = "damp"
-		switch(reagents.total_volume / reagents.maximum_volume)
+		switch(total_vol / max_vol)
 			if(0 to 0.1)
 				return // not enough to even bother worrying about
 			if(0.4 to 0.6)
@@ -61,17 +63,14 @@
 
 // Slowly dry out.
 /obj/item/towel/Process()
-	if(reagents?.total_volume)
-		reagents.remove_any(max(MINIMUM_CHEMICAL_VOLUME, CHEMS_QUANTIZE(reagents.total_volume * 0.05)))
-	if(!reagents?.total_volume)
+	var/total_volume = REAGENT_TOTAL_VOLUME(reagents)
+	if(total_volume)
+		reagents.remove_any(max(MINIMUM_CHEMICAL_VOLUME, CHEMS_QUANTIZE(total_volume * 0.05)))
+	if(!REAGENT_TOTAL_VOLUME(reagents))
 		return PROCESS_KILL
 
-/obj/item/towel/initialize_reagents()
-	create_reagents(round(50 * (w_class / ITEM_SIZE_NORMAL))) // larger towels have more room, smaller ones have less
-	. = ..()
-
 /obj/item/towel/update_name()
-	if(reagents?.total_volume)
+	if(REAGENT_TOTAL_VOLUME(reagents))
 		if(!REAGENTS_FREE_SPACE(reagents))
 			name_prefix = "waterlogged"
 		else
@@ -84,7 +83,7 @@
 	if(!(. = ..()))
 		return
 	update_name()
-	if(reagents?.total_volume)
+	if(REAGENT_TOTAL_VOLUME(reagents))
 		if(!is_processing)
 			START_PROCESSING(SSobj, src)
 	else if(is_processing)
@@ -97,17 +96,17 @@
 
 /obj/item/towel/proc/dry_mob(mob/living/target, mob/living/user)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-	var/reagent_space = reagents.maximum_volume - reagents.total_volume
+	var/reagent_space = REAGENT_MAXIMUM_VOLUME(reagents) - REAGENT_TOTAL_VOLUME(reagents)
 	if(reagent_space <= 0)
 		to_chat(user, SPAN_WARNING("\The [src] is too saturated to dry [user == target ? "yourself" : "\the [target]"] off effectively."))
 	else
 		var/decl/pronouns/pronouns = target.get_pronouns()
 		var/datum/reagents/touching_reagents = target.get_contact_reagents()
-		if(!touching_reagents?.total_volume)
+		if(!REAGENT_TOTAL_VOLUME(touching_reagents))
 			to_chat(user, SPAN_WARNING("[user == target ? "You are" : "\The [target] [pronouns.is]"] already dry."))
 		else
 			user.visible_message(SPAN_NOTICE("\The [user] uses \the [src] to towel [user == target ? pronouns.self : "\the [target]"] dry."))
-			touching_reagents.trans_to(src, min(touching_reagents.total_volume, reagent_space))
+			touching_reagents.trans_to(src, min(REAGENT_TOTAL_VOLUME(touching_reagents), reagent_space))
 			playsound(user, 'sound/weapons/towelwipe.ogg', 25, 1)
 	return TRUE
 
@@ -146,10 +145,11 @@
 		variability = 70 // 30-170%, clamped to be 30-100%
 	for(var/obj/item/target in targets)
 		var/datum/reagents/target_coating = target.coating
-		if(!target_coating?.total_volume)
+		var/coating_volume = REAGENT_TOTAL_VOLUME(target_coating)
+		if(!coating_volume)
 			continue
 		var/fraction_cleaned = clamp(CHEMS_QUANTIZE(rand(100 - variability, 100 + variability) / 100), 0, 100)
-		target.transfer_coating_to(src, fraction_cleaned * target_coating.total_volume)
+		target.transfer_coating_to(src, fraction_cleaned * coating_volume)
 		if(!REAGENTS_FREE_SPACE(reagents))
 			break
 
@@ -188,7 +188,7 @@
 	name = "fleece" // sets its name to 'golden fleece' due to material
 	desc = "The legendary Golden Fleece of Jason made real."
 	_base_attack_force = 1
-	attack_verb = list("smote")
+	attack_verb = "smote"
 	material = /decl/material/solid/metal/gold
 
 /obj/item/towel/fleece/update_material_description()
@@ -242,3 +242,7 @@
 /obj/item/towel/doormat/flat
 	laid_out = TRUE
 	icon_state = ICON_STATE_WORLD + "-flat"
+
+/obj/item/towel/doormat/flat/Initialize()
+	. = ..()
+	reset_offsets() // we don't want to overwrite randpixel but we don't want it to have a random offset either

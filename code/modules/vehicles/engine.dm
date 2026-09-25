@@ -79,6 +79,7 @@
 	icon_state = "engine_fuel"
 	trail_type = /datum/effect/effect/system/trail/thermal
 	atom_flags = ATOM_FLAG_OPEN_CONTAINER
+	chem_volume = 500
 	var/datum/reagents/combustion_chamber
 	var/fuel_points = 0
 	//fuel points are determined by differing reagents
@@ -88,7 +89,6 @@
 
 /obj/item/engine/thermal/Initialize()
 	. = ..()
-	create_reagents(500)
 	combustion_chamber = new(15, global.temp_reagents_holder)
 
 /obj/item/engine/thermal/attackby(var/obj/item/used_item, var/mob/user)
@@ -98,14 +98,14 @@
 
 /// Attempts to burn a sample of the fuel in our reagent holder. Returns TRUE if enough fuel points are produced to move, otherwise returns FALSE.
 /obj/item/engine/thermal/proc/burn_fuel()
-	if(!reagents || reagents.total_volume <= 0 || broken)
+	if(!reagents || REAGENT_TOTAL_VOLUME(reagents) <= 0 || broken)
 		return FALSE
-	reagents.trans_to_holder(combustion_chamber, min(reagents.total_volume, 15))
+	reagents.trans_to_holder(combustion_chamber, min(REAGENT_TOTAL_VOLUME(reagents), 15))
 	var/multiplier = 0
 	var/actually_flammable = FALSE
-	for(var/decl/material/reagent as anything in temp_reagents_holder.reagents.reagent_volumes)
+	for(var/decl/material/reagent as anything in REAGENT_VOLUMES(temp_reagents_holder.reagents))
 		var/new_multiplier = 1
-		var/reagent_volume = combustion_chamber.reagent_volumes[reagent]
+		var/reagent_volume = REAGENT_VOLUME(combustion_chamber, reagent)
 		if(reagent.accelerant_value < FUEL_VALUE_NONE) // suppresses fires rather than starts them
 			// this means that FUEL_VALUE_SUPPRESSANT is on par with water in the old code
 			new_multiplier = -(FUEL_VALUE_SUPPRESSANT + reagent.accelerant_value) / 2 * 0.4

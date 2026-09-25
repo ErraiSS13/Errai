@@ -9,6 +9,7 @@ var/global/list/flooring_cache = list()
 
 /decl/flooring
 	abstract_type = /decl/flooring
+	decl_flags = DECL_FLAG_MANDATORY_UID
 
 	var/name
 	var/desc
@@ -18,6 +19,7 @@ var/global/list/flooring_cache = list()
 	var/color = COLOR_WHITE
 	var/footstep_type = /decl/footsteps/plating
 	var/growth_value = 0
+	var/deconstruct_sound
 
 	var/neighbour_type
 
@@ -25,6 +27,7 @@ var/global/list/flooring_cache = list()
 	var/damage_temperature
 	var/icon_edge_layer = FLOOR_EDGE_NONE
 	var/has_environment_proc
+	var/can_conceal_hazards = FALSE
 
 	/// Unbuildable if not set. Must be /obj/item/stack.
 	var/build_type
@@ -66,6 +69,8 @@ var/global/list/flooring_cache = list()
 	var/wall_smooth
 	/// How we smooth with space and openspace tiles
 	var/space_smooth
+	/// If we smooth with everything, we can skip a bunch of other smoothing checks. This is a bool and not an enum.
+	var/omni_smooth
 
 	/// same z flags used for turfs, i.e ZMIMIC_DEFAULT etc
 	var/z_flags
@@ -74,6 +79,7 @@ var/global/list/flooring_cache = list()
 
 	var/constructed = FALSE
 
+	var/has_corners = TRUE
 	var/has_internal_edges = FALSE
 	var/has_external_edges = FALSE
 	var/edge_state
@@ -83,7 +89,8 @@ var/global/list/flooring_cache = list()
 
 	var/render_trenches = TRUE
 	var/floor_layer = TURF_LAYER
-	var/holographic = FALSE
+	/// If TRUE, this turf cannot be damaged, painted, pried off, etc.
+	var/visual_only = FALSE
 	var/dirt_color = /decl/material/solid/soil::color
 
 	var/list/burned_states
@@ -99,7 +106,7 @@ var/global/list/flooring_cache = list()
 	if(!istype(force_material))
 		force_material = null
 
-	if(holographic)
+	if(visual_only)
 		turf_flags         = null
 		damage_temperature = INFINITY
 		build_type         = null
@@ -126,6 +133,8 @@ var/global/list/flooring_cache = list()
 		space_smooth = default_smooth
 	if(isnull(floor_smooth))
 		floor_smooth = default_smooth
+	if(isnull(omni_smooth) && floor_smooth == wall_smooth && wall_smooth == space_smooth)
+		omni_smooth = (floor_smooth == SMOOTH_ALL) // bool, not enum
 
 /decl/flooring/validate()
 	. = ..()
@@ -194,45 +203,34 @@ var/global/list/flooring_cache = list()
 	if(target.icon_state != target.floor_icon_state_override)
 		target.icon_state = target.floor_icon_state_override
 
-	if(color)
-		target.color = color
-	else if(!can_paint || isnull(target.paint_color))
-		var/decl/material/use_material = target.get_material()
-		target.color = use_material?.color
-
 	if (icon_edge_layer != FLOOR_EDGE_NONE && (has_internal_edges || has_external_edges))
 		var/edge_layer = target.layer + icon_edge_layer
-		var/list/edge_overlays = list()
 		var/has_border = 0
 		for(var/step_dir in global.cardinal)
 			var/turf/T = get_step_resolving_mimic(target, step_dir)
-			if(!istype(T) || symmetric_test_link(target, T))
+			if(!istype(T) || test_link(T))
 				continue
 			has_border |= step_dir
-			if(icon_edge_layer != FLOOR_EDGE_NONE)
-				if(has_internal_edges)
-					edge_overlays += get_flooring_overlay("[icon]_[icon_base]-edge-[step_dir]", edge_state, step_dir, edge_layer = edge_layer)
-				if(has_external_edges && target.can_draw_edge_over(T))
-					edge_overlays += get_flooring_overlay("[icon]_[icon_base]-outer-edge-[step_dir]", outer_edge_state, step_dir, TRUE, edge_layer = edge_layer)
-
-		var/has_smooth = ~(has_border & (NORTH | SOUTH | EAST | WEST))
-		for(var/step_dir in global.cornerdirs)
-			var/turf/T = get_step_resolving_mimic(target, step_dir)
-			if(!istype(T) || symmetric_test_link(target, T))
-				continue
 			if(has_internal_edges)
-				if((has_smooth & step_dir) == step_dir)
-					edge_overlays += get_flooring_overlay("[icon]_[icon_base]-corner-[step_dir]", corner_state, step_dir, edge_layer = edge_layer)
-				else if((has_border & step_dir) == step_dir)
-					edge_overlays += get_flooring_overlay("[icon]_[icon_base]-edge-[step_dir]", edge_state, step_dir, edge_layer = edge_layer)
+				target.add_overlay(get_flooring_overlay("[icon]_[icon_base]-edge-[step_dir]", edge_state, step_dir, edge_layer = edge_layer))
 			if(has_external_edges && target.can_draw_edge_over(T))
-				if((has_smooth & step_dir) == step_dir)
-					edge_overlays += get_flooring_overlay("[icon]_[icon_base]-outer-corner-[step_dir]", outer_corner_state, step_dir, TRUE, edge_layer = edge_layer)
-				else if((has_border & step_dir) == step_dir)
-					edge_overlays += get_flooring_overlay("[icon]_[icon_base]-outer-edge-[step_dir]", outer_edge_state, step_dir, TRUE, edge_layer = edge_layer)
+				target.add_overlay(get_flooring_overlay("[icon]_[icon_base]-outer-edge-[step_dir]", outer_edge_state, step_dir, TRUE, edge_layer = edge_layer))
 
-		if(length(edge_overlays))
-			target.add_overlay(edge_overlays)
+		if(has_corners)
+			for(var/step_dir in global.cornerdirs)
+				var/turf/T = get_step_resolving_mimic(target, step_dir)
+				if(!istype(T) || test_link(T))
+					continue
+				if(has_internal_edges)
+					if((has_border & step_dir) == 0) // smooth
+						target.add_overlay(get_flooring_overlay("[icon]_[icon_base]-corner-[step_dir]", corner_state, step_dir, edge_layer = edge_layer))
+					else if((has_border & step_dir) == step_dir)
+						target.add_overlay(get_flooring_overlay("[icon]_[icon_base]-edge-[step_dir]", edge_state, step_dir, edge_layer = edge_layer))
+				if(has_external_edges)
+					if((has_border & step_dir) == 0 && target.can_draw_edge_over(T)) // smooth
+						target.add_overlay(get_flooring_overlay("[icon]_[icon_base]-outer-corner-[step_dir]", outer_corner_state, step_dir, TRUE, edge_layer = edge_layer))
+					else if((has_border & step_dir) == step_dir && target.can_draw_edge_over(T))
+						target.add_overlay(get_flooring_overlay("[icon]_[icon_base]-outer-edge-[step_dir]", outer_edge_state, step_dir, TRUE, edge_layer = edge_layer))
 
 	if(target.is_floor_broken())
 		target.add_overlay(get_damage_overlay(target._floor_broken))
@@ -300,7 +298,8 @@ var/global/list/flooring_cache = list()
 			return TRUE
 		to_chat(user, SPAN_NOTICE("You remove the [get_surface_descriptor()] with \the [item]."))
 		floor.remove_flooring(floor.get_topmost_flooring(), place_product = TRUE)
-		playsound(floor, 'sound/items/Deconstruct.ogg', 80, 1)
+		if(deconstruct_sound)
+			playsound(floor, deconstruct_sound, 80, 1)
 		return TRUE
 
 	if(constructed)
@@ -395,4 +394,9 @@ var/global/list/flooring_cache = list()
 /// target is the turf that wants to know if it supports footprints
 /// contaminant is, optionally, the material of the coating that wants to be added.
 /decl/flooring/proc/can_show_coating_footprints(turf/target, decl/material/contaminant)
+	if(!constructed && force_material && force_material == contaminant) // So we don't end up covered in a million footsteps that we provided.
+		return FALSE
 	return TRUE
+
+/decl/flooring/proc/get_vehicle_transit_delay(obj/vehicle/vehicle)
+	return vehicle::base_speed

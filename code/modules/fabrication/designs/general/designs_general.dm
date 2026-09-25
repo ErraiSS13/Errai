@@ -46,15 +46,6 @@
 /datum/fabricator_recipe/taperecorder_tape
 	path = /obj/item/magnetic_tape
 
-/datum/fabricator_recipe/tube/large
-	path = /obj/item/light/tube/large
-
-/datum/fabricator_recipe/tube
-	path = /obj/item/light/tube
-
-/datum/fabricator_recipe/bulb
-	path = /obj/item/light/bulb
-
 /datum/fabricator_recipe/ashtray_glass
 	path = /obj/item/ashtray/glass
 
@@ -116,43 +107,23 @@
 		/decl/material/solid/organic/plastic = ceil((SHEET_MATERIAL_AMOUNT * FABRICATOR_EXTRA_COST_FACTOR)/2)
 	)
 
-/datum/fabricator_recipe/struts
-	name = "strut, steel"
+/datum/fabricator_recipe/rods
+	name = "rod, steel"
 	path = /obj/item/stack/material/rods/mapped/steel
 
-/datum/fabricator_recipe/struts/get_resources()
-	resources = list(
-		/decl/material/solid/metal/steel =   ceil((SHEET_MATERIAL_AMOUNT * FABRICATOR_EXTRA_COST_FACTOR)),
-	)
-
-/datum/fabricator_recipe/struts/plastic
-	name = "strut, plastic"
+/datum/fabricator_recipe/rods/plastic
+	name = "rod, plastic"
 	path = /obj/item/stack/material/rods/mapped/plastic
 
-/datum/fabricator_recipe/struts/plastic/get_resources()
-	resources = list(
-		/decl/material/solid/organic/plastic =   ceil((SHEET_MATERIAL_AMOUNT * FABRICATOR_EXTRA_COST_FACTOR)),
-	)
-
-/datum/fabricator_recipe/struts/aluminium
-	name = "strut, aluminium"
+/datum/fabricator_recipe/rods/aluminium
+	name = "rod, aluminium"
 	path = /obj/item/stack/material/rods/mapped/aluminium
 	fabricator_types = list(FABRICATOR_CLASS_INDUSTRIAL)
 
-/datum/fabricator_recipe/struts/aluminium/get_resources()
-	resources = list(
-		/decl/material/solid/metal/aluminium =   ceil((SHEET_MATERIAL_AMOUNT * FABRICATOR_EXTRA_COST_FACTOR)),
-	)
-
-/datum/fabricator_recipe/struts/titanium
-	name = "strut, titanium"
+/datum/fabricator_recipe/rods/titanium
+	name = "rod, titanium"
 	path = /obj/item/stack/material/rods/mapped/titanium
 	fabricator_types = list(FABRICATOR_CLASS_INDUSTRIAL)
-
-/datum/fabricator_recipe/struts/titanium/get_resources()
-	resources = list(
-		/decl/material/solid/metal/titanium =   ceil((SHEET_MATERIAL_AMOUNT * FABRICATOR_EXTRA_COST_FACTOR)),
-	)
 
 /datum/fabricator_recipe/umbrella
 	path = /obj/item/umbrella
@@ -181,12 +152,6 @@
 /datum/fabricator_recipe/duct_tape
 	path = /obj/item/stack/tape_roll/duct_tape
 	pass_multiplier_to_product_new = FALSE // they are printed as single items with 32 uses
-
-/datum/fabricator_recipe/fishing_line
-	path = /obj/item/fishing_line
-
-/datum/fabricator_recipe/fishing_line_high_quality
-	path = /obj/item/fishing_line/high_quality
 
 /datum/fabricator_recipe/chipboard // base type is for oak
 	path = /obj/item/stack/material/sheet/mapped/chipboard_oak

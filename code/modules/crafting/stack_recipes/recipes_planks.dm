@@ -1,6 +1,7 @@
 /decl/stack_recipe/planks
 	abstract_type          = /decl/stack_recipe/planks
 	craft_stack_types      = /obj/item/stack/material/plank
+	validation_material    = /decl/material/solid/organic/wood/oak
 
 /decl/stack_recipe/planks/sandals
 	result_type            = /obj/item/clothing/shoes/sandal
@@ -20,9 +21,6 @@
 	result_type            = /obj/item/coilgun_assembly
 	difficulty             = MAT_VALUE_VERY_HARD_DIY
 	available_to_map_tech_level = MAP_TECH_LEVEL_SPACE
-
-/decl/stack_recipe/planks/fishing_rod
-	result_type            = /obj/item/fishing_rod
 
 /decl/stack_recipe/planks/stick
 	result_type            = /obj/item/stick
@@ -138,6 +136,9 @@
 /decl/stack_recipe/planks/prosthetic/right_foot
 	result_type            = /obj/item/organ/external/foot/right
 
+/decl/stack_recipe/planks/oar
+	result_type            = /obj/item/oar
+
 /decl/stack_recipe/planks/furniture
 	abstract_type          = /decl/stack_recipe/planks/furniture
 	one_per_turf           = TRUE
@@ -217,11 +218,11 @@
 	difficulty             = MAT_VALUE_HARD_DIY
 
 /decl/stack_recipe/planks/furniture/barrel
-	result_type            = /obj/structure/reagent_dispensers/barrel
+	result_type            = /obj/structure/reagent_dispensers/barrel/crafted
 	difficulty             = MAT_VALUE_HARD_DIY
 
 /decl/stack_recipe/planks/furniture/barrel/cask
-	result_type            = /obj/structure/reagent_dispensers/barrel/cask
+	result_type            = /obj/structure/reagent_dispensers/barrel/cask/crafted
 
 /decl/stack_recipe/planks/furniture/barrel/cask_rack
 	result_type            = /obj/structure/cask_rack
@@ -250,3 +251,19 @@
 /decl/stack_recipe/planks/furniture/target_stake
 	result_type            = /obj/structure/target_stake
 	difficulty             = MAT_VALUE_NORMAL_DIY
+
+/decl/stack_recipe/planks/furniture/fence
+	result_type            = /obj/structure/fence/plank
+	difficulty             = MAT_VALUE_NORMAL_DIY
+
+/decl/stack_recipe/planks/furniture/fence_door
+	result_type            = /obj/structure/fence/door/plank
+	difficulty             = MAT_VALUE_NORMAL_DIY
+
+/decl/stack_recipe/planks/furniture/boat
+	result_type            = /obj/structure/vehicle/boat
+	difficulty             = MAT_VALUE_HARD_DIY
+
+/decl/stack_recipe/planks/furniture/dragon_boat
+	result_type            = /obj/structure/vehicle/boat/dragon
+	difficulty             = MAT_VALUE_VERY_HARD_DIY

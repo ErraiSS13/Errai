@@ -27,13 +27,17 @@
 			input -= thing
 			var/thing_string = isatom(thing) ? thing.name : "\proper [thing]"
 			thing_count[thing_string] += 1
-			thing_gender[thing_string] = isatom(thing) ? thing.gender : NEUTER
+			if(ismob(thing))
+				var/mob/mob_thing = thing
+				thing_gender[thing_string] = mob_thing.get_gender()
+			else
+				thing_gender[thing_string] = isatom(thing) ? thing.gender : NEUTER
 		input = list()
 		for(var/thing_string in thing_count)
 			if(thing_count[thing_string] == 1)
 				input += "\the [thing_string]"
 			else
-				input += "[thing_count[thing_string]] [thing_string][thing_gender[thing_string] == PLURAL ? "" : "s"]"
+				input += "[thing_count[thing_string]] [thing_gender[thing_string] == PLURAL ? text_make_plural(thing_string) : thing_string]"
 
 	switch(length(input))
 		if(1)
@@ -172,7 +176,7 @@
 
 //Checks for specific types in specifically structured (Assoc "type" = TRUE) lists ('typecaches')
 /proc/is_type_in_typecache(atom/A, list/cache)
-	if(!cache || !cache.len || !A)
+	if(!LAZYLEN(cache) || !A)
 		return 0
 	return cache[A.type]
 
@@ -267,6 +271,13 @@ Checks if a list has the same entries and values as an element of big.
 			.[key] = b_value
 		else
 			.[key] = call(merge_method)(.[key], b_value)
+
+// Picks a key in an alist. This is awful but hey, what can you do?
+/proc/apick(alist/target_alist)
+	var/index = rand(1, length(target_alist))
+	for(var/key in target_alist)
+		if(--index == 0)
+			return key
 
 //Pretends to pick an element based on its weight but really just seems to pick a random element.
 /proc/pickweight(list/target_list)

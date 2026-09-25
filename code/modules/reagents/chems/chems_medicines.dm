@@ -30,10 +30,11 @@
 	value = 1.5
 	exoplanet_rarity_gas = MAT_RARITY_EXOTIC
 	uid = "chem_antirads"
+	var/antirad_power = 30
 
 /decl/material/liquid/antirads/affect_blood(var/mob/living/M, var/removed, var/datum/reagents/holder)
 	. = ..()
-	M.radiation = max(M.radiation - 30 * removed, 0)
+	M.radiation = max(M.radiation - antirad_power * removed, 0)
 
 /decl/material/liquid/brute_meds
 	name = "styptic powder"
@@ -133,12 +134,12 @@
 
 	var/removing = (4 * removed * antitoxin_strength)
 	var/datum/reagents/ingested = M.get_ingested_reagents()
-	for(var/decl/material/reagent as anything in ingested?.reagent_volumes)
+	for(var/decl/material/reagent as anything in REAGENT_VOLUMES(ingested))
 		if((remove_generic && reagent.toxicity) || (reagent.type in remove_toxins))
 			ingested.remove_reagent(reagent, removing)
 			return
 
-	for(var/decl/material/reagent as anything in M.reagents?.reagent_volumes)
+	for(var/decl/material/reagent as anything in REAGENT_VOLUMES(M.reagents))
 		if((remove_generic && reagent.toxicity) || (reagent.type in remove_toxins))
 			M.remove_from_reagents(reagent, removing)
 			return
@@ -167,70 +168,6 @@
 	..()
 	victim.add_chemical_effect(CE_TOXIN, 1)
 	victim.adjust_immunity(-0.5)
-
-/decl/material/liquid/stimulants
-	name = "stimulants"
-	lore_text = "Improves the ability to concentrate."
-	taste_description = "sourness"
-	color = "#bf80bf"
-	scannable = 1
-	metabolism = 0.01
-	value = 1.5
-	exoplanet_rarity_gas = MAT_RARITY_EXOTIC
-	uid = "chem_stimulants"
-	allergen_flags = ALLERGEN_STIMULANT
-
-/decl/material/liquid/stimulants/affect_blood(var/mob/living/M, var/removed, var/datum/reagents/holder)
-	var/volume = REAGENT_VOLUME(holder, src)
-	. = ..()
-	var/update_data = FALSE
-	var/list/data = REAGENT_DATA(holder, src)
-	if(volume <= 0.1 && CHEM_DOSE(M, src) >= 0.5 && world.time > LAZYACCESS(data, DATA_COOLDOWN_TIME) + 5 MINUTES)
-		update_data = TRUE
-		to_chat(M, "<span class='warning'>You lose focus...</span>")
-	else
-		ADJ_STATUS(M, STAT_DROWSY, -5)
-		ADJ_STATUS(M, STAT_PARA, -1)
-		ADJ_STATUS(M, STAT_STUN, -1)
-		ADJ_STATUS(M, STAT_WEAK, -1)
-		if(world.time > LAZYACCESS(data, DATA_COOLDOWN_TIME) + 5 MINUTES)
-			update_data = TRUE
-			to_chat(M, "<span class='notice'>Your mind feels focused and undivided.</span>")
-
-	if(update_data)
-		LAZYSET(data, DATA_COOLDOWN_TIME, world.time)
-		LAZYSET(holder.reagent_data, type, data)
-
-/decl/material/liquid/antidepressants
-	name = "antidepressants"
-	lore_text = "Stabilizes the mind a little."
-	taste_description = "bitterness"
-	color = "#ff80ff"
-	scannable = 1
-	metabolism = 0.01
-	value = 1.5
-	exoplanet_rarity_gas = MAT_RARITY_EXOTIC
-	uid = "chem_antidepressants"
-
-/decl/material/liquid/antidepressants/affect_blood(var/mob/living/M, var/removed, var/datum/reagents/holder)
-	var/volume = REAGENT_VOLUME(holder, src)
-	. = ..()
-
-	var/update_data = FALSE
-	var/list/data = REAGENT_DATA(holder, src)
-	if(volume <= 0.1 && CHEM_DOSE(M, src) >= 0.5 && world.time > LAZYACCESS(data, DATA_COOLDOWN_TIME) + 5 MINUTES)
-		update_data = TRUE
-		to_chat(M, "<span class='warning'>Your mind feels a little less stable...</span>")
-	else
-		M.add_chemical_effect(CE_MIND, 1)
-		M.adjust_hallucination(-10)
-		if(world.time > LAZYACCESS(data, DATA_COOLDOWN_TIME) + 5 MINUTES)
-			update_data = TRUE
-			to_chat(M, "<span class='notice'>Your mind feels stable... a little stable.</span>")
-
-	if(update_data)
-		LAZYSET(data, DATA_COOLDOWN_TIME, world.time)
-		LAZYSET(holder.reagent_data, type, data)
 
 /decl/material/liquid/antibiotics
 	name = "antibiotics"
@@ -290,18 +227,18 @@
 	uid = "chem_adrenaline"
 
 /decl/material/liquid/adrenaline/affect_blood(var/mob/living/M, var/removed, var/datum/reagents/holder)
-	var/volume = REAGENT_VOLUME(holder, src)
+	var/affect_volume = REAGENT_VOLUME(holder, src)
 	var/dose = CHEM_DOSE(M, src)
 	. = ..()
 	if(dose < 0.2)	//not that effective after initial rush
-		M.add_chemical_effect(CE_PAINKILLER, min(30*volume, 80))
+		M.add_chemical_effect(CE_PAINKILLER, min(30*affect_volume, 80))
 		M.add_chemical_effect(CE_PULSE, 1)
 	else if(dose < 1)
-		M.add_chemical_effect(CE_PAINKILLER, min(10*volume, 20))
+		M.add_chemical_effect(CE_PAINKILLER, min(10*affect_volume, 20))
 	M.add_chemical_effect(CE_PULSE, 2)
 	if(dose > 10)
 		ADJ_STATUS(M, STAT_JITTER, 5)
-	if(volume >= 5 && M.is_asystole())
+	if(affect_volume >= 5 && M.is_asystole())
 		holder.remove_reagent(type, 5)
 		if(ishuman(M))
 			var/mob/living/human/H = M
@@ -432,7 +369,7 @@
 	var/charges = removed * DETOXIFIER_EFFECTIVENESS
 	var/dosecharges = CHEM_DOSE(M, src) * DETOXIFIER_DOSE_EFFECTIVENESS
 	for(var/datum/reagents/container as anything in M.get_metabolizing_reagent_holders())
-		for(var/decl/material/reagent as anything in container.reagent_volumes)
+		for(var/decl/material/reagent as anything in REAGENT_VOLUMES(container))
 			var/decl/material/liquid/painkillers/painkiller = reagent
 			if(!istype(painkiller) || !painkiller.narcotic)
 				continue

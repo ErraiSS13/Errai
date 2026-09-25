@@ -31,7 +31,7 @@
 		/obj/item/tool/hoe/mini,
 		/obj/item/tool/axe/hatchet,
 		/obj/item/scanner/plant,
-		/obj/item/plants,
+		/obj/item/plant_satchel,
 		/obj/item/robot_harvester,
 		/obj/item/rollingpin,
 		/obj/item/knife/kitchen,
@@ -62,7 +62,7 @@
 /obj/item/robot_module/clerical/butler/finalize_emag()
 	. = ..()
 	if(emag)
-		var/datum/reagents/reagent = emag.create_reagents(50)
+		var/datum/reagents/reagent = emag.create_or_update_reagents(50)
 		reagent.add_reagent(/decl/material/liquid/paralytics, 10)
 		reagent.add_reagent(/decl/material/liquid/sedatives, 15)
 		reagent.add_reagent(/decl/material/liquid/alcohol/beer, 20)

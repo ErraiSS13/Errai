@@ -10,3 +10,11 @@
 #ifdef GAMEMODE_PACK_METEOR
 #include "supermatter/sm_meteor.dm"
 #endif
+// Add supermatter grenades to the mercenary uplink
+#ifdef GAMEMODE_PACK_MERCENARY
+#include "supermatter/sm_mercenary.dm"
+#endif
+// Add extra response team denial reasons
+#ifdef MODPACK_RESPONSE_TEAM
+#include "supermatter/sm_ert.dm"
+#endif

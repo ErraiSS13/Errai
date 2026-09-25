@@ -219,7 +219,7 @@
 	// Overmap isn't used, a modem alone provides internet connection.
 	if(!length(global.using_map.overmap_ids))
 		return TRUE
-	var/obj/effect/overmap/visitable/sector = global.overmap_sectors[num2text(get_z(holder))]
+	var/obj/effect/overmap/visitable/sector = global.overmap_sectors[get_z(holder)]
 	if(!istype(sector))
 		return
 	return sector.has_internet_connection(connecting_network)
@@ -394,29 +394,29 @@
 /datum/extension/network_device/proc/sanitize_command_args(command_args, var_type)
 	// First check if the command is a list; if it is, only accept it if the expected type is a list.
 	if(islist(command_args))
-		if(var_type == IC_FORMAT_LIST)
+		if(var_type == VAR_FORMAT_LIST)
 			return command_args
 		else
 			return null
 	switch(var_type)
-		if(IC_FORMAT_ANY)
+		if(VAR_FORMAT_ANY)
 			return command_args
-		if(IC_FORMAT_STRING)
+		if(VAR_FORMAT_STRING)
 			return "[command_args]"
-		if(IC_FORMAT_CHAR)
+		if(VAR_FORMAT_CHAR)
 			if(istext(command_args) && length(command_args) == 1)
 				return command_args
-		if(IC_FORMAT_COLOR)
+		if(VAR_FORMAT_COLOR)
 			return sanitize_hexcolor(command_args, null)
-		if(IC_FORMAT_NUMBER, IC_FORMAT_INDEX)
+		if(VAR_FORMAT_NUMBER, VAR_FORMAT_INDEX)
 			if(istext(command_args))
 				return text2num(command_args)
 			if(isnum(command_args))
 				return command_args
-		if(IC_FORMAT_DIR)
+		if(VAR_FORMAT_DIR)
 			if(istext(command_args))
 				return text2dir(command_args)
-		if(IC_FORMAT_BOOLEAN)
+		if(VAR_FORMAT_BOOLEAN)
 			if(istext(command_args))
 				switch(uppertext(command_args))
 					if("TRUE")

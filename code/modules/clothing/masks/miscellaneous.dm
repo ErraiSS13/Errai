@@ -20,9 +20,12 @@
 	say_messages = list("Mmfph!", "Mmmf mrrfff!", "Mmmf mnnf!")
 	say_verbs = list("mumbles", "says")
 
+/obj/item/clothing/mask/muzzle/blocks_speech_in_mouth(mob/wearer)
+	return TRUE
+
 // Clumsy folks can't take the mask off themselves.
 /obj/item/clothing/mask/muzzle/attack_hand(mob/user)
-	if(user.get_equipped_item(slot_wear_mask_str) != src || user.check_dexterity(DEXTERITY_HOLD_ITEM))
+	if(user.get_equipped_item(slot_wear_mask_str) != src || user.check_dexterity(DEXTERITY_HOLD_ITEM, fail_message = "You lack the dexterity to remove \the [src]."))
 		return ..()
 	to_chat(user, SPAN_WARNING("You cannot remove \the [src] without help."))
 	return TRUE
@@ -157,7 +160,7 @@
 	if(istype(S))
 		var/decl/background_detail/C = GET_DECL(S.default_background_info[/decl/background_category/heritage])
 		if(istype(C))
-			visible_name = C.get_random_name(pick(MALE,FEMALE))
+			visible_name = C.get_random_cultural_name(gender = pick(MALE,FEMALE), species = species)
 
 /obj/item/clothing/mask/rubber/species/cat
 	name = "cat mask"

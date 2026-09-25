@@ -662,7 +662,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
 	dir = 4
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	locked = 0;
 	name = "south bump";
 	pixel_y = -28
@@ -686,7 +686,7 @@
 /obj/machinery/atmospherics/unary/vent_scrubber/on{
 	dir = 1
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	locked = 0;
 	name = "south bump";
 	pixel_y = -28
@@ -1617,7 +1617,7 @@
 /turf/floor/tiled/techfloor,
 /area/map_template/colony)
 "dJ" = (
-/obj/machinery/atmospherics/unary/freezer{
+/obj/machinery/atmospherics/unary/temperature/freezer{
 	icon_state = "freezer"
 	},
 /obj/effect/floor_decal/industrial/outline/yellow,
@@ -1862,7 +1862,7 @@
 /area/map_template/colony/engineering)
 "ej" = (
 /obj/structure/table/steel_reinforced,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	locked = 0;
 	name = "south bump";
 	pixel_y = -28
@@ -2076,7 +2076,6 @@
 "eD" = (
 /obj/structure/catwalk,
 /obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
 /turf/floor/concrete,
 /area/map_template/colony/command)
 "eE" = (
@@ -2183,7 +2182,7 @@
 /turf/floor/lino,
 /area/map_template/colony/messhall)
 "eO" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	locked = 0;
 	name = "south bump";
 	pixel_y = -28
@@ -2220,7 +2219,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
 	dir = 4
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	locked = 0;
 	name = "south bump";
 	pixel_y = -28
@@ -2342,7 +2341,6 @@
 /area/map_template/colony/medbay)
 "eZ" = (
 /obj/structure/catwalk,
-/obj/effect/decal/cleanable/dirt/visible,
 /obj/effect/decal/cleanable/dirt/visible,
 /turf/floor/concrete,
 /area/template_noop)
@@ -3034,7 +3032,7 @@
 /obj/effect/floor_decal/techfloor{
 	dir = 10
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	locked = 0;
 	name = "south bump";
 	pixel_y = -28
@@ -3379,7 +3377,7 @@
 /turf/floor/lino,
 /area/map_template/colony/messhall)
 "gL" = (
-/obj/machinery/atmospherics/unary/heater{
+/obj/machinery/atmospherics/unary/temperature/heater{
 	dir = 1
 	},
 /obj/effect/floor_decal/industrial/outline/yellow,
@@ -3478,7 +3476,7 @@
 /turf/floor/tiled/techfloor,
 /area/map_template/colony/atmospherics)
 "gY" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	locked = 0;
 	name = "south bump";
 	pixel_y = -28
@@ -3498,7 +3496,6 @@
 	},
 /obj/structure/window/reinforced{
 	dir = 1;
-	current_health = 1e+006
 	},
 /turf/floor/plating,
 /area/map_template/colony/atmospherics)
@@ -3508,7 +3505,6 @@
 	},
 /obj/structure/window/reinforced{
 	dir = 1;
-	current_health = 1e+006
 	},
 /obj/structure/window/reinforced{
 	dir = 4
@@ -3700,7 +3696,7 @@
 /obj/effect/floor_decal/techfloor{
 	dir = 6
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	locked = 0;
 	name = "south bump";
 	pixel_y = -28
@@ -3940,7 +3936,7 @@
 /turf/floor/laminate/walnut,
 /area/map_template/colony/commons)
 "hT" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	locked = 0;
 	name = "south bump";
 	pixel_y = -28
@@ -4176,7 +4172,7 @@
 /area/map_template/colony/bathroom)
 "ip" = (
 /obj/effect/floor_decal/borderfloorwhite,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	locked = 0;
 	name = "south bump";
 	pixel_y = -28
@@ -4423,7 +4419,7 @@
 	dir = 1
 	},
 /obj/effect/floor_decal/techfloor,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	locked = 0;
 	name = "south bump";
 	pixel_y = -28
@@ -4676,7 +4672,7 @@
 /area/map_template/colony/jail)
 "ji" = (
 /obj/effect/floor_decal/techfloor,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	locked = 0;
 	name = "south bump";
 	pixel_y = -28
@@ -5212,7 +5208,6 @@
 "kc" = (
 /obj/structure/window/reinforced{
 	dir = 1;
-	current_health = 1e+006
 	},
 /obj/structure/window/reinforced{
 	dir = 4
@@ -5362,7 +5357,7 @@
 	dir = 10;
 	icon_state = "warning"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	locked = 0;
 	name = "south bump";
 	pixel_y = -28
@@ -5387,7 +5382,7 @@
 /turf/floor/tiled/techfloor,
 /area/map_template/colony)
 "kt" = (
-/obj/machinery/atmospherics/unary/freezer{
+/obj/machinery/atmospherics/unary/temperature/freezer{
 	dir = 8
 	},
 /obj/effect/floor_decal/industrial/outline/yellow,
@@ -5725,7 +5720,6 @@
 /area/map_template/colony/mineralprocessing)
 "la" = (
 /obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
 /turf/floor/concrete,
 /area/map_template/colony/mineralprocessing)
 "lb" = (
@@ -5871,7 +5865,7 @@
 /turf/floor/plating,
 /area/map_template/colony/jail)
 "lt" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	locked = 0;
 	name = "south bump";
 	pixel_y = -28
@@ -5938,7 +5932,6 @@
 	dir = 8
 	},
 /obj/structure/table/steel_reinforced,
-/obj/effect/decal/cleanable/dirt/visible,
 /obj/effect/decal/cleanable/dirt/visible,
 /turf/floor/concrete,
 /area/map_template/colony/mineralprocessing)
@@ -6030,7 +6023,6 @@
 /turf/floor/tiled/white,
 /area/map_template/colony/bathroom)
 "lJ" = (
-/obj/effect/decal/cleanable/dirt/visible,
 /obj/effect/decal/cleanable/dirt/visible,
 /obj/machinery/embedded_controller/radio/airlock/airlock_controller{
 	cycle_to_external_air = 1;
@@ -6178,7 +6170,6 @@
 	dir = 1
 	},
 /obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
 /turf/floor/concrete,
 /area/map_template/colony/mineralprocessing)
 "lW" = (
@@ -6239,7 +6230,6 @@
 	dir = 4
 	},
 /obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
 /turf/floor/concrete,
 /area/map_template/colony/mineralprocessing)
 "ma" = (
@@ -6265,7 +6255,6 @@
 	dir = 4
 	},
 /obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
 /obj/structure/closet/emcloset,
 /obj/item/clothing/head/helmet/space/emergency,
 /obj/item/clothing/suit/space/emergency,
@@ -6273,7 +6262,6 @@
 /turf/floor/concrete,
 /area/map_template/colony/mineralprocessing)
 "mb" = (
-/obj/effect/decal/cleanable/dirt/visible,
 /obj/effect/decal/cleanable/dirt/visible,
 /obj/machinery/atmospherics/pipe/manifold/hidden,
 /turf/floor/tiled/techfloor,
@@ -6391,7 +6379,6 @@
 	dir = 4
 	},
 /obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
 /turf/floor/concrete,
 /area/map_template/colony/mineralprocessing)
 "mo" = (
@@ -6468,7 +6455,7 @@
 /turf/floor/plating,
 /area/map_template/colony/airlock)
 "mx" = (
-/obj/machinery/hologram/holopad/longrange,
+/obj/machinery/holopad/longrange,
 /turf/floor/tiled/techfloor,
 /area/map_template/colony/command)
 "my" = (
@@ -6526,7 +6513,6 @@
 	name = "Hard Equipment Storage";
 	pixel_y = 28
 	},
-/obj/effect/decal/cleanable/dirt/visible,
 /obj/effect/decal/cleanable/dirt/visible,
 /turf/floor/concrete,
 /area/map_template/colony/command)
@@ -6868,7 +6854,7 @@
 /turf/floor/plating,
 /area/map_template/colony/hydroponics)
 "nh" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	locked = 0;
 	name = "south bump";
 	pixel_y = -28
@@ -6964,7 +6950,7 @@
 /turf/floor/concrete,
 /area/template_noop)
 "nr" = (
-/obj/machinery/atmospherics/unary/heater{
+/obj/machinery/atmospherics/unary/temperature/heater{
 	dir = 8
 	},
 /obj/effect/floor_decal/industrial/outline/yellow,
@@ -7212,8 +7198,6 @@
 	dir = 8
 	},
 /obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
 /obj/item/radio/intercom{
 	dir = 4;
 	pixel_x = -22
@@ -7264,7 +7248,6 @@
 	icon_state = "4-8"
 	},
 /obj/machinery/light,
-/obj/effect/decal/cleanable/dirt/visible,
 /obj/effect/decal/cleanable/dirt/visible,
 /obj/machinery/atmospherics/unary/vent_pump/high_volume/external_air{
 	id_tag = "playablecolonymain_pump_out_internal";
@@ -7401,19 +7384,15 @@
 /obj/structure/railing/mapped,
 /obj/effect/floor_decal/industrial/warning/dust,
 /obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
 /turf/floor/concrete,
 /area/map_template/colony/mineralprocessing)
 "og" = (
 /obj/effect/floor_decal/industrial/warning/dust,
 /obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
 /turf/floor/concrete,
 /area/map_template/colony/mineralprocessing)
 "oh" = (
 /obj/effect/floor_decal/industrial/warning/dust,
-/obj/effect/decal/cleanable/dirt/visible,
 /obj/effect/decal/cleanable/dirt/visible,
 /turf/floor/concrete,
 /area/map_template/colony/mineralprocessing)
@@ -7429,14 +7408,13 @@
 /obj/item/tool/pickaxe,
 /obj/item/tool/shovel,
 /obj/item/tool/shovel,
-/obj/item/ore,
-/obj/item/ore,
+/obj/item/ore_satchel,
+/obj/item/ore_satchel,
 /obj/item/backpack/dufflebag/eng,
 /obj/item/backpack/dufflebag/eng,
 /obj/machinery/door/window/northright,
 /obj/structure/window/reinforced{
 	dir = 8;
-	current_health = 1e+006
 	},
 /obj/structure/window/reinforced{
 	dir = 4
@@ -7598,8 +7576,6 @@
 	dir = 10
 	},
 /obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
 /obj/structure/catwalk,
 /turf/floor/concrete,
 /area/map_template/colony/mineralprocessing)
@@ -7611,8 +7587,6 @@
 	dir = 1
 	},
 /obj/effect/floor_decal/industrial/warning/dust,
-/obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
 /obj/effect/decal/cleanable/dirt/visible,
 /obj/structure/catwalk,
 /turf/floor/concrete,
@@ -7630,8 +7604,6 @@
 /obj/effect/floor_decal/industrial/warning/dust{
 	dir = 6
 	},
-/obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
 /obj/effect/decal/cleanable/dirt/visible,
 /obj/structure/catwalk,
 /turf/floor/concrete,
@@ -7694,8 +7666,6 @@
 	dir = 8
 	},
 /obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
 /obj/machinery/atmospherics/pipe/manifold/hidden,
 /turf/floor/tiled/techfloor,
 /area/map_template/colony/airlock)
@@ -7710,7 +7680,6 @@
 /obj/effect/floor_decal/industrial/warning/dust{
 	dir = 4
 	},
-/obj/effect/decal/cleanable/dirt/visible,
 /obj/effect/decal/cleanable/dirt/visible,
 /obj/machinery/atmospherics/pipe/simple/hidden{
 	dir = 4
@@ -7736,8 +7705,6 @@
 	dir = 8
 	},
 /obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
 /obj/machinery/atmospherics/unary/vent_pump/high_volume/external_air{
 	id_tag = "playablecolonymain_pump_out_internal";
 	power_rating = 25000
@@ -7757,14 +7724,12 @@
 /area/map_template/colony/mineralprocessing)
 "oz" = (
 /obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
 /obj/effect/floor_decal/industrial/warning/dust{
 	dir = 5
 	},
 /turf/floor/concrete,
 /area/map_template/colony/mineralprocessing)
 "oA" = (
-/obj/effect/decal/cleanable/dirt/visible,
 /obj/effect/decal/cleanable/dirt/visible,
 /obj/machinery/atmospherics/pipe/manifold/hidden{
 	dir = 8
@@ -7774,14 +7739,12 @@
 /area/map_template/colony/mineralprocessing)
 "oB" = (
 /obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
 /obj/effect/floor_decal/industrial/warning/dust{
 	dir = 4
 	},
 /turf/floor/concrete,
 /area/map_template/colony/mineralprocessing)
 "oC" = (
-/obj/effect/decal/cleanable/dirt/visible,
 /obj/effect/decal/cleanable/dirt/visible,
 /obj/machinery/atmospherics/pipe/simple/hidden{
 	dir = 5
@@ -7905,7 +7868,6 @@
 	dir = 8
 	},
 /obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
 /turf/floor/concrete,
 /area/template_noop)
 "vt" = (
@@ -8002,7 +7964,7 @@
 /area/map_template/colony/airlock)
 "Hy" = (
 /obj/machinery/portable_atmospherics/hydroponics,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	locked = 0;
 	name = "south bump";
 	pixel_y = -28
@@ -8032,8 +7994,6 @@
 /obj/structure/railing/mapped{
 	dir = 8
 	},
-/obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
 /obj/effect/decal/cleanable/dirt/visible,
 /turf/floor/concrete,
 /area/template_noop)

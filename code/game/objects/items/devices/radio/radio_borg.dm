@@ -17,9 +17,6 @@
 		if(!robot.handle_radio_transmission())
 			return FALSE
 
-/obj/item/radio/borg/ert
-	encryption_keys = list(/obj/item/encryptionkey/ert)
-
 /obj/item/radio/borg/syndicate
 	encryption_keys = list(/obj/item/encryptionkey/hacked)
 
@@ -29,7 +26,7 @@
 		. = INITIALIZE_HINT_QDEL
 		CRASH("Invalid spawn location: [log_info_line(loc)]")
 
-/obj/item/radio/borg/talk_into(mob/living/M, message, message_mode, var/verb = "says", var/decl/language/speaking = null)
+/obj/item/radio/borg/talk_into(mob/living/speaker, datum/speech/phrases, verb = "says")
 	. = ..()
 	if(isrobot(loc))
 		var/mob/living/silicon/robot/robot = src.loc

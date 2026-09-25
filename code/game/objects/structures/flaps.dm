@@ -18,13 +18,14 @@
 		/mob/living/silicon/robot/drone
 		)
 	var/airtight = FALSE
+	var/can_pass_lying = TRUE
 
 /obj/structure/flaps/CanPass(atom/A, turf/T)
 	if(istype(A) && A.checkpass(PASS_FLAG_GLASS))
 		return prob(60)
 
 	var/atom/movable/moving_movable = A
-	if (ismovable(A) && moving_movable.buckled_mob)//if someone is buckled, it will not pass
+	if (ismovable(A) && moving_movable.has_buckled_mob()) //if someone is buckled, it will not pass
 		return 0
 
 	if(istype(A, /obj/vehicle))	//no vehicles
@@ -32,7 +33,7 @@
 
 	var/mob/living/M = A
 	if(istype(M))
-		if(M.current_posture.prone && !M.buckled)
+		if(M.current_posture.prone && can_pass_lying)
 			return ..()
 		for(var/mob_type in mobs_can_pass)
 			if(istype(A, mob_type))
@@ -81,3 +82,11 @@
 
 /obj/structure/flaps/airtight // airtight defaults to on
 	airtight = TRUE
+
+/obj/structure/flaps/animal
+	name = "animal access flaps" // doggy door
+	airtight = TRUE
+	can_pass_lying = FALSE
+	mobs_can_pass = list(
+		/mob/living/simple_animal
+	)

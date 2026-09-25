@@ -92,14 +92,15 @@
 	var/action_buttons_hidden = FALSE
 	var/obj/screen/action_button/hide_toggle/hide_actions_toggle
 
+	var/const/HAND_UI_PER_ROW = 4
+	var/const/HAND_UI_INITIAL_Y_OFFSET = 21
+
 	// TODO: declify these.
 	VAR_PROTECTED/gun_mode_toggle_type
 	VAR_PRIVATE/obj/screen/gun/mode/gun_mode_toggle
 	VAR_PRIVATE/obj/screen/gun/move/gun_move_toggle
 	VAR_PRIVATE/obj/screen/gun/item/gun_item_use_toggle
 	VAR_PRIVATE/obj/screen/gun/radio/gun_radio_use_toggle
-
-	var/offset_hands_vertically = TRUE
 
 /datum/hud/New(mob/_owner)
 	if(istype(_owner))
@@ -219,9 +220,9 @@
 		mymob.remove_mob_modifier(/decl/mob_modifier/restrained, source = mymob)
 
 	if(mymob.current_posture?.prone)
-		mymob.add_mob_modifier(/decl/mob_modifier/prone, source = mymob)
+		mymob.add_mob_modifier(/decl/mob_modifier/lying, source = mymob)
 	else
-		mymob.remove_mob_modifier(/decl/mob_modifier/prone, source = mymob)
+		mymob.remove_mob_modifier(/decl/mob_modifier/lying, source = mymob)
 
 	for(var/obj/screen/elem as anything in hud_elements_update_in_life)
 		elem.update_icon()
@@ -353,30 +354,17 @@
 			qdel(inv_box)
 
 	// Rebuild offsets for the hand elements.
-	var/hand_y_offset = 21
+	var/hand_y_offset = HAND_UI_INITIAL_Y_OFFSET
 	var/list/elements = hud_elements_hands?.Copy()
-	if(length(elements))
-		if(offset_hands_vertically)
-			while(length(elements))
-				var/copy_index = min(length(elements), 2)+1
-				var/list/sublist = elements.Copy(1, copy_index)
-				elements.Cut(1, copy_index)
-				var/obj/screen/inventory/inv_box
-				if(length(sublist) == 1)
-					inv_box = sublist[1]
-					inv_box.screen_loc = "CENTER,BOTTOM:[hand_y_offset]"
-				else
-					inv_box = sublist[1]
-					inv_box.screen_loc = "CENTER:-[world.icon_size/2],BOTTOM:[hand_y_offset]"
-					inv_box = sublist[2]
-					inv_box.screen_loc = "CENTER:[world.icon_size/2],BOTTOM:[hand_y_offset]"
-				hand_y_offset += world.icon_size
-		else
-			var/hand_x_offset = -((length(elements) * world.icon_size) / 2) + (world.icon_size/2)
-			for(var/obj/screen/inventory/inv_box in elements)
-				inv_box.screen_loc = "CENTER:[hand_x_offset],BOTTOM:[hand_y_offset]"
-				hand_x_offset += world.icon_size
-			hand_y_offset += world.icon_size
+	while(length(elements))
+		var/copy_index = min(length(elements), HAND_UI_PER_ROW)+1
+		var/list/sublist = elements.Copy(1, copy_index)
+		elements.Cut(1, copy_index)
+		var/hand_x_offset = (world.icon_size/2) * (1 - length(sublist))
+		for(var/obj/screen/inventory/inv_box in sublist)
+			inv_box.screen_loc = "CENTER:[hand_x_offset],BOTTOM:[hand_y_offset]"
+			hand_x_offset += world.icon_size
+		hand_y_offset += world.icon_size
 
 	if(mymob.client && islist(hud_elements_hands) && length(hud_elements_hands))
 		mymob.client.screen |= hud_elements_hands
@@ -402,6 +390,9 @@
 				hand_x_offset += world.icon_size
 			if(mymob.client)
 				mymob.client.screen |= swap_elem
+
+	refresh_element(HUD_STAMINA)
+	update_hand_elements()
 
 	return TRUE
 

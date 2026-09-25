@@ -15,6 +15,9 @@
 	anchored = TRUE
 	structure_flags = STRUCTURE_FLAG_SURFACE
 
+/obj/structure/rack/steel
+	material = /decl/material/solid/metal/steel
+
 /obj/structure/rack/Initialize()
 	..()
 	return INITIALIZE_HINT_LATELOAD
@@ -40,12 +43,6 @@
 	if(!. && !isrobot(user) && used_item.loc == user && user.try_unequip(used_item, loc))
 		auto_align(used_item, click_params)
 		return TRUE
-
-/obj/structure/rack/holorack/dismantle_structure(mob/user)
-	material = null
-	reinf_material = null
-	parts_type = null
-	. = ..()
 
 /obj/structure/rack/dark
 	color = COLOR_GRAY40

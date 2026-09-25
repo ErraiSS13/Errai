@@ -122,7 +122,7 @@
 	var/datum/fabricator_recipe/blueprint
 
 /obj/item/disk/design_disk/attack_hand(mob/user)
-	if(!user.check_intent(I_FLAG_HARM) || !blueprint || !user.check_dexterity(DEXTERITY_KEYBOARDS))
+	if(!user.check_intent(I_FLAG_HARM) || !blueprint || !user.check_dexterity(DEXTERITY_KEYBOARDS, fail_message = "You lack the dexterity to erase \the [src]."))
 		return ..()
 	blueprint = null
 	SetName(initial(name))
@@ -142,4 +142,4 @@
 	. += "A tiny indicator on \the [src] shows it holds [data] good explorer point\s."
 
 /obj/item/disk/survey/get_base_value()
-	. = holographic ? 0 : (sqrt(data) * 5)
+	return sqrt(data) * 5

@@ -23,7 +23,6 @@
 	var/minimum_character_age                 // List of species = age, if species is not here, it's auto-pass
 	var/ideal_character_age = 30              // Preferred character age when populate job at roundstart.
 	var/create_record = 1                     // Do we announce/make records for people who spawn on this job?
-	var/is_semi_antagonist = FALSE            // Whether or not this job is given semi-antagonist status.
 	var/account_allowed = 1                   // Does this job type come with a station account?
 	var/economic_power = 2                    // With how much does this job modify the initial account amount?
 	var/is_holy = FALSE                       // Can this role perform blessings?
@@ -99,7 +98,7 @@
 		H.add_language(required_language)
 		H.set_default_language(required_language)
 	else
-		H.set_default_language(/decl/language/human/common)
+		H.set_default_language()
 
 	var/decl/outfit/outfit = get_outfit(H, alt_title, branch, grade)
 	if(outfit)
@@ -255,9 +254,9 @@
 
 	return FALSE
 
-/datum/job/proc/get_join_link(var/client/caller, var/href_string, var/show_invalid_jobs)
-	if(is_available(caller))
-		if(is_restricted(caller.prefs))
+/datum/job/proc/get_join_link(var/client/calling_client, var/href_string, var/show_invalid_jobs)
+	if(is_available(calling_client))
+		if(is_restricted(calling_client.prefs))
 			if(show_invalid_jobs)
 				return "<tr bgcolor='[selection_color]'><td style='padding-left:2px;padding-right:2px;'><a style='text-decoration: line-through' href='[href_string]'>[title]</a></td><td style='padding-left:2px;padding-right:2px;''><center>[current_positions]</center></td><td style='padding-left:2px;padding-right:2px;'><center>Active: [get_active_count()]</center></td></tr>"
 		else
@@ -292,9 +291,9 @@
 	species_branch_rank_cache_[S] = list()
 	. = species_branch_rank_cache_[S]
 
-	var/spawn_branches = mil_branches.spawn_branches(S)
+	var/spawn_branches = global.using_map.spawn_branches(S)
 	for(var/branch_type in allowed_branches)
-		var/datum/mil_branch/branch = mil_branches.get_branch_by_type(branch_type)
+		var/datum/mil_branch/branch = global.using_map.get_branch_by_type(branch_type)
 		if(branch.name in spawn_branches)
 			if(!allowed_ranks || !(global.using_map.flags & MAP_HAS_RANK))
 				LAZYADD(., branch.name)
@@ -318,7 +317,7 @@
 	if(branch_name == "None")
 		return 0
 
-	var/datum/mil_branch/branch = mil_branches.get_branch(branch_name)
+	var/datum/mil_branch/branch = global.using_map.get_branch(branch_name)
 
 	if(!branch)
 		PRINT_STACK_TRACE("unknown branch \"[branch_name]\" passed to is_branch_allowed()")
@@ -343,7 +342,7 @@
 	if(branch_name == "None" || rank_name == "None")
 		return 0
 
-	var/datum/mil_rank/rank = mil_branches.get_rank(branch_name, rank_name)
+	var/datum/mil_rank/rank = global.using_map.get_rank(branch_name, rank_name)
 
 	if(!rank)
 		PRINT_STACK_TRACE("unknown rank \"[rank_name]\" in branch \"[branch_name]\" passed to is_rank_allowed()")
@@ -358,14 +357,14 @@
 /datum/job/proc/get_branches()
 	. = list()
 	for(var/branch in allowed_branches)
-		var/datum/mil_branch/branch_datum = mil_branches.get_branch_by_type(branch)
+		var/datum/mil_branch/branch_datum = global.using_map.get_branch_by_type(branch)
 		. += branch_datum.name
 	return english_list(.)
 
 //Same as above but ranks
 /datum/job/proc/get_ranks(branch)
 	. = list()
-	var/datum/mil_branch/branch_datum = mil_branches.get_branch(branch)
+	var/datum/mil_branch/branch_datum = global.using_map.get_branch(branch)
 	for(var/datum/mil_rank/rank as anything in allowed_ranks)
 		if(branch_datum && !(initial(rank.name) in branch_datum.ranks))
 			continue
@@ -397,27 +396,25 @@
 			SSjobs.job_icons[title] = preview_icon
 	return SSjobs.job_icons[title]
 
-/datum/job/proc/get_unavailable_reasons(var/client/caller)
+/datum/job/proc/get_unavailable_reasons(var/client/calling_client)
 	var/list/reasons = list()
-	if(jobban_isbanned(caller, title))
+	if(jobban_isbanned(calling_client, title))
 		reasons["You are jobbanned."] = TRUE
-	if(is_semi_antagonist && jobban_isbanned(caller, /decl/special_role/provocateur))
-		reasons["You are semi-antagonist banned."] = TRUE
-	if(!player_old_enough(caller))
+	if(!player_old_enough(calling_client))
 		reasons["Your player age is too low."] = TRUE
 	if(!is_position_available())
 		reasons["There are no positions left."] = TRUE
-	if(!isnull(allowed_branches) && (!caller.prefs.branches[title] || !is_branch_allowed(caller.prefs.branches[title])))
+	if(!isnull(allowed_branches) && (!calling_client.prefs.branches[title] || !is_branch_allowed(calling_client.prefs.branches[title])))
 		reasons["Your branch of service does not allow it."] = TRUE
-	else if(!isnull(allowed_ranks) && (!caller.prefs.ranks[title] || !is_rank_allowed(caller.prefs.branches[title], caller.prefs.ranks[title])))
+	else if(!isnull(allowed_ranks) && (!calling_client.prefs.ranks[title] || !is_rank_allowed(calling_client.prefs.branches[title], calling_client.prefs.ranks[title])))
 		reasons["Your rank choice does not allow it."] = TRUE
-	var/decl/species/S = caller.prefs.get_species_decl()
+	var/decl/species/S = calling_client.prefs.get_species_decl()
 	if(S)
 		if(!is_species_allowed(S))
 			reasons["Your species choice does not allow it."] = TRUE
-		if(!S.check_background(src, caller.prefs))
+		if(!S.check_background(src, calling_client.prefs))
 			reasons["Your background choices do not allow it."] = TRUE
-		var/special_blocker = check_special_blockers(caller.prefs)
+		var/special_blocker = check_special_blockers(calling_client.prefs)
 		if(special_blocker)
 			reasons["Your preferences do not allow it: '[special_blocker]'."] = TRUE
 		return TRUE
@@ -429,21 +426,19 @@
 		mannequin.delete_inventory(TRUE)
 		equip_preview(mannequin, additional_skips = OUTFIT_ADJUSTMENT_SKIP_BACKPACK)
 
-/datum/job/proc/is_available(var/client/caller)
+/datum/job/proc/is_available(var/client/calling_client)
 	if(!is_position_available())
 		return FALSE
-	if(jobban_isbanned(caller, title))
+	if(jobban_isbanned(calling_client, title))
 		return FALSE
-	if(is_semi_antagonist && jobban_isbanned(caller, /decl/special_role/provocateur))
-		return FALSE
-	if(!player_old_enough(caller))
+	if(!player_old_enough(calling_client))
 		return FALSE
 	return TRUE
 
 /datum/job/proc/make_position_available()
 	total_positions++
 
-/datum/job/proc/get_roundstart_spawnpoint()
+/datum/job/proc/get_roundstart_spawn_turf(job_title)
 	var/list/loc_list = list()
 	for(var/obj/abstract/landmark/start/sloc in global.all_landmarks)
 		if(sloc.name != title)	continue
@@ -451,8 +446,7 @@
 		loc_list += sloc
 	if(loc_list.len)
 		return pick(loc_list)
-	else
-		return locate("start*[title]") // use old stype
+	return get_turf(locate("start*[title]"))
 
 /**
  *  Return appropriate /decl/spawnpoint for given client
@@ -482,10 +476,9 @@
 				break
 	return spawnpos
 
+/// Used for applying "finishing touches" to characters, like additional role text or applying a /decl/special_role.
 /datum/job/proc/post_equip_job_title(var/mob/person, var/alt_title, var/rank)
-	if(is_semi_antagonist && person.mind)
-		var/decl/special_role/provocateur/provocateurs = GET_DECL(/decl/special_role/provocateur)
-		provocateurs.add_antagonist(person.mind)
+	return
 
 /datum/job/proc/get_alt_title_for(var/client/C)
 	return C.prefs.GetPlayerAltTitle(src)

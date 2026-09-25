@@ -4,6 +4,7 @@
 
 /area/shaded_hills/outside/river/lake
 	name = "Woodland Lake"
+	forced_ambience = list('sound/ambience/shore.ogg')
 
 /area/shaded_hills/outside/river/lake/get_additional_fishing_results()
 	var/static/list/additional_fishing_results = list(
@@ -33,5 +34,6 @@
 
 /area/shaded_hills/forester_hut
 	name = "\improper Foresters' Hut"
+	sound_env = STANDARD_STATION
 	fishing_failure_prob = 100
 	fishing_results = list()

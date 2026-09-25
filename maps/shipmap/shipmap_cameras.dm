@@ -7,7 +7,7 @@ var/global/const/CAMERA_CHANNEL_DECK_TWO = "Deck Two"
 var/global/const/CAMERA_CHANNEL_DECK_THREE = "Deck Three"
 
 /obj/machinery/camera/network/engineering
-	preset_channels = list(CAMERA_CAMERA_CHANNEL_ENGINEERING)
+	preset_channels = list(CAMERA_CHANNEL_ENGINEERING)
 	req_access = null
 
 /obj/machinery/camera/network/medbay

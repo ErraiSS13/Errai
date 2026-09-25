@@ -52,15 +52,13 @@
 		icon_state = "[icon_state]-closed"
 
 /obj/item/bladed/folding/update_attack_force()
-	..()
+	. = ..()
 	set_edge(open)
 	set_sharp(open)
-	if(open)
-		w_class     = open_item_size
-		attack_verb = open_attack_verbs
-	else
-		w_class     = closed_item_size
-		attack_verb = closed_attack_verbs
+	w_class = open ? open_item_size : closed_item_size
+
+/obj/item/bladed/folding/pick_attack_verb()
+	return DEFAULTPICK(open ? open_attack_verbs : closed_attack_verbs, ..())
 
 // Only show the inhand sprite when open.
 /obj/item/bladed/folding/get_mob_overlay(mob/user_mob, slot, bodypart, use_fallback_if_icon_missing = TRUE, skip_adjustment = FALSE)
@@ -103,7 +101,7 @@
 	. = ..()
 	if(.)
 		var/datum/extension/tool/tool_extension = get_extension(target, /datum/extension/tool)
-		return istype(tool_extension, /datum/extension/tool/variable) && user.check_dexterity(DEXTERITY_COMPLEX_TOOLS)
+		return istype(tool_extension, /datum/extension/tool/variable) && user.check_dexterity(DEXTERITY_COMPLEX_TOOLS, fail_message = "You lack the dexterity to fold or unfold \the [src].")
 
 /decl/interaction_handler/folding_knife/proc/get_radial_choices(atom/target)
 	// - toggle open/closed

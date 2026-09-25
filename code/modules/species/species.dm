@@ -118,7 +118,9 @@ var/global/const/DEFAULT_SPECIES_HEALTH = 200
 	var/breath_type = /decl/material/gas/oxygen                 // Non-oxygen gas breathed, if any.
 	/// Material types considered noticeably poisonous when inhaled (ie. updates the toxins indicator on the HUD).
 	/// This is an associative list for speed.
-	var/poison_types = list(/decl/material/gas/chlorine = TRUE)
+	var/poison_types = list(
+		/decl/material/gas/chlorine = TRUE
+	)
 	var/exhale_type = /decl/material/gas/carbon_dioxide         // Exhaled gas type.
 	var/blood_reagent = /decl/material/liquid/blood
 
@@ -161,7 +163,7 @@ var/global/const/DEFAULT_SPECIES_HEALTH = 200
 
 	var/decl/pronouns/default_pronouns
 	var/list/available_pronouns = list(
-		/decl/pronouns,
+		/decl/pronouns/pseudoplural,
 		/decl/pronouns/neuter/person,
 		/decl/pronouns/female,
 		/decl/pronouns/male
@@ -362,7 +364,7 @@ var/global/const/DEFAULT_SPECIES_HEALTH = 200
 
 		else if(!LAZYLEN(available_background_info[cat_type]))
 			var/list/map_systems = global.using_map.available_background_info[cat_type]
-			available_background_info[cat_type] = map_systems.Copy()
+			available_background_info[cat_type] = islist(map_systems) ? map_systems.Copy() : list()
 
 		if(LAZYLEN(available_background_info[cat_type]) && !default_background_info[cat_type])
 			var/list/avail_systems = available_background_info[cat_type]
@@ -401,12 +403,14 @@ var/global/const/DEFAULT_SPECIES_HEALTH = 200
 	if(taste_sensitivity < 0)
 		. += "taste_sensitivity ([taste_sensitivity]) was negative"
 
-/decl/species/proc/equip_survival_gear(var/mob/living/human/H, var/box_type = /obj/item/box/survival)
-	var/obj/item/backpack/backpack = H.get_equipped_item(slot_back_str)
+/decl/species/proc/equip_survival_gear(mob/living/wearer, box_type = /obj/item/box/survival)
+	if(!box_type)
+		return
+	var/obj/item/backpack/backpack = wearer.get_equipped_item(slot_back_str)
 	if(istype(backpack))
-		H.equip_to_slot_or_del(new box_type(backpack), slot_in_backpack_str)
+		wearer.equip_to_slot_or_del(new box_type(backpack), slot_in_backpack_str)
 	else
-		H.put_in_hands_or_del(new box_type(H))
+		wearer.put_in_hands_or_del(new box_type(wearer))
 
 /decl/species/proc/get_manual_dexterity(var/mob/living/human/H)
 	. = manual_dexterity
@@ -466,7 +470,7 @@ var/global/const/DEFAULT_SPECIES_HEALTH = 200
 	return FALSE
 
 //Used for swimming
-/decl/species/proc/can_float(var/mob/living/human/H)
+/decl/species/proc/can_float_on_liquids(var/mob/living/human/H)
 	if(!H.is_physically_disabled())
 		return TRUE //We could tie it to stamina
 	return FALSE
@@ -591,7 +595,7 @@ var/global/const/DEFAULT_SPECIES_HEALTH = 200
 			return
 
 	var/randn = rand(1, 100) - skill_mod + state_mod
-	if(!target.can_slip() && randn <= 25)
+	if(target.can_slip() && randn <= 25)
 		var/armor_check = 100 * target.get_blocked_ratio(affecting, BRUTE, damage = 20)
 		target.apply_effect(push_mod, WEAKEN, armor_check)
 		playsound(target.loc, 'sound/weapons/thudswoosh.ogg', 50, 1, -1)
@@ -664,8 +668,9 @@ var/global/const/DEFAULT_SPECIES_HEALTH = 200
 			// This assumes that if a pain-level has been defined it also has a list of emotes to go with it
 			return pick(pain_emotes)
 
-/decl/species/proc/handle_post_move(var/mob/living/human/H)
-	handle_exertion(H)
+/decl/species/proc/handle_post_move(var/mob/living/human/H, exertion = TRUE)
+	if(exertion)
+		handle_exertion(H)
 
 /decl/species/proc/handle_exertion(mob/living/human/H)
 	if (!exertion_effect_chance)

@@ -10,28 +10,38 @@ var/global/datum/reagents/sink/infinite_reagent_sink = new
 /atom/proc/remove_any_reagents(amount = 1, defer_update = FALSE, removed_phases = (MAT_PHASE_LIQUID | MAT_PHASE_SOLID), skip_reagents = null)
 	return reagents?.remove_any(amount, defer_update, removed_phases, skip_reagents)
 
+/// Adds reagents, but contaminated. A fraction of `amount` is replaced with `contaminant_type` according to `contaminant_proportion`.
+/// Handles null contaminant_type and zero contaminant_proportion, but it's probably faster to check before you call this.
+/atom/proc/add_to_reagents_contaminated(reagent_type, amount, data, contaminant_type = null, contaminant_proportion = 0, safety = FALSE, defer_update = FALSE, phase = null)
+	var/contaminant_to_add = 0
+	if(contaminant_type)
+		contaminant_to_add = CHEMS_QUANTIZE(amount * contaminant_proportion)
+	add_to_reagents(reagent_type, amount - contaminant_to_add, data, safety = safety, defer_update = !!contaminant_to_add, phase = MAT_PHASE_LIQUID)
+	if(contaminant_to_add)
+		add_to_reagents(contaminant_type, contaminant_to_add, phase = MAT_PHASE_LIQUID)
+
 /atom/proc/get_reagent_space()
-	if(!reagents?.maximum_volume)
+	if(!REAGENT_MAXIMUM_VOLUME(reagents))
 		return 0
-	return reagents.maximum_volume - reagents.total_volume
+	return REAGENT_MAXIMUM_VOLUME(reagents) - REAGENT_TOTAL_VOLUME(reagents)
 
 /atom/proc/get_reagents()
 	return reagents
 
-/atom/proc/take_waste_burn_products(list/materials, exposed_temperature)
+/atom/proc/take_waste_burn_products(list/materials, exposed_temperature, ambient_pressure)
 
 	// This might not be needed. Leaving it in for safety.
 	var/turf/T = get_turf(src)
 	if(T != src)
-		return T?.take_waste_burn_products(materials, exposed_temperature)
+		return T?.take_waste_burn_products(materials, exposed_temperature, ambient_pressure)
 
 	var/datum/reagents/liquids
 	var/datum/gas_mixture/vapor
 	var/obj/item/debris/scraps/scraps
 	for(var/mat in materials)
 		var/amount = materials[mat]
-		var/decl/material/material_data = GET_DECL(mat)
-		switch(material_data.phase_at_temperature(exposed_temperature))
+		var/decl/material/burn_material = GET_DECL(mat)
+		switch(burn_material.phase_at_temperature(exposed_temperature, ambient_pressure))
 
 			if(MAT_PHASE_SOLID)
 				if(!scraps)
@@ -55,23 +65,26 @@ var/global/datum/reagents/sink/infinite_reagent_sink = new
 	vapor?.update_values()
 	liquids?.update_total()
 
+// These vars are privated due to the potential for reagents to be either null, a list, or a datum.
+// Always use the REAGENT_FOO macros!
 /datum/reagents
-	var/primary_reagent
-	var/primary_solid
-	var/primary_liquid
-	var/list/reagent_volumes
+	VAR_PRIVATE/list/reagent_volumes
+	VAR_PRIVATE/list/liquid_volumes
+	VAR_PRIVATE/list/solid_volumes // This should be taken as powders/flakes, rather than large solid pieces of material.
+	VAR_PRIVATE/list/reagent_data
+	VAR_PRIVATE/atom/my_atom
+	VAR_PRIVATE/maximum_volume = 120
+	VAR_PRIVATE/tmp/cached_color
+	VAR_PRIVATE/tmp/primary_reagent
+	VAR_PRIVATE/tmp/primary_solid
+	VAR_PRIVATE/tmp/primary_liquid
+	VAR_PRIVATE/tmp/total_volume = 0
+	VAR_PRIVATE/tmp/total_liquid_volume // Used to determine when to create fluids in the world and the like.
 
-	var/list/liquid_volumes
-	var/list/solid_volumes		// This should be taken as powders/flakes, rather than large solid pieces of material.
-
-	var/list/reagent_data
-	var/total_volume = 0
-	var/maximum_volume = 120
-
-	var/total_liquid_volume // Used to determine when to create fluids in the world and the like.
-
-	var/atom/my_atom
-	var/cached_color
+// Reagent serde is handled per atom.
+/datum/reagents/ShouldSerialize(_age)
+	SHOULD_CALL_PARENT(FALSE)
+	return FALSE
 
 /datum/reagents/New(var/maximum_volume = 120, var/atom/my_atom)
 	src.maximum_volume = maximum_volume
@@ -112,7 +125,7 @@ var/global/datum/reagents/sink/infinite_reagent_sink = new
 	return clone
 
 /datum/reagents/proc/get_reaction_loc(chemical_reaction_flags)
-	if((chemical_reaction_flags & CHEM_REACTION_FLAG_OVERFLOW_CONTAINER) && ATOM_IS_OPEN_CONTAINER(my_atom))
+	if((chemical_reaction_flags & CHEM_REACTION_FLAG_OVERFLOW_CONTAINER) && my_atom.reaction_can_overflow())
 		return get_turf(my_atom)
 	return my_atom
 
@@ -460,19 +473,19 @@ var/global/datum/reagents/sink/infinite_reagent_sink = new
 	for(var/decl/material/reagent as anything in liquid_volumes)
 		if(scannable_only && !reagent.scannable)
 			continue
-		var/volume = REAGENT_VOLUME(src, reagent)
+		var/scan_volume = REAGENT_VOLUME(src, reagent)
 		if(precision)
-			volume = round(volume, precision)
-		if(volume)
-			. += "[reagent.get_reagent_name(src, MAT_PHASE_LIQUID)] ([volume])"
+			scan_volume = round(scan_volume, precision)
+		if(scan_volume)
+			. += "[reagent.get_reagent_name(src, MAT_PHASE_LIQUID)] ([scan_volume])"
 	for(var/decl/material/reagent as anything in solid_volumes)
 		if(scannable_only && !reagent.scannable)
 			continue
-		var/volume = REAGENT_VOLUME(src, reagent)
+		var/scan_volume = REAGENT_VOLUME(src, reagent)
 		if(precision)
-			volume = round(volume, precision)
-		if(volume)
-			. += "[reagent.get_reagent_name(src, MAT_PHASE_SOLID)] ([volume])"
+			scan_volume = round(scan_volume, precision)
+		if(scan_volume)
+			. += "[reagent.get_reagent_name(src, MAT_PHASE_SOLID)] ([scan_volume])"
 	return english_list(., "EMPTY", "", ", ", ", ")
 
 /datum/reagents/proc/get_dirtiness()
@@ -488,6 +501,8 @@ var/global/datum/reagents/sink/infinite_reagent_sink = new
 /* Holder-to-holder and similar procs */
 /// Removes up to [amount] of reagents from [src]. Returns actual amount removed.
 /datum/reagents/proc/remove_any(var/amount = 1, var/defer_update = FALSE, var/removed_phases = (MAT_PHASE_LIQUID | MAT_PHASE_SOLID), skip_reagents = null)
+
+	amount = CHEMS_QUANTIZE(amount)
 
 	if(amount <= 0)
 		return 0
@@ -524,8 +539,11 @@ var/global/datum/reagents/sink/infinite_reagent_sink = new
 	else
 		return 0
 
-	var/removing = clamp(CHEMS_QUANTIZE(amount), 0, total_volume) // not ideal but something is making total_volume become NaN
-	if(!removing || total_volume <= 0)
+	var/removing = clamp(amount, 0, total_volume) // not ideal but something is making total_volume become NaN
+	if(!removing)
+		return 0 // don't clear, we aren't removing any
+
+	if(total_volume <= removing) // we're removing everything
 		. = 0
 		clear_reagents()
 		return
@@ -905,13 +923,12 @@ var/global/datum/reagents/sink/infinite_reagent_sink = new
 		qdel(reagent)
 		return
 
-	if(!target.reagents)
-		target.create_reagents(FLUID_MAX_DEPTH)
+	target.create_or_update_reagents(FLUID_MAX_DEPTH)
 
 	. = trans_to_holder(target.reagents, amount, multiplier, copy, defer_update = defer_update, transferred_phases = transferred_phases)
 	// Deferred updates are presumably being done by SSfluids.
 	// Do an immediate fluid_act call rather than waiting for SSfluids to proc.
-	if(!defer_update && target.reagents.total_volume >= FLUID_PUDDLE)
+	if(!defer_update && REAGENT_TOTAL_VOLUME(target.reagents) >= FLUID_PUDDLE)
 		target.fluid_act(target.reagents)
 
  // Objects may or may not have reagents; if they do, it's probably a beaker or something and we need to transfer properly; otherwise, just touch.
@@ -979,17 +996,18 @@ var/global/datum/reagents/sink/infinite_reagent_sink = new
 		. = FONT_COLORED(get_color(), .)
 
 /* Atom reagent creation - use it all the time */
-/atom/proc/create_reagents(var/max_vol)
-	if(reagents)
-		log_debug("Attempted to create a new reagents holder when already referencing one: [log_info_line(src)]")
-		reagents.maximum_volume = max(reagents.maximum_volume, max_vol)
-	else
-		reagents = new/datum/reagents(max_vol, src)
+/atom/proc/create_or_update_reagents(vol, override_volume)
+	if(islist(reagents))
+		return // We are pending serde, this will be handled in initialize_reagents().
+	else if(istype(reagents))
+		var/use_max_vol = override_volume ? vol : max(vol, REAGENT_MAXIMUM_VOLUME(reagents))
+		REAGENT_SET_MAX_VOL(reagents, use_max_vol)
+		reagents.update_total()
+	else if(isnull(reagents))
+		reagents = new /datum/reagents(vol, src)
 	return reagents
 
 /// Infinite reagent sink: nothing is ever actually added to it, useful for complex, filtered deletion of reagents without holder churn.
-/datum/reagents/sink
-
 /datum/reagents/sink/add_reagent(var/decl/material/reagent, amount, data, safety, defer_update, phase)
 	amount = CHEMS_QUANTIZE(min(amount, REAGENTS_FREE_SPACE(src)))
 	if(amount <= 0)
@@ -998,3 +1016,10 @@ var/global/datum/reagents/sink/infinite_reagent_sink = new
 	if(!istype(reagent))
 		return FALSE
 	return TRUE
+
+/datum/reagents/proc/get_explosive_power()
+	for(var/decl/material/mat in reagent_volumes)
+		if(isnull(mat.explosive_power_divisor))
+			continue
+		. += (reagent_volumes[mat] / mat.explosive_power_divisor)
+	. = round(., 1)

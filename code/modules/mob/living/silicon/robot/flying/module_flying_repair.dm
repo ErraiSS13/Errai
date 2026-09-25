@@ -2,7 +2,7 @@
 	name = "repair drone module"
 	display_name = "Repair"
 	channels = list ("Engineering" = TRUE)
-	camera_channels = list(CAMERA_CAMERA_CHANNEL_ENGINEERING)
+	camera_channels = list(CAMERA_CHANNEL_ENGINEERING)
 	software = list(
 		/datum/computer_file/program/power_monitor
 	)
@@ -13,7 +13,7 @@
 	equipment = list(
 		/obj/item/borg/sight/meson,
 		/obj/item/chems/spray/extinguisher,
-		/obj/item/weldingtool/largetank,
+		/obj/item/fuelled_tool/welding/largetank,
 		/obj/item/screwdriver,
 		/obj/item/wrench,
 		/obj/item/crowbar,

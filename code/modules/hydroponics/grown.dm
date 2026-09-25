@@ -11,6 +11,8 @@
 	drying_wetness = 45
 	dried_type = /obj/item/food/grown/dry
 	allergen_flags = ALLERGEN_VEGETABLE
+
+	var/plant_segment_type = PLANT_SEG_BODY // Used for growns produced via plant dissection.
 	var/work_skill = SKILL_BOTANY
 	var/seeds_extracted = FALSE
 	var/datum/seed/seed
@@ -20,8 +22,8 @@
 /obj/item/food/grown/handle_centrifuge_process(obj/machinery/centrifuge/centrifuge)
 	if(!(. = ..()))
 		return
-	if(reagents?.total_volume)
-		reagents.trans_to_holder(centrifuge.loaded_beaker.reagents, reagents.total_volume)
+	if(REAGENT_TOTAL_VOLUME(reagents))
+		reagents.trans_to_holder(centrifuge.loaded_beaker.reagents, REAGENT_TOTAL_VOLUME(reagents))
 	for(var/obj/item/thing in contents)
 		thing.dropInto(centrifuge.loc)
 	for(var/atom/movable/thing in convert_matter_to_lumps())
@@ -35,27 +37,35 @@
 		else if(!seeds_extracted && seed.min_seed_extracted)
 			. += SPAN_NOTICE("With a knife, you could extract at least [seed.min_seed_extracted] seed\s.")
 
+/obj/item/food/grown/proc/update_base_name()
+	base_name = seed?.product_name || "grown"
+
 /obj/item/food/grown/update_name()
 	if(!seed)
 		return ..()
+	update_base_name()
 	var/descriptor = list()
 	if(dry)
 		descriptor += "dried"
 	if(backyard_grilling_count > 0)
 		descriptor += "roasted"
 	if(length(descriptor))
-		SetName("[english_list(descriptor)] [seed.product_name]")
+		SetName("[english_list(descriptor)] [base_name]")
 	else
-		SetName("[seed.product_name]")
+		SetName(base_name)
+
+// Separated out of Initialize() for subtype overrides.
+/obj/item/food/grown/proc/set_seed(_seed)
+	if(isnull(seed) && _seed)
+		seed = _seed
+	if(istext(seed))
+		seed = SSplants.seeds[seed]
+	if(!isnull(seed) && !istype(seed))
+		seed = null
 
 /obj/item/food/grown/Initialize(mapload, material_key, skip_plate = FALSE, _seed)
 
-	if(isnull(seed) && _seed)
-		seed = _seed
-
-	if(istext(seed))
-		seed = SSplants.seeds[seed]
-
+	set_seed(_seed)
 	if(!istype(seed))
 		PRINT_STACK_TRACE("Grown initializing with null or invalid seed type '[seed || "NULL"]'")
 		return INITIALIZE_HINT_QDEL
@@ -65,7 +75,7 @@
 	slice_num     = seed.slice_amount
 	w_class       = seed.product_w_class
 
-	if(!seed.chems && !(dry && seed.dried_chems) && !(backyard_grilling_count > 0 && seed.roasted_chems))
+	if(!seed.get_chemical_composition() && !(dry && seed.get_chemical_composition(_state = PLANT_STATE_DRIED)) && !(backyard_grilling_count > 0 && seed.get_chemical_composition(_state = PLANT_STATE_ROASTED)))
 		return INITIALIZE_HINT_QDEL // No reagent contents, no froot
 
 	if(seed.scannable_result)
@@ -85,29 +95,24 @@
 
 	. = ..(mapload, material_key, skip_plate) //Init reagents
 
-/obj/item/food/grown/initialize_reagents(populate)
-	if(reagents)
-		reagents.clear_reagents()
-	if(!seed?.chems)
-		return
-
-	. = ..() //create_reagent and populate_reagents
-
 	update_desc()
-	if(reagents.total_volume > 0)
-		bitesize = 1 + round(reagents.total_volume / 2, 1)
-
+	if(REAGENT_TOTAL_VOLUME(reagents) > 0)
+		bitesize = 1 + round(REAGENT_TOTAL_VOLUME(reagents) / 2, 1)
 	update_icon()
 
 /obj/item/food/grown/populate_reagents()
 	. = ..()
+	if(!length(seed?.get_chemical_composition(_segment = plant_segment_type)))
+		return
+
 	// Fill the object up with the appropriate reagents.
 	var/list/chems_to_fill
 	if(backyard_grilling_count > 0)
-		chems_to_fill ||= seed?.roasted_chems
+		chems_to_fill ||= seed?.get_chemical_composition(_segment = plant_segment_type, _state = PLANT_STATE_ROASTED)
 	if(dry)
-		chems_to_fill ||= seed?.dried_chems
-	chems_to_fill ||= seed?.chems
+		chems_to_fill ||= seed?.get_chemical_composition(_segment = plant_segment_type, _state = PLANT_STATE_DRIED)
+	chems_to_fill ||= seed?.get_chemical_composition(_segment = plant_segment_type)
+
 	for(var/rid in chems_to_fill)
 		var/list/reagent_amounts = chems_to_fill[rid]
 		if(LAZYLEN(reagent_amounts))
@@ -138,7 +143,7 @@
 
 		var/list/descriptors = list()
 
-		for(var/decl/material/reagent as anything in reagents.reagent_volumes)
+		for(var/decl/material/reagent as anything in REAGENT_VOLUMES(reagents))
 			if(reagent.fruit_descriptor)
 				descriptors |= reagent.fruit_descriptor
 			if(reagent.reflectiveness >= MAT_VALUE_SHINY)
@@ -180,9 +185,13 @@
 	. = ..()
 	if(!seed)
 		return
-	icon_state = "[seed.get_trait(TRAIT_PRODUCT_ICON)]-product"
 	if(!dry && !backyard_grilling_count)
 		color = seed.get_trait(TRAIT_PRODUCT_COLOUR)
+	update_grown_icon()
+
+// Separated for subtypes to override.
+/obj/item/food/grown/proc/update_grown_icon()
+	icon_state = "[seed.get_trait(TRAIT_PRODUCT_ICON)]-product"
 	if("[seed.get_trait(TRAIT_PRODUCT_ICON)]-leaf" in icon_states('icons/obj/hydroponics/hydroponics_products.dmi'))
 		var/image/fruit_leaves = image('icons/obj/hydroponics/hydroponics_products.dmi',"[seed.get_trait(TRAIT_PRODUCT_ICON)]-leaf")
 		if(!dry && !backyard_grilling_count)
@@ -255,14 +264,16 @@ var/global/list/_wood_materials = list(
 		seeds_extracted = TRUE
 		return TRUE
 
-	if(IS_HATCHET(used_item) && seed.chems)
-		for(var/wood_mat in global._wood_materials)
-			if(!isnull(seed.chems[wood_mat]))
-				user.visible_message(SPAN_NOTICE("\The [user] makes planks out of \the [src]."))
-				for(var/obj/item/stack/material/stack in SSmaterials.create_object(wood_mat, user.loc, rand(1,2)))
-					stack.add_to_stacks(user, TRUE)
-				qdel(src)
-				return TRUE
+	if(IS_HATCHET(used_item))
+		var/list/seed_chems = seed?.get_chemical_composition()
+		if(length(seed_chems))
+			for(var/wood_mat in global._wood_materials)
+				if(!isnull(seed_chems[wood_mat]))
+					user.visible_message(SPAN_NOTICE("\The [user] makes planks out of \the [src]."))
+					for(var/obj/item/stack/material/stack in SSmaterials.create_object(wood_mat, user.loc, rand(1,2)))
+						stack.add_to_stacks(user, TRUE)
+					qdel(src)
+					return TRUE
 
 	if(istype(used_item, /obj/item/paper))
 
@@ -274,15 +285,9 @@ var/global/list/_wood_materials = list(
 			return TRUE
 
 		var/obj/item/clothing/mask/smokable/cigarette/rolled/R = new(get_turf(src))
-		R.chem_volume = max(R.reagents?.maximum_volume, reagents?.total_volume)
-		if(R.reagents)
-			R.reagents.maximum_volume = R.chem_volume
-			R.reagents.update_total()
-		else
-			R.create_reagents(R.chem_volume)
-
+		R.create_or_update_reagents(max(REAGENT_MAXIMUM_VOLUME(R.reagents), REAGENT_TOTAL_VOLUME(reagents)))
 		R.brand = "[src] handrolled in \the [used_item]."
-		reagents.trans_to_holder(R.reagents, R.chem_volume)
+		reagents.trans_to_holder(R.reagents, REAGENT_TOTAL_VOLUME(R.reagents))
 		to_chat(user, SPAN_NOTICE("You roll \the [src] into \the [used_item]."))
 		user.put_in_active_hand(R)
 		qdel(used_item)
@@ -303,7 +308,7 @@ var/global/list/_wood_materials = list(
 	. = ..()
 
 	if(seed && seed.get_trait(TRAIT_STINGS))
-		if(!reagents || reagents.total_volume <= 0)
+		if(!reagents || REAGENT_TOTAL_VOLUME(reagents) <= 0)
 			return
 		remove_any_reagents(rand(1,3))
 		seed.thrown_at(src, target)
@@ -342,7 +347,7 @@ var/global/list/_wood_materials = list(
 		var/mob/living/human/H = user
 		if(istype(H) && H.get_equipped_item(slot_gloves_str))
 			return
-		if(!reagents || reagents.total_volume <= 0)
+		if(!reagents || REAGENT_TOTAL_VOLUME(reagents) <= 0)
 			return
 		remove_any_reagents(rand(1,3)) //Todo, make it actually remove the reagents the seed uses.
 		var/affected = pick(BP_R_HAND,BP_L_HAND)

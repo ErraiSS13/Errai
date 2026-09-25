@@ -29,9 +29,6 @@
 	name = "ammunition (SMG rubber) top mounted"
 	path = /obj/item/ammo_magazine/smg/rubber
 
-/datum/fabricator_recipe/arms_ammo/hidden/flamethrower
-	path = /obj/item/flamethrower/full
-
 /datum/fabricator_recipe/arms_ammo/hidden/speedloader_magnum
 	name = "ammunition (speedloader, magnum)"
 	path = /obj/item/ammo_magazine/speedloader
@@ -82,3 +79,7 @@
 /datum/fabricator_recipe/arms_ammo/hidden/speedloader_laser
 	name = "ammunition (speedloader, laserbulb)"
 	path = /obj/item/ammo_magazine/speedloader/laser_revolver
+
+/datum/fabricator_recipe/arms_ammo/hidden/mine_assembly
+	name = "mine assembly"
+	path = /obj/item/mine/assembly

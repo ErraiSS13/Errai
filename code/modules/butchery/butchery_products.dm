@@ -3,8 +3,9 @@
 	material_alteration = MAT_FLAG_ALTERATION_COLOR
 	icon_state          = ICON_STATE_WORLD
 	material            = /decl/material/solid/organic/meat
+	color               = /decl/material/solid/organic/meat::color
 	w_class             = ITEM_SIZE_NORMAL
-	volume              = 20
+	chem_volume         = 20
 	nutriment_type      = /decl/material/solid/organic/meat
 	nutriment_desc      = list("umami" = 10)
 	nutriment_amt       = 20
@@ -170,7 +171,7 @@
 
 /obj/item/food/butchery/offal/fluid_act(var/datum/reagents/fluids)
 	. = ..()
-	if(!QDELETED(src) && fluids?.total_volume && material?.tans_to)
+	if(!QDELETED(src) && REAGENT_TOTAL_VOLUME(fluids) && material?.tans_to)
 		if(!dried_type)
 			dried_type = type
 		drying_wetness = get_max_drying_wetness()
@@ -263,8 +264,8 @@
 
 /obj/item/food/butchery/stomach/get_dried_product()
 	var/obj/item/chems/glass/waterskin/result = ..()
-	if(istype(result) && reagents?.total_volume)
-		reagents.trans_to_holder(result.reagents, reagents.total_volume)
+	if(istype(result) && REAGENT_TOTAL_VOLUME(reagents))
+		reagents.trans_to_holder(result.reagents, REAGENT_TOTAL_VOLUME(reagents))
 	return result
 
 /obj/item/food/butchery/stomach/get_max_drying_wetness()

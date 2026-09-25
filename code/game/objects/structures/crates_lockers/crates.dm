@@ -249,7 +249,7 @@
 	return list(
 		/obj/item/chems/spray/plantbgone = 2,
 		/obj/item/tool/hoe/mini = 2,
-		/obj/item/plants = 2,
+		/obj/item/plant_satchel = 2,
 		/obj/item/tool/axe/hatchet = 2,
 		/obj/item/wirecutters/clippers = 2,
 		/obj/item/scanner/plant = 2
@@ -327,14 +327,14 @@
 	var/decl/material/overlay_material = /decl/material/solid/metal/iron
 
 /obj/structure/closet/crate/chest/Initialize()
-	. = ..()
 	if(ispath(overlay_material))
 		overlay_material = GET_DECL(overlay_material)
+	. = ..()
 	// icon update is already queued in parent because of closet appearance
 
 /obj/structure/closet/crate/chest/update_material_desc(override_desc)
 	..()
-	if(overlay_material)
+	if(istype(overlay_material))
 		desc = "[desc] It has a trim made of [overlay_material.solid_name]."
 
 /obj/structure/closet/crate/chest/on_update_icon()
@@ -348,3 +348,9 @@
 /obj/structure/closet/crate/chest/ebony
 	material = /decl/material/solid/organic/wood/ebony
 	color = /decl/material/solid/organic/wood/ebony::color
+
+/obj/structure/closet/crate/engineering
+	name = "engineering crate"
+
+/obj/structure/closet/crate/science
+	name = "science crate"

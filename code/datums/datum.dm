@@ -9,6 +9,8 @@
 	var/list/active_timers
 	/// Used to avoid unnecessary refstring creation in Destroy().
 	var/tmp/has_state_machine = FALSE
+	/// Var for holding a unique-to-this-run identifier for a serialized datum.
+	VAR_PRIVATE/tmp/__run_uid
 
 #ifdef REFTRACKING_ENABLED
 	var/tmp/running_find_references
@@ -42,10 +44,11 @@
 			qdel(timer)
 
 	if(extensions)
-		for(var/expansion_key in extensions)
-			var/list/extension = extensions[expansion_key]
+		var/list/extension_list
+		for(var/expansion_key, extension in extensions)
 			if(islist(extension))
-				extension.Cut()
+				extension_list = extension
+				extension_list.Cut()
 			else
 				qdel(extension)
 		extensions = null

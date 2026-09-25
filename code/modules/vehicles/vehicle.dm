@@ -6,17 +6,22 @@
 /obj/vehicle
 	name = "vehicle"
 	icon = 'icons/obj/vehicles.dmi'
-	layer = ABOVE_HUMAN_LAYER
+	layer = OBJ_LAYER
 	density = TRUE
 	anchored = TRUE
 	animate_movement=1
 	light_range = 3
 	abstract_type = /obj/vehicle
 
-	can_buckle = 1
+	max_buckled_mobs = 1
 	buckle_movable = 1
 	buckle_lying = 0
 
+	var/const/VEHICLE_GENERIC    = 1
+	var/const/VEHICLE_QUADBIKE   = 2
+	var/const/VEHICLE_SNOWMOBILE = 3
+
+	var/vehicle_transit_type = VEHICLE_GENERIC
 	var/attack_log = null
 	var/on = 0
 	var/fire_dam_coeff = 1.0
@@ -26,7 +31,13 @@
 	var/stat = 0
 	var/emagged = 0
 	var/powered = 0		//set if vehicle is powered and should use fuel when moving
-	var/move_delay = 1	//set this to limit the speed of the vehicle
+
+	/// How long a single move takes with this vehicle.
+	var/move_delay = 1
+	/// The base delay of a move with this vehicle, assuming no terrain modifiers. If null, uses default running
+	var/base_speed
+	/// Speed when a location is flooded.
+	var/water_delay = 4
 
 	var/obj/item/cell/cell
 	var/charge_use = 200 // W
@@ -35,10 +46,31 @@
 	var/load_item_visible = 1	//set if the loaded item should be overlayed on the vehicle sprite
 	var/load_offset_x = 0		//pixel_x offset for item overlay
 	var/load_offset_y = 0		//pixel_y offset for item overlay
-
 //-------------------------------------------
 // Standard procs
 //-------------------------------------------
+/obj/vehicle/Initialize(mapload)
+	update_vehicle_move_delay(null)
+	base_speed ||= get_config_value(/decl/config/num/movement_run)
+	. = ..()
+
+/obj/vehicle/proc/update_vehicle_move_delay(atom/prev_loc)
+
+	var/turf/floor/prev_turf = prev_loc
+	var/turf/floor/this_turf = loc
+	if(istype(prev_turf) && istype(this_turf) && this_turf.get_topmost_flooring() == prev_turf.get_topmost_flooring() && this_turf.check_fluid_depth(FLUID_SHALLOW) == prev_turf.check_fluid_depth(FLUID_SHALLOW))
+		return // Same speed if terrain type doesn't change
+
+	var/terrain_mod
+	if(loc?.check_fluid_depth(FLUID_SHALLOW))
+		terrain_mod = water_delay
+	else if(istype(this_turf))
+		terrain_mod = this_turf.get_vehicle_transit_delay(src)
+
+	if(isnull(terrain_mod))
+		move_delay = base_speed
+	else
+		move_delay = base_speed * terrain_mod
 
 /obj/vehicle/Move()
 	if(world.time > l_move_time + move_delay)
@@ -93,8 +125,8 @@
 		if(!open)
 			to_chat(user, "<span class='notice'>Unable to repair with the maintenance panel closed.</span>")
 			return TRUE
-		var/obj/item/weldingtool/welder = used_item
-		if(!welder.welding)
+		var/obj/item/fuelled_tool/welding/welder = used_item
+		if(!welder.running_state)
 			to_chat(user, "<span class='notice'>Unable to repair while [used_item] is off.</span>")
 			return TRUE
 		if(welder.weld(5, user))
@@ -162,7 +194,7 @@
 /obj/vehicle/unbuckle_mob(mob/user)
 	. = ..(user)
 	if(load == .)
-		unload(.)
+		unload_from_vehicle(.)
 
 //-------------------------------------------
 // Vehicle procs
@@ -207,7 +239,7 @@
 		var/mob/living/M = load
 		M.apply_effects(5, 5)
 
-	unload()
+	unload_from_vehicle()
 
 	new /obj/effect/gibspawner/robot(my_turf)
 	new /obj/effect/decal/cleanable/blood/oil(src.loc)
@@ -261,7 +293,7 @@
 // the vehicle load() definition before
 // calling this parent proc.
 //-------------------------------------------
-/obj/vehicle/proc/load(var/atom/movable/loading)
+/obj/vehicle/proc/load_onto_vehicle(var/atom/movable/loading)
 	//This loads objects onto the vehicle so they can still be interacted with.
 	//Define allowed items for loading in specific vehicle definitions.
 	if(!isturf(loading.loc)) //To prevent loading things from someone's inventory, which wouldn't get handled properly.
@@ -276,7 +308,7 @@
 
 	loading.forceMove(loc)
 	loading.set_dir(dir)
-	loading.anchored = TRUE
+	loading.set_anchored(TRUE)
 
 	load = loading
 
@@ -293,7 +325,7 @@
 	return 1
 
 
-/obj/vehicle/proc/unload(var/mob/user, var/direction)
+/obj/vehicle/proc/unload_from_vehicle(var/mob/user, var/direction)
 	if(!load)
 		return
 
@@ -325,7 +357,7 @@
 
 	load.forceMove(dest)
 	load.set_dir(get_dir(loc, dest))
-	load.anchored = FALSE		//we can only load non-anchored items, so it makes sense to set this to false
+	load.set_anchored(FALSE)		//we can only load non-anchored items, so it makes sense to set this to false
 	if(ismob(load)) //atoms should probably have their own procs to define how their pixel shifts and layer can be manipulated, someday
 		var/mob/M = load
 		M.pixel_x = M.default_pixel_x

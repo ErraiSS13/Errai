@@ -39,7 +39,7 @@
 			return
 		if(istype(target, /obj))
 			var/obj/O = target
-			if(O.buckled_mob)
+			if(O.has_buckled_mob())
 				return
 			if(locate(/mob/living) in O)
 				to_chat(user, SPAN_WARNING("You can't load living things into the cargo compartment."))
@@ -106,7 +106,7 @@
 
 			owner.visible_message(SPAN_NOTICE("\The [owner] begins loading \the [O]."))
 			if(do_after(owner, 20, O, 0, 1))
-				if((O in carrying) || O.buckled_mob || O.anchored || (locate(/mob/living) in O)) //Repeat checks
+				if((O in carrying) || O.has_buckled_mob() || O.anchored || (locate(/mob/living) in O)) //Repeat checks
 					return
 				if(length(carrying) >= carrying_capacity)
 					to_chat(user, SPAN_WARNING("\The [src] is fully loaded!"))
@@ -135,8 +135,7 @@
 				owner.visible_message("[owner] pushes [target] out of the way.")
 
 /obj/item/mech_equipment/clamp/attack_self(var/mob/user)
-	. = ..()
-	if(.)
+	if(!(. = ..()))
 		drop_carrying(user, TRUE)
 
 /obj/item/mech_equipment/clamp/get_alt_interactions(mob/user)
@@ -221,8 +220,7 @@
 	update_icon()
 
 /obj/item/mech_equipment/light/attack_self(var/mob/user)
-	. = ..()
-	if(.)
+	if(!(. = ..()))
 		toggle()
 		to_chat(user, "You switch \the [src] [on ? "on" : "off"].")
 
@@ -276,14 +274,11 @@
 	else string += "Push"
 	return string
 
-
 /obj/item/mech_equipment/catapult/attack_self(var/mob/user)
-	. = ..()
-	if(.)
+	if(!(. = ..()))
 		mode = mode == CATAPULT_SINGLE ? CATAPULT_AREA : CATAPULT_SINGLE
 		to_chat(user, SPAN_NOTICE("You set \the [src] to [mode == CATAPULT_SINGLE ? "single" : "multi"]-target mode."))
 		update_icon()
-
 
 /obj/item/mech_equipment/catapult/afterattack(var/atom/target, var/mob/living/user, var/inrange, var/params)
 	. = ..()
@@ -392,12 +387,15 @@
 	if (ispath(drill_head))
 		drill_head = new drill_head(src)
 
-/obj/item/mech_equipment/drill/attack_self(var/mob/user)
+/obj/item/mech_equipment/drill/Destroy()
 	. = ..()
-	if(.)
-		if(drill_head)
-			owner.visible_message(SPAN_WARNING("[owner] revs the [drill_head], menancingly."))
-			playsound(src, 'sound/mecha/mechdrill.ogg', 50, 1)
+	if(istype(drill_head))
+		QDEL_NULL(drill_head)
+
+/obj/item/mech_equipment/drill/attack_self(var/mob/user)
+	if(!(. = ..()) && drill_head)
+		owner.visible_message(SPAN_WARNING("[owner] revs the [drill_head] menancingly."))
+		playsound(src, 'sound/mecha/mechdrill.ogg', 50, 1)
 
 /obj/item/mech_equipment/drill/get_hardpoint_maptext()
 	if(drill_head)
@@ -615,14 +613,11 @@
 	return FALSE
 
 /obj/item/mech_equipment/ionjets/attack_self(mob/user)
-	. = ..()
-	if (!.)
-		return
-
-	if (active)
-		deactivate()
-	else
-		activate()
+	if(!(. = ..()))
+		if(active)
+			deactivate()
+		else
+			activate()
 
 /obj/item/mech_equipment/ionjets/proc/activate()
 	passive_power_use = activated_passive_power
@@ -763,8 +758,7 @@
 		D.ui_interact(user)
 
 /obj/item/mech_equipment/camera/attack_self(mob/user)
-	. = ..()
-	if(.)
+	if(!(. = ..()))
 		if(active)
 			deactivate()
 		else

@@ -83,9 +83,6 @@
 /datum/fabricator_recipe/imprinter/circuit/accounts
 	path = /obj/item/stock_parts/circuitboard/account_database
 
-/datum/fabricator_recipe/imprinter/circuit/holo
-	path = /obj/item/stock_parts/circuitboard/holodeck_control
-
 /datum/fabricator_recipe/imprinter/circuit/aiupload
 	path = /obj/item/stock_parts/circuitboard/aiupload
 
@@ -97,6 +94,9 @@
 
 /datum/fabricator_recipe/imprinter/circuit/robot_storage
 	path = /obj/item/stock_parts/circuitboard/robotstoragecontrol
+
+/datum/fabricator_recipe/imprinter/circuit/checkpoint_control
+	path = /obj/item/stock_parts/circuitboard/checkpointcontrol
 
 /datum/fabricator_recipe/imprinter/circuit/destructive_analyzer
 	path = /obj/item/stock_parts/circuitboard/destructive_analyzer
@@ -187,12 +187,6 @@
 
 /datum/fabricator_recipe/imprinter/circuit/pacmanpotato
 	path = /obj/item/stock_parts/circuitboard/pacman/super/potato
-
-/datum/fabricator_recipe/imprinter/circuit/batteryrack
-	path = /obj/item/stock_parts/circuitboard/batteryrack
-
-/datum/fabricator_recipe/imprinter/circuit/smes_cell
-	path = /obj/item/stock_parts/circuitboard/smes
 
 /datum/fabricator_recipe/imprinter/circuit/alerts
 	path = /obj/item/stock_parts/circuitboard/stationalert
@@ -418,9 +412,6 @@
 
 /datum/fabricator_recipe/imprinter/circuit/breaker_box
 	path = /obj/item/stock_parts/circuitboard/breaker
-
-/datum/fabricator_recipe/imprinter/circuit/merchant_pad
-	path = /obj/item/stock_parts/circuitboard/merchant_pad
 
 /datum/fabricator_recipe/imprinter/circuit/radiocarbon_spectrometer
 	path = /obj/item/stock_parts/circuitboard/radiocarbon_spectrometer

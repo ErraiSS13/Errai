@@ -287,7 +287,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/security/range)
 "aaP" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -1122,7 +1122,7 @@
 	dir = 1;
 	pixel_y = -22
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -1416,7 +1416,7 @@
 /turf/floor/plating,
 /area/exodus/crew_quarters/heads/hos)
 "adc" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -1616,7 +1616,7 @@
 /turf/floor/plating,
 /area/exodus/maintenance/security_starboard)
 "adC" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -1952,7 +1952,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/security/main)
 "aen" = (
-/obj/machinery/hologram/holopad{
+/obj/machinery/holopad{
 	holopad_id = "Security South"
 	},
 /turf/floor/tiled/steel_grid,
@@ -2072,7 +2072,7 @@
 /area/exodus/security/main)
 "aeA" = (
 /obj/effect/floor_decal/corner/red,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -2098,11 +2098,11 @@
 /turf/wall/prepainted,
 /area/exodus/security/meeting)
 "aeD" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/steel_grid,
 /area/exodus/security/meeting)
 "aeE" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -2579,7 +2579,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/security/warden)
 "afF" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -2743,7 +2743,7 @@
 "afY" = (
 /obj/structure/closet,
 /obj/item/clothing/glasses/welding,
-/obj/item/weldingtool,
+/obj/item/fuelled_tool/welding,
 /turf/floor/plating,
 /area/exodus/maintenance/security_starboard)
 "afZ" = (
@@ -3367,7 +3367,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
 	dir = 4
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -3776,7 +3776,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/security/brig/interrogation)
 "aip" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/structure/cable/green{
 	icon_state = "4-8"
 	},
@@ -3800,7 +3800,7 @@
 /turf/floor/carpet,
 /area/exodus/crew_quarters/heads/hos)
 "ais" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -3914,7 +3914,7 @@
 /obj/structure/chair{
 	dir = 8
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -3960,7 +3960,7 @@
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/dark,
 /area/exodus/security/warden)
 "aiM" = (
@@ -4455,7 +4455,7 @@
 /obj/structure/cable{
 	icon_state = "0-8"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -4745,7 +4745,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
 	dir = 4
 	},
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/steel_grid,
 /area/exodus/security/brig/processing)
 "aki" = (
@@ -5177,7 +5177,7 @@
 /obj/machinery/atmospherics/unary/vent_pump/on{
 	dir = 4
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -5642,7 +5642,7 @@
 /turf/floor/lino,
 /area/exodus/security/detectives_office)
 "alU" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -5981,7 +5981,7 @@
 	dir = 4;
 	pixel_x = -22
 	},
-/obj/machinery/power/sensor{
+/obj/machinery/power_sensor{
 	id_tag = "Security Subgrid";
 	name = "Powernet Sensor - Security Subgrid"
 	},
@@ -5999,7 +5999,7 @@
 /obj/structure/cable/green{
 	icon_state = "0-2"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -6154,7 +6154,7 @@
 	id_tag = "permentryflash";
 	name = "Floor mounted flash"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -6379,7 +6379,7 @@
 /obj/structure/disposalpipe/segment,
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -6631,7 +6631,7 @@
 /turf/wall/prepainted,
 /area/exodus/maintenance/substation/security)
 "anR" = (
-/obj/machinery/power/breakerbox/activated{
+/obj/machinery/breakerbox/activated{
 	RCon_tag = "Security Substation Bypass"
 	},
 /turf/floor/plating,
@@ -7055,7 +7055,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/security/lobby)
 "aoR" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -7124,7 +7124,7 @@
 /turf/floor/lino,
 /area/exodus/security/detectives_office)
 "aoY" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/dark,
 /area/exodus/lawoffice)
 "aoZ" = (
@@ -7410,8 +7410,9 @@
 /turf/floor/tiled/dark/monotile,
 /area/shuttle/escape_pod_1)
 "apD" = (
-/turf/wall/prepainted,
-/area/exodus/gateway)
+/obj/structure/girder,
+/turf/floor/plating,
+/area/exodus/maintenance/evahallway)
 "apE" = (
 /obj/machinery/light{
 	dir = 8
@@ -7432,7 +7433,7 @@
 /turf/floor/laminate,
 /area/exodus/maintenance/dormitory)
 "apH" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/steel_grid,
 /area/exodus/security/lobby)
 "apI" = (
@@ -7822,7 +7823,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
 	dir = 5
 	},
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/white,
 /area/exodus/security/detectives_office)
 "aqr" = (
@@ -8339,7 +8340,7 @@
 /turf/floor/tiled/dark,
 /area/exodus/lawoffice)
 "arr" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -8588,16 +8589,6 @@
 	},
 /turf/floor,
 /area/exodus/maintenance/evahallway)
-"arS" = (
-/obj/machinery/light_switch{
-	pixel_x = -24;
-	dir = 4
-	},
-/obj/machinery/atmospherics/unary/vent_pump/on{
-	dir = 4
-	},
-/turf/floor/tiled/dark/monotile,
-/area/exodus/gateway)
 "arT" = (
 /obj/structure/hygiene/sink/kitchen{
 	pixel_y = 21
@@ -8618,7 +8609,7 @@
 /obj/structure/cable/green{
 	icon_state = "2-8"
 	},
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/white,
 /area/exodus/crew_quarters/kitchen)
 "arW" = (
@@ -8806,7 +8797,7 @@
 /turf/floor/plating,
 /area/exodus/maintenance/dormitory)
 "asq" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -8847,7 +8838,7 @@
 /obj/machinery/atmospherics/unary/vent_scrubber/on{
 	dir = 1
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -8859,12 +8850,6 @@
 /obj/structure/bed/padded,
 /turf/floor/tiled/steel_grid,
 /area/exodus/security/brig/solitaryB)
-"asu" = (
-/obj/machinery/atmospherics/unary/vent_scrubber/on{
-	dir = 8
-	},
-/turf/floor/tiled/dark/monotile,
-/area/exodus/gateway)
 "asv" = (
 /obj/structure/disposalpipe/segment{
 	dir = 1;
@@ -9081,7 +9066,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/security/brig/solitaryA)
 "asP" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/steel_grid,
 /area/exodus/security/prison)
 "asQ" = (
@@ -9441,7 +9426,7 @@
 /turf/floor/tiled/white/monotile,
 /area/exodus/crew_quarters/sleep/cryo)
 "atM" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -9727,7 +9712,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/hallway/primary/fore)
 "auy" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -9790,7 +9775,7 @@
 /turf/floor/tiled/freezer,
 /area/exodus/crew_quarters/sleep/cryo)
 "auG" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/freezer,
 /area/exodus/crew_quarters/sleep/cryo)
 "auH" = (
@@ -10084,7 +10069,7 @@
 /obj/machinery/atmospherics/unary/vent_scrubber/on{
 	dir = 1
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -10161,7 +10146,7 @@
 /area/exodus/hallway/primary/port)
 "avv" = (
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -10263,7 +10248,7 @@
 /area/exodus/hallway/primary/fore)
 "avJ" = (
 /obj/structure/disposalpipe/segment,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -10343,7 +10328,7 @@
 /obj/structure/cable/green{
 	icon_state = "1-2"
 	},
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/abstract/landmark/paperwork_finish_exodus,
 /turf/floor/tiled/steel_grid,
 /area/exodus/bridge)
@@ -10974,7 +10959,7 @@
 /area/exodus/maintenance/evahallway)
 "axd" = (
 /obj/structure/cable,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -11123,11 +11108,6 @@
 	},
 /turf/floor/tiled/dark,
 /area/exodus/crew_quarters/sleep)
-"axv" = (
-/obj/effect/wallframe_spawn/reinforced,
-/obj/machinery/door/firedoor,
-/turf/floor/plating,
-/area/exodus/hallway/primary/port)
 "axw" = (
 /obj/structure/disposalpipe/segment,
 /obj/structure/cable/green{
@@ -11215,7 +11195,7 @@
 /turf/floor/plating,
 /area/exodus/maintenance/arrivals)
 "axK" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -11390,7 +11370,7 @@
 /turf/floor/tiled/techfloor/grid,
 /area/exodus/crew_quarters/fitness)
 "ayc" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/laminate/walnut,
 /area/exodus/crew_quarters/sleep/bedrooms)
 "ayd" = (
@@ -11455,7 +11435,7 @@
 /turf/floor/plating,
 /area/exodus/maintenance/arrivals)
 "aym" = (
-/obj/machinery/power/apc/high{
+/obj/machinery/apc/high{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -11575,7 +11555,7 @@
 	dir = 4
 	},
 /obj/effect/floor_decal/corner/blue/diagonal,
-/obj/structure/sign/warning/pods{
+/obj/structure/sign/directions/pods{
 	dir = 4;
 	pixel_x = 32
 	},
@@ -11787,7 +11767,7 @@
 /obj/structure/cable/green{
 	icon_state = "4-8"
 	},
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
 	dir = 4
 	},
@@ -11985,7 +11965,7 @@
 /obj/effect/floor_decal/corner/blue{
 	dir = 6
 	},
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/steel_grid,
 /area/exodus/crew_quarters/fitness)
 "azg" = (
@@ -12152,7 +12132,7 @@
 /obj/effect/floor_decal/industrial/warning{
 	dir = 1
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -12251,10 +12231,10 @@
 /turf/floor/plating,
 /area/exodus/bridge)
 "azI" = (
-/obj/machinery/door/airlock/maintenance,
 /obj/machinery/door/firedoor,
-/turf/floor/tiled/techfloor/grid,
-/area/exodus/gateway)
+/obj/structure/door_assembly,
+/turf/floor/plating,
+/area/exodus/maintenance/evahallway)
 "azJ" = (
 /obj/machinery/camera/network/civilian_east{
 	c_tag = "Kitchen Cold Room"
@@ -12608,30 +12588,6 @@
 /obj/machinery/portable_atmospherics/hydroponics,
 /turf/floor/tiled/dark,
 /area/exodus/hydroponics)
-"aAA" = (
-/obj/machinery/gateway{
-	dir = 9
-	},
-/turf/floor/tiled/dark/monotile,
-/area/exodus/gateway)
-"aAB" = (
-/obj/machinery/light{
-	dir = 8
-	},
-/turf/floor/tiled/dark/monotile,
-/area/exodus/gateway)
-"aAC" = (
-/obj/machinery/gateway{
-	dir = 5
-	},
-/turf/floor/tiled/dark/monotile,
-/area/exodus/gateway)
-"aAD" = (
-/obj/machinery/gateway{
-	dir = 1
-	},
-/turf/floor/tiled/dark/monotile,
-/area/exodus/gateway)
 "aAE" = (
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
 	dir = 4
@@ -12645,11 +12601,9 @@
 /turf/wall/r_wall/prepainted,
 /area/exodus/maintenance/auxsolarport)
 "aAG" = (
-/obj/machinery/light{
-	dir = 4
-	},
-/turf/floor/tiled/dark/monotile,
-/area/exodus/gateway)
+/obj/random/maintenance,
+/turf/floor/plating,
+/area/exodus/maintenance/evahallway)
 "aAH" = (
 /obj/structure/sign/warning/airlock{
 	pixel_x = 32;
@@ -12749,9 +12703,7 @@
 /obj/item/stack/material/pane/mapped/rglass{
 	amount = 50
 	},
-/obj/item/stack/material/rods{
-	amount = 50
-	},
+/obj/item/stack/material/rods/mapped/steel/fifty,
 /obj/effect/floor_decal/industrial/hatch/yellow,
 /turf/floor/tiled/steel_grid,
 /area/exodus/ai_monitored/storage/eva)
@@ -12812,7 +12764,7 @@
 /turf/floor/tiled/dark,
 /area/exodus/crew_quarters/sleep)
 "aAV" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -13126,12 +13078,6 @@
 "aBI" = (
 /turf/wall/r_wall/prepainted,
 /area/exodus/hallway/secondary/entry/port)
-"aBJ" = (
-/obj/machinery/gateway{
-	dir = 8
-	},
-/turf/floor/tiled/dark/monotile,
-/area/exodus/gateway)
 "aBK" = (
 /obj/machinery/door/airlock/external/bolted{
 	id_tag = "nuke_shuttle_dock_inner";
@@ -13146,18 +13092,9 @@
 /turf/wall/prepainted,
 /area/exodus/hallway/secondary/entry/port)
 "aBM" = (
-/turf/floor/tiled/dark/monotile,
-/area/exodus/gateway)
-"aBN" = (
-/obj/machinery/gateway{
-	dir = 4
-	},
-/turf/floor/tiled/dark/monotile,
-/area/exodus/gateway)
-"aBO" = (
-/obj/machinery/gateway/centerstation,
-/turf/floor/tiled/dark/monotile,
-/area/exodus/gateway)
+/obj/random/trash,
+/turf/floor/plating,
+/area/exodus/maintenance/evahallway)
 "aBP" = (
 /obj/machinery/atmospherics/unary/tank/air{
 	dir = 8
@@ -13440,7 +13377,7 @@
 "aCw" = (
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
-/obj/machinery/power/apc/high{
+/obj/machinery/apc/high{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -13554,59 +13491,6 @@
 "aCK" = (
 /turf/wall/prepainted,
 /area/exodus/storage/primary)
-"aCL" = (
-/obj/machinery/gateway{
-	dir = 10
-	},
-/obj/abstract/landmark/latejoin/gateway,
-/turf/floor/tiled/dark/monotile,
-/area/exodus/gateway)
-"aCN" = (
-/obj/machinery/gateway{
-	dir = 6
-	},
-/obj/abstract/landmark/latejoin/gateway,
-/turf/floor/tiled/dark/monotile,
-/area/exodus/gateway)
-"aCO" = (
-/obj/machinery/gateway,
-/obj/abstract/landmark/latejoin/gateway,
-/turf/floor/tiled/dark/monotile,
-/area/exodus/gateway)
-"aCP" = (
-/obj/machinery/vending/coffee{
-	dir = 4
-	},
-/obj/machinery/camera/network/civilian_west{
-	c_tag = "Gateway Arrival Area";
-	dir = 4
-	},
-/obj/structure/sign/warning/biohazard{
-	pixel_x = -32
-	},
-/obj/effect/floor_decal/industrial/warning/corner{
-	dir = 4
-	},
-/obj/structure/window/reinforced{
-	dir = 1;
-	current_health = 1e+006
-	},
-/turf/floor/tiled/dark/monotile,
-/area/exodus/gateway)
-"aCQ" = (
-/obj/structure/sign/warning/biohazard{
-	pixel_x = 32
-	},
-/obj/structure/closet/wardrobe/xenos,
-/obj/effect/floor_decal/industrial/warning/corner{
-	dir = 1
-	},
-/obj/structure/window/reinforced{
-	dir = 1;
-	current_health = 1e+006
-	},
-/turf/floor/tiled/dark/monotile,
-/area/exodus/gateway)
 "aCS" = (
 /obj/structure/table/reinforced,
 /obj/item/assembly/signaler,
@@ -13839,7 +13723,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/hallway/secondary/entry/port)
 "aDr" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -13882,7 +13766,7 @@
 /turf/floor/plating,
 /area/exodus/maintenance/substation/civilian_east)
 "aDv" = (
-/obj/machinery/power/breakerbox/activated{
+/obj/machinery/breakerbox/activated{
 	RCon_tag = "Civilian East Substation Bypass"
 	},
 /turf/floor/plating,
@@ -14071,7 +13955,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/ai_monitored/storage/eva)
 "aDS" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -14113,7 +13997,7 @@
 	name = "xeno_spawn";
 	pixel_x = -1
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -14173,14 +14057,8 @@
 	},
 /turf/floor/tiled/dark,
 /area/exodus/security/nuke_storage)
-"aEb" = (
-/obj/machinery/atmospherics/pipe/simple/hidden/supply{
-	dir = 4
-	},
-/turf/floor/tiled/dark/monotile,
-/area/exodus/gateway)
 "aEc" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -14208,21 +14086,6 @@
 /obj/effect/wallframe_spawn/reinforced,
 /turf/floor/plating,
 /area/exodus/hallway/primary/starboard)
-"aEf" = (
-/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
-	dir = 4
-	},
-/turf/floor/tiled/dark/monotile,
-/area/exodus/gateway)
-"aEg" = (
-/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
-	dir = 6
-	},
-/obj/machinery/atmospherics/pipe/simple/hidden/supply{
-	dir = 10
-	},
-/turf/floor/tiled/dark/monotile,
-/area/exodus/gateway)
 "aEh" = (
 /obj/structure/table/laminate,
 /obj/machinery/reagentgrinder,
@@ -14265,7 +14128,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/ai_monitored/storage/eva)
 "aEn" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/structure/cable/green{
 	icon_state = "1-2"
 	},
@@ -14650,7 +14513,7 @@
 /turf/floor/plating,
 /area/exodus/maintenance/library)
 "aEX" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -14898,7 +14761,7 @@
 /turf/floor/plating,
 /area/exodus/maintenance/library)
 "aFx" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -14934,12 +14797,6 @@
 	},
 /turf/floor/tiled/steel_grid,
 /area/exodus/research/chargebay)
-"aFA" = (
-/obj/effect/floor_decal/industrial/warning{
-	dir = 1
-	},
-/turf/floor/tiled/steel_grid,
-/area/exodus/gateway)
 "aFB" = (
 /obj/structure/extinguisher_cabinet{
 	pixel_x = 29;
@@ -14986,17 +14843,9 @@
 	},
 /turf/floor/tiled/steel_grid,
 /area/exodus/hallway/primary/central_two)
-"aFF" = (
-/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
-/obj/machinery/atmospherics/pipe/simple/hidden/supply,
-/obj/effect/floor_decal/industrial/warning{
-	dir = 1
-	},
-/turf/floor/tiled/steel_grid,
-/area/exodus/gateway)
 "aFG" = (
 /obj/structure/closet/secure_closet/bar,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -15118,7 +14967,7 @@
 /obj/structure/cable/green{
 	icon_state = "0-8"
 	},
-/obj/machinery/power/sensor{
+/obj/machinery/power_sensor{
 	id_tag = "Civilian East Subgrid";
 	name = "Powernet Sensor - Civilian East Subgrid"
 	},
@@ -15204,7 +15053,7 @@
 /turf/floor/plating,
 /area/exodus/maintenance/evahallway)
 "aFX" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -15360,16 +15209,6 @@
 	},
 /turf/floor/tiled/techfloor/grid,
 /area/exodus/hallway/secondary/exit)
-"aGl" = (
-/obj/machinery/vending/cola{
-	dir = 4
-	},
-/obj/item/radio/intercom{
-	dir = 4;
-	pixel_x = -22
-	},
-/turf/floor/tiled/dark/monotile,
-/area/exodus/gateway)
 "aGm" = (
 /obj/machinery/recharger{
 	pixel_y = 4
@@ -15389,7 +15228,7 @@
 	dir = 8
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/laminate/walnut,
 /area/exodus/crew_quarters/bar/cabin)
 "aGp" = (
@@ -15561,10 +15400,6 @@
 	},
 /turf/floor/plating,
 /area/exodus/hallway/primary/central_two)
-"aGK" = (
-/obj/item/stool,
-/turf/floor/tiled/steel_grid,
-/area/exodus/gateway)
 "aGL" = (
 /obj/structure/disposalpipe/segment{
 	dir = 4
@@ -15584,10 +15419,6 @@
 	},
 /turf/floor/laminate/walnut,
 /area/exodus/library)
-"aGN" = (
-/obj/machinery/hologram/holopad,
-/turf/floor/tiled/steel_grid,
-/area/exodus/gateway)
 "aGO" = (
 /obj/effect/wallframe_spawn/reinforced,
 /obj/machinery/door/blast/shutters/open{
@@ -15608,7 +15439,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
 	dir = 6
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -15618,19 +15449,6 @@
 	},
 /turf/floor/plating,
 /area/exodus/maintenance/substation/civilian_west)
-"aGR" = (
-/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
-/obj/machinery/atmospherics/pipe/simple/hidden/supply,
-/turf/floor/tiled/steel_grid,
-/area/exodus/gateway)
-"aGS" = (
-/obj/machinery/firealarm{
-	dir = 4;
-	pixel_x = 24
-	},
-/obj/structure/closet/wardrobe/black,
-/turf/floor/tiled/dark/monotile,
-/area/exodus/gateway)
 "aGT" = (
 /obj/machinery/suit_cycler/medical/prepared,
 /turf/floor/tiled/dark,
@@ -15793,7 +15611,7 @@
 /obj/structure/cable/green{
 	icon_state = "0-4"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -16302,7 +16120,7 @@
 /obj/structure/cable{
 	icon_state = "0-4"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -16440,12 +16258,6 @@
 	},
 /turf/floor/plating,
 /area/exodus/maintenance/bar)
-"aIp" = (
-/obj/structure/cable/green{
-	icon_state = "4-8"
-	},
-/turf/floor/tiled/steel_grid,
-/area/exodus/gateway)
 "aIq" = (
 /obj/structure/table,
 /obj/item/deck/cards,
@@ -16468,17 +16280,6 @@
 	},
 /turf/floor/plating,
 /area/exodus/maintenance/library)
-"aIs" = (
-/turf/floor/tiled/steel_grid,
-/area/exodus/gateway)
-"aIt" = (
-/obj/structure/cable/green{
-	icon_state = "2-8"
-	},
-/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
-/obj/machinery/atmospherics/pipe/simple/hidden/supply,
-/turf/floor/tiled/steel_grid,
-/area/exodus/gateway)
 "aIu" = (
 /obj/machinery/button/access/exterior{
 	id_tag = "xeno_airlock_control";
@@ -16576,7 +16377,7 @@
 /obj/effect/floor_decal/corner/lime{
 	dir = 10
 	},
-/obj/structure/sign/department/star_of_life{
+/obj/structure/sign/department/cross/star_of_life{
 	name = "Medbay";
 	pixel_y = -32
 	},
@@ -16589,7 +16390,7 @@
 /obj/effect/floor_decal/corner/lime{
 	dir = 10
 	},
-/obj/structure/sign/department/star_of_life{
+/obj/structure/sign/department/cross/star_of_life{
 	name = "Medbay";
 	pixel_y = -32
 	},
@@ -16767,13 +16568,6 @@
 	},
 /turf/floor/tiled/steel_grid,
 /area/exodus/crew_quarters/bar/cabin)
-"aJc" = (
-/obj/structure/closet/l3closet/scientist,
-/obj/structure/window/reinforced{
-	dir = 8
-	},
-/turf/floor/tiled/dark/monotile,
-/area/exodus/gateway)
 "aJd" = (
 /obj/structure/flaps{
 	opacity = 1
@@ -17182,7 +16976,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
 	dir = 4
 	},
-/obj/machinery/power/sensor{
+/obj/machinery/power_sensor{
 	id_tag = "Civilian West Subgrid";
 	name = "Powernet Sensor - Civilian West"
 	},
@@ -17199,7 +16993,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
 	dir = 9
 	},
-/obj/machinery/power/breakerbox/activated{
+/obj/machinery/breakerbox/activated{
 	RCon_tag = "Civilian West Substation Bypass"
 	},
 /turf/floor/plating,
@@ -17214,7 +17008,7 @@
 /turf/floor/laminate/walnut,
 /area/exodus/library)
 "aKc" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -17279,12 +17073,6 @@
 /obj/machinery/space_heater,
 /turf/floor/plating,
 /area/exodus/maintenance/locker)
-"aKl" = (
-/obj/machinery/atmospherics/unary/vent_pump/on{
-	dir = 4
-	},
-/turf/floor/tiled/steel_grid,
-/area/exodus/gateway)
 "aKm" = (
 /obj/structure/cable/green{
 	icon_state = "1-2"
@@ -17299,24 +17087,6 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
 /turf/floor/tiled/steel_grid,
 /area/exodus/hallway/primary/port)
-"aKn" = (
-/obj/machinery/atmospherics/unary/vent_scrubber/on{
-	dir = 8
-	},
-/turf/floor/tiled/steel_grid,
-/area/exodus/gateway)
-"aKo" = (
-/obj/structure/cable/green{
-	icon_state = "1-2"
-	},
-/obj/machinery/atmospherics/pipe/manifold/hidden/supply{
-	dir = 4
-	},
-/obj/machinery/atmospherics/pipe/manifold/hidden/scrubbers{
-	dir = 8
-	},
-/turf/floor/tiled/steel_grid,
-/area/exodus/gateway)
 "aKp" = (
 /obj/machinery/vending/fashionvend,
 /turf/floor/tiled/monotile,
@@ -17824,7 +17594,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/hallway/secondary/entry/starboard)
 "aLv" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -17945,18 +17715,6 @@
 /obj/machinery/door/firedoor,
 /turf/floor/plating,
 /area/exodus/quartermaster/storage)
-"aLG" = (
-/obj/machinery/door/firedoor,
-/obj/machinery/door/airlock/glass{
-	name = "Gateway Access"
-	},
-/obj/structure/cable/green{
-	icon_state = "1-2"
-	},
-/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
-/obj/machinery/atmospherics/pipe/simple/hidden/supply,
-/turf/floor/tiled/techfloor/grid,
-/area/exodus/hallway/primary/port)
 "aLH" = (
 /obj/structure/cable/green{
 	icon_state = "0-8"
@@ -18355,7 +18113,7 @@
 /turf/floor/tiled/dark,
 /area/exodus/hydroponics)
 "aMG" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -18447,7 +18205,7 @@
 	dir = 8;
 	pixel_x = 24
 	},
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/lino,
 /area/exodus/chapel/office)
 "aMP" = (
@@ -18616,7 +18374,7 @@
 /turf/floor/tiled/techfloor/grid,
 /area/exodus/hallway/primary/port)
 "aNi" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -18801,13 +18559,8 @@
 /area/exodus/hallway/primary/port)
 "aNA" = (
 /obj/structure/cable/green{
-	icon_state = "1-2"
-	},
-/obj/structure/cable/green{
 	icon_state = "2-4"
 	},
-/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
-/obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/effect/floor_decal/corner/lime{
 	dir = 5
 	},
@@ -19132,10 +18885,7 @@
 "aOg" = (
 /obj/structure/table/laminate,
 /obj/item/food/junk/chips,
-/obj/random/single{
-	name = "randomly spawned cola";
-	spawn_object = /obj/item/chems/drinks/cans/cola
-	},
+/obj/random/single/cola,
 /turf/floor/carpet,
 /area/exodus/hallway/secondary/entry/starboard)
 "aOh" = (
@@ -19386,7 +19136,7 @@
 /turf/floor/tiled/dark,
 /area/exodus/chapel/office)
 "aOF" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -19436,7 +19186,7 @@
 /turf/floor/tiled/dark,
 /area/exodus/chapel/main)
 "aOK" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/effect/floor_decal/corner/lime{
@@ -19725,11 +19475,11 @@
 /obj/structure/cable/green{
 	icon_state = "1-8"
 	},
-/obj/machinery/atmospherics/pipe/manifold/hidden/scrubbers{
-	dir = 4
+/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
+	dir = 10
 	},
-/obj/machinery/atmospherics/pipe/manifold/hidden/supply{
-	dir = 4
+/obj/machinery/atmospherics/pipe/simple/hidden/supply{
+	dir = 10
 	},
 /turf/floor/tiled/steel_grid,
 /area/exodus/hallway/primary/port)
@@ -20005,7 +19755,7 @@
 /area/exodus/hydroponics)
 "aPT" = (
 /obj/structure/disposalpipe/segment,
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/effect/floor_decal/corner/lime{
 	dir = 6
 	},
@@ -20131,10 +19881,7 @@
 /obj/item/box/fancy/cigarettes{
 	pixel_y = 2
 	},
-/obj/random/single{
-	name = "randomly spawned lighter";
-	spawn_object = /obj/item/flame/fuelled/lighter
-	},
+/obj/random/single/lighter,
 /turf/floor/lino,
 /area/exodus/hallway/secondary/entry/starboard)
 "aQk" = (
@@ -20658,10 +20405,7 @@
 /area/exodus/crew_quarters/bar)
 "aRx" = (
 /obj/structure/table/laminate,
-/obj/random/single{
-	name = "randomly spawned deck of cards";
-	spawn_object = /obj/item/deck/cards
-	},
+/obj/random/single/playing_cards,
 /turf/floor/lino,
 /area/exodus/hallway/secondary/entry/starboard)
 "aRy" = (
@@ -20781,7 +20525,7 @@
 /turf/floor/carpet,
 /area/exodus/library)
 "aRO" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -20802,7 +20546,7 @@
 /area/exodus/hallway/secondary/entry/starboard)
 "aRQ" = (
 /obj/structure/cable/green,
-/obj/machinery/power/apc/high{
+/obj/machinery/apc/high{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -22045,7 +21789,7 @@
 /turf/floor/laminate/walnut,
 /area/exodus/crew_quarters/bar)
 "aUH" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/structure/cable/green{
 	icon_state = "1-2"
 	},
@@ -22326,7 +22070,7 @@
 /obj/structure/cable/green{
 	icon_state = "0-2"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -22421,7 +22165,7 @@
 /turf/floor/plating,
 /area/exodus/maintenance/locker)
 "aVB" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -22452,7 +22196,7 @@
 	dir = 8;
 	pixel_x = -24
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -22790,7 +22534,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/hydroponics/garden)
 "aWs" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -23460,7 +23204,7 @@
 /turf/floor/tiled/dark,
 /area/exodus/chapel/main)
 "aXX" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/structure/cable{
 	icon_state = "4-8"
 	},
@@ -23931,8 +23675,7 @@
 	announcementConsole = 1;
 	department = "Bridge";
 	name = "Bridge RC";
-	pixel_y = -32;
-	dir = 2
+	pixel_y = -32
 	},
 /obj/structure/cable/green{
 	icon_state = "4-8"
@@ -24245,7 +23988,7 @@
 /turf/floor/laminate/walnut,
 /area/exodus/crew_quarters/bar)
 "aZB" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -24421,7 +24164,7 @@
 /turf/floor/lino,
 /area/exodus/security/vacantoffice)
 "baa" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -24650,7 +24393,7 @@
 /turf/floor/plating,
 /area/exodus/maintenance/locker)
 "bay" = (
-/obj/machinery/power/breakerbox/activated{
+/obj/machinery/breakerbox/activated{
 	RCon_tag = "Medical Substation Bypass"
 	},
 /turf/floor/plating,
@@ -24761,7 +24504,7 @@
 /obj/effect/floor_decal/corner/brown/diagonal{
 	dir = 8
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -25310,7 +25053,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
 	dir = 4
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -25384,7 +25127,7 @@
 /area/exodus/hallway/primary/central_one)
 "bcb" = (
 /obj/structure/table/reinforced,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -25397,7 +25140,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/bridge)
 "bcc" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -25572,7 +25315,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/hallway/primary/central_two)
 "bcu" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -25702,7 +25445,7 @@
 /obj/effect/floor_decal/corner/lime{
 	dir = 1
 	},
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/steel_grid,
 /area/exodus/hydroponics/garden)
 "bcK" = (
@@ -25955,7 +25698,7 @@
 /obj/effect/floor_decal/industrial/warning{
 	dir = 4
 	},
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/steel_grid,
 /area/exodus/hallway/secondary/exit)
 "bdi" = (
@@ -26056,7 +25799,7 @@
 /turf/floor/tiled/freezer,
 /area/exodus/crew_quarters/locker/locker_toilet)
 "bdt" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -26133,7 +25876,7 @@
 /turf/floor/plating,
 /area/exodus/maintenance/locker)
 "bdB" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -26229,22 +25972,6 @@
 /obj/structure/disposalpipe/segment,
 /turf/floor/tiled/techfloor/grid,
 /area/exodus/hallway/primary/starboard)
-"bdL" = (
-/obj/machinery/power/apc{
-	dir = 8;
-	name = "west bump";
-	pixel_x = -24
-	},
-/obj/structure/table,
-/obj/item/deck/cards,
-/obj/structure/cable/green{
-	icon_state = "0-4"
-	},
-/obj/item/box/fancy/cigarettes{
-	pixel_y = 2
-	},
-/turf/floor/tiled/dark/monotile,
-/area/exodus/gateway)
 "bdM" = (
 /obj/machinery/atmospherics/unary/vent_scrubber/on{
 	dir = 1
@@ -26476,7 +26203,7 @@
 /turf/floor/lino,
 /area/exodus/security/vacantoffice)
 "beu" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -26839,8 +26566,7 @@
 /obj/machinery/network/requests_console{
 	department = "Kitchen";
 	name = "Kitchen RC";
-	pixel_y = -32;
-	dir = 2
+	pixel_y = -32
 	},
 /obj/machinery/disposal,
 /obj/structure/disposalpipe/trunk{
@@ -26926,7 +26652,7 @@
 /turf/floor/tiled/techfloor/grid,
 /area/exodus/hallway/primary/starboard)
 "bfr" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -27067,7 +26793,7 @@
 /turf/floor/carpet,
 /area/exodus/crew_quarters/captain)
 "bfI" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -27576,7 +27302,7 @@
 /turf/floor/carpet,
 /area/exodus/crew_quarters/captain)
 "bgR" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/carpet,
 /area/exodus/bridge/meeting_room)
 "bgS" = (
@@ -28073,7 +27799,7 @@
 /turf/floor/plating,
 /area/exodus/engineering/engine_room)
 "bhS" = (
-/obj/machinery/power/sensor{
+/obj/machinery/power_sensor{
 	id_tag = "AI Subgrid";
 	name = "Powernet Sensor - AI Subgrid"
 	},
@@ -29392,7 +29118,7 @@
 /area/exodus/research/docking)
 "bks" = (
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
-/obj/machinery/power/apc/high{
+/obj/machinery/apc/high{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -29486,7 +29212,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/quartermaster/office)
 "bkC" = (
-/obj/machinery/hologram/holopad{
+/obj/machinery/holopad{
 	holopad_id = "Supply Foyer"
 	},
 /turf/floor/tiled/steel_grid,
@@ -29868,8 +29594,7 @@
 	announcementConsole = 1;
 	department = "Bridge";
 	name = "Bridge RC";
-	pixel_y = -32;
-	dir = 2
+	pixel_y = -32
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
 	dir = 4
@@ -30015,7 +29740,7 @@
 /turf/floor/laminate/walnut,
 /area/exodus/crew_quarters/captain)
 "blJ" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/structure/cable/green{
 	icon_state = "1-2"
 	},
@@ -30182,7 +29907,7 @@
 /obj/effect/floor_decal/corner/paleblue{
 	dir = 5
 	},
-/obj/structure/sign/department/star_of_life{
+/obj/structure/sign/department/cross/star_of_life{
 	name = "Medbay";
 	pixel_y = 32
 	},
@@ -30343,7 +30068,7 @@
 /obj/machinery/light{
 	dir = 8
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -30459,7 +30184,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/hallway/primary/starboard)
 "bmC" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -30514,7 +30239,7 @@
 /obj/structure/cable/cyan{
 	icon_state = "0-4"
 	},
-/obj/machinery/power/apc/super/critical{
+/obj/machinery/apc/super/critical{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -30675,7 +30400,7 @@
 /turf/wall/r_wall/prepainted,
 /area/exodus/medical/chemistry)
 "bmZ" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -30768,7 +30493,6 @@
 	},
 /obj/item/chems/glass/beaker/sulfuric,
 /obj/structure/reagent_dispensers/acid{
-	density = 0;
 	pixel_y = 32
 	},
 /turf/floor/tiled/white/monotile,
@@ -31161,7 +30885,7 @@
 /turf/floor/tiled/white,
 /area/exodus/medical/reception)
 "bnV" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/white,
 /area/exodus/medical/reception)
 "bnW" = (
@@ -31227,7 +30951,7 @@
 /obj/item/clothing/head/hardhat/red,
 /obj/item/flashlight,
 /obj/item/clothing/mask/gas,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -31358,7 +31082,7 @@
 /turf/floor/bluegrid,
 /area/exodus/turret_protected/ai)
 "box" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
 	dir = 6
 	},
@@ -31405,7 +31129,7 @@
 /turf/floor/laminate/walnut,
 /area/exodus/crew_quarters/captain)
 "boD" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -31575,7 +31299,7 @@
 /turf/floor/tiled/white,
 /area/exodus/research/lab)
 "boU" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -31610,9 +31334,7 @@
 /turf/floor/tiled/white,
 /area/exodus/research/lab)
 "boW" = (
-/obj/item/stack/material/rods{
-	amount = 50
-	},
+/obj/item/stack/material/rods/mapped/steel/fifty,
 /obj/item/stock_parts/circuitboard/airlock_electronics,
 /obj/item/stock_parts/circuitboard/airlock_electronics,
 /obj/item/cell/high,
@@ -31911,7 +31633,7 @@
 	icon_state = "0-4"
 	},
 /obj/structure/cable/green,
-/obj/machinery/power/sensor{
+/obj/machinery/power_sensor{
 	id_tag = "Command Subgrid";
 	name = "Powernet Sensor - Command Subgrid"
 	},
@@ -32032,7 +31754,7 @@
 /obj/machinery/porta_turret{
 	dir = 4
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -32279,7 +32001,7 @@
 /turf/floor/tiled/dark,
 /area/exodus/medical/morgue)
 "bqn" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/dark,
 /area/exodus/medical/morgue)
 "bqo" = (
@@ -33185,7 +32907,7 @@
 /turf/floor/tiled/white,
 /area/exodus/medical/exam_room)
 "bsa" = (
-/obj/machinery/power/breakerbox/activated{
+/obj/machinery/breakerbox/activated{
 	RCon_tag = "Command Substation Bypass"
 	},
 /obj/machinery/light,
@@ -33421,7 +33143,7 @@
 /turf/floor/tiled/dark,
 /area/exodus/research/lab)
 "bsD" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/white,
 /area/exodus/research/lab)
 "bsE" = (
@@ -34002,7 +33724,7 @@
 /turf/floor/bluegrid,
 /area/exodus/turret_protected/ai_upload)
 "btO" = (
-/obj/structure/sign/department/star_of_life{
+/obj/structure/sign/department/cross/star_of_life{
 	name = "Medbay";
 	pixel_x = -32
 	},
@@ -34058,7 +33780,7 @@
 /turf/floor/tiled/white,
 /area/exodus/medical/exam_room)
 "btV" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/machinery/atmospherics/pipe/simple/hidden{
 	dir = 10
 	},
@@ -34137,7 +33859,7 @@
 /turf/floor/tiled/dark,
 /area/exodus/research/chargebay)
 "buf" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -34158,7 +33880,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/research/robotics)
 "buh" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/structure/cable/green{
 	icon_state = "1-8"
 	},
@@ -34172,7 +33894,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/research/chargebay)
 "buj" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/structure/cable/green{
 	icon_state = "1-2"
 	},
@@ -34645,7 +34367,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/crew_quarters/heads/hop)
 "buZ" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -34723,7 +34445,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/crew_quarters/heads/hop)
 "bve" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/structure/cable/cyan{
 	icon_state = "1-2"
 	},
@@ -34850,7 +34572,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/medical/reception)
 "bvr" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -35008,7 +34730,7 @@
 /turf/floor/plating,
 /area/exodus/maintenance/cargo)
 "bvG" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -35078,7 +34800,7 @@
 /turf/floor/plating,
 /area/exodus/maintenance/cargo)
 "bvT" = (
-/obj/machinery/power/apc/high{
+/obj/machinery/apc/high{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -35187,7 +34909,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/quartermaster/storage)
 "bwe" = (
-/obj/vehicle/train/cargo/trolley,
+/obj/vehicle/train/trolley,
 /obj/effect/floor_decal/industrial/outline/yellow,
 /turf/floor/tiled/steel_grid,
 /area/exodus/quartermaster/storage)
@@ -35198,7 +34920,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/quartermaster/storage)
 "bwg" = (
-/obj/vehicle/train/cargo/engine,
+/obj/vehicle/train/engine,
 /obj/effect/floor_decal/industrial/outline/yellow,
 /obj/structure/cable/green{
 	icon_state = "1-2"
@@ -35388,7 +35110,7 @@
 /obj/structure/disposalpipe/segment{
 	dir = 4
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -35439,7 +35161,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/crew_quarters/heads/hop)
 "bwI" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -35599,7 +35321,7 @@
 /turf/floor/tiled/white,
 /area/exodus/medical/chemistry)
 "bwY" = (
-/obj/structure/sign/department/star_of_life{
+/obj/structure/sign/department/cross/star_of_life{
 	name = "Medbay";
 	pixel_x = 32
 	},
@@ -35634,7 +35356,7 @@
 /turf/floor/tiled/white,
 /area/exodus/medical/chemistry)
 "bxb" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -35739,7 +35461,7 @@
 /turf/floor/bluegrid,
 /area/exodus/turret_protected/ai_upload)
 "bxp" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -36033,7 +35755,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/quartermaster/storage)
 "bxU" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/steel_grid,
 /area/exodus/quartermaster/storage)
 "bxV" = (
@@ -36301,7 +36023,7 @@
 /turf/floor/tiled/white,
 /area/exodus/medical/medbay)
 "byy" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -36369,7 +36091,7 @@
 /turf/floor/tiled/dark,
 /area/exodus/research/storage)
 "byH" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/carpet,
 /area/exodus/crew_quarters/heads/hop)
 "byI" = (
@@ -36429,7 +36151,7 @@
 /obj/structure/disposalpipe/segment{
 	dir = 4
 	},
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
 	dir = 4
 	},
@@ -36546,7 +36268,7 @@
 /obj/machinery/light/small,
 /obj/structure/mopbucket,
 /obj/item/mop,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -36577,7 +36299,7 @@
 	pixel_x = -2;
 	pixel_y = -1
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -36784,7 +36506,7 @@
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/steel_grid,
 /area/exodus/quartermaster/office)
 "bzy" = (
@@ -36859,7 +36581,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
 	dir = 9
 	},
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/white,
 /area/exodus/crew_quarters/heads/hor)
 "bzH" = (
@@ -36913,7 +36635,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/quartermaster/miningdock)
 "bzM" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -36928,7 +36650,7 @@
 /turf/floor/tiled/dark,
 /area/exodus/turret_protected/ai_server_room)
 "bzN" = (
-/obj/machinery/power/apc/critical{
+/obj/machinery/apc/critical{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -36970,7 +36692,7 @@
 /turf/floor/tiled/dark/monotile,
 /area/exodus/teleporter)
 "bzR" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -36985,7 +36707,7 @@
 /turf/floor/tiled/dark,
 /area/exodus/turret_protected/ai_upload_foyer)
 "bzS" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -37033,7 +36755,7 @@
 /turf/floor/plating,
 /area/exodus/maintenance/engineering)
 "bzY" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -37209,7 +36931,7 @@
 /turf/floor/tiled/techfloor/grid,
 /area/exodus/medical/medbay)
 "bAp" = (
-/obj/machinery/hologram/holopad{
+/obj/machinery/holopad{
 	holopad_id = "Medbay Storage"
 	},
 /obj/structure/cable/green{
@@ -37406,7 +37128,7 @@
 /obj/structure/cable/green{
 	icon_state = "0-8"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -37429,7 +37151,7 @@
 	icon_state = "0-4"
 	},
 /obj/structure/cable/green,
-/obj/machinery/power/sensor{
+/obj/machinery/power_sensor{
 	id_tag = "Medbay Subgrid";
 	name = "Powernet Sensor - Medbay Subgrid"
 	},
@@ -37647,7 +37369,7 @@
 	},
 /obj/item/clothing/head/soft/orange,
 /obj/item/clothing/shoes/sandal,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -38708,7 +38430,7 @@
 /obj/machinery/light{
 	dir = 4
 	},
-/obj/structure/sign/department/star_of_life{
+/obj/structure/sign/department/cross/star_of_life{
 	name = "Medbay";
 	pixel_x = 32
 	},
@@ -38898,7 +38620,7 @@
 /turf/floor/plating,
 /area/exodus/medical/genetics/cloning)
 "bDF" = (
-/obj/structure/sign/department/star_of_life{
+/obj/structure/sign/department/cross/star_of_life{
 	name = "Medbay";
 	pixel_x = -32
 	},
@@ -39146,7 +38868,7 @@
 /turf/floor/plating,
 /area/exodus/storage/tech)
 "bEc" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/structure/cable/green{
 	icon_state = "1-2"
 	},
@@ -39230,7 +38952,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/quartermaster/storage)
 "bEl" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -39272,7 +38994,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/quartermaster/office)
 "bEq" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -39322,7 +39044,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/hallway/primary/central_three)
 "bEv" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -39350,8 +39072,7 @@
 	announcementConsole = 1;
 	department = "Head of Personnel's Desk";
 	name = "Head of Personnel RC";
-	pixel_y = -32;
-	dir = 2
+	pixel_y = -32
 	},
 /obj/machinery/camera/network/command{
 	c_tag = "Bridge - HoP's Office";
@@ -39407,7 +39128,7 @@
 /area/exodus/turret_protected/ai_cyborg_station)
 "bEE" = (
 /obj/structure/table,
-/obj/prefab/hand_teleporter,
+/obj/abstract/prefab/hand_teleporter,
 /obj/machinery/light,
 /obj/machinery/atmospherics/unary/vent_scrubber/on{
 	dir = 1
@@ -39570,7 +39291,7 @@
 /turf/floor/tiled/white,
 /area/exodus/medical/medbay2)
 "bEZ" = (
-/obj/machinery/power/apc/high{
+/obj/machinery/apc/high{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -39997,7 +39718,7 @@
 /turf/floor/tiled/techfloor/grid,
 /area/exodus/research/xenobiology)
 "bFR" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -40456,7 +40177,7 @@
 /obj/structure/noticeboard{
 	default_pixel_y = 28
 	},
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/effect/floor_decal/corner/paleblue{
 	dir = 5
 	},
@@ -40621,7 +40342,7 @@
 /obj/structure/disposalpipe/segment{
 	dir = 4
 	},
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/structure/cable/green{
 	icon_state = "4-8"
 	},
@@ -40942,7 +40663,7 @@
 /obj/structure/cable/green{
 	icon_state = "0-4"
 	},
-/obj/machinery/power/apc/critical{
+/obj/machinery/apc/critical{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -41332,7 +41053,7 @@
 	pixel_x = -22;
 	pixel_y = 11
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -41520,7 +41241,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
 	dir = 4
 	},
-/obj/machinery/power/apc/critical{
+/obj/machinery/apc/critical{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -41562,7 +41283,7 @@
 /turf/wall/prepainted,
 /area/exodus/research/storage)
 "bIK" = (
-/obj/structure/sign/department/star_of_life{
+/obj/structure/sign/department/cross/star_of_life{
 	name = "Medbay";
 	pixel_x = 32
 	},
@@ -41684,7 +41405,7 @@
 /turf/floor/plating,
 /area/exodus/storage/tech)
 "bIX" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -41927,7 +41648,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/hallway/primary/central_three)
 "bJt" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/structure/cable{
 	icon_state = "4-8"
 	},
@@ -42394,7 +42115,7 @@
 /obj/structure/cable{
 	icon_state = "0-2"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -42628,7 +42349,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/quartermaster/qm)
 "bKN" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/steel_grid,
 /area/exodus/quartermaster/qm)
 "bKO" = (
@@ -42853,7 +42574,7 @@
 /turf/floor/tiled/white,
 /area/exodus/research)
 "bLl" = (
-/obj/machinery/atmospherics/unary/freezer{
+/obj/machinery/atmospherics/unary/temperature/freezer{
 	icon_state = "freezer"
 	},
 /obj/effect/floor_decal/corner/purple{
@@ -42876,7 +42597,7 @@
 /turf/wall/prepainted,
 /area/exodus/medical/genetics/cloning)
 "bLp" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
 	dir = 4
 	},
@@ -42931,7 +42652,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/maintenance/atmos_control)
 "bLv" = (
-/obj/machinery/atmospherics/unary/heater{
+/obj/machinery/atmospherics/unary/temperature/heater{
 	icon_state = "heater"
 	},
 /obj/effect/floor_decal/corner/purple{
@@ -43362,7 +43083,7 @@
 	dir = 8;
 	icon_state = "pipe-c"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -43537,7 +43258,7 @@
 /turf/floor/tiled/white,
 /area/exodus/crew_quarters/heads/cmo)
 "bMD" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
 /turf/floor/tiled/white,
 /area/exodus/crew_quarters/heads/cmo)
@@ -43548,7 +43269,7 @@
 /turf/wall/prepainted,
 /area/exodus/medical/medbay2)
 "bMF" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -43614,7 +43335,7 @@
 /area/exodus/crew_quarters/medbreak)
 "bML" = (
 /obj/machinery/washing_machine,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -44067,7 +43788,7 @@
 /obj/structure/cable/green{
 	icon_state = "0-8"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -44499,7 +44220,7 @@
 /obj/machinery/light{
 	dir = 8
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -44586,7 +44307,7 @@
 /turf/floor/plating,
 /area/exodus/storage/tech)
 "bOM" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -44763,7 +44484,7 @@
 "bPd" = (
 /obj/machinery/door/firedoor,
 /obj/machinery/door/airlock/maintenance,
-/obj/structure/sign/department/star_of_life{
+/obj/structure/sign/department/cross/star_of_life{
 	name = "Medbay";
 	pixel_y = 32
 	},
@@ -44905,7 +44626,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/janitor)
 "bPs" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -45345,7 +45066,7 @@
 	pixel_x = -25;
 	pixel_y = -5
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -45423,7 +45144,7 @@
 "bQy" = (
 /obj/machinery/door/firedoor,
 /obj/machinery/door/airlock/maintenance,
-/obj/structure/sign/department/star_of_life{
+/obj/structure/sign/department/cross/star_of_life{
 	name = "Medbay";
 	pixel_y = 32
 	},
@@ -45577,8 +45298,7 @@
 /obj/item/grenade/chem_grenade/cleaner,
 /obj/machinery/network/requests_console{
 	department = "Janitorial";
-	pixel_y = -32;
-	dir = 2
+	pixel_y = -32
 	},
 /obj/item/chems/spray/cleaner,
 /obj/structure/table/steel,
@@ -45698,7 +45418,7 @@
 /turf/floor/tiled/white,
 /area/exodus/medical/sleeper)
 "bQZ" = (
-/obj/machinery/hologram/holopad{
+/obj/machinery/holopad{
 	holopad_id = "Emergency Recovery"
 	},
 /turf/floor/tiled/white,
@@ -45830,7 +45550,7 @@
 /obj/effect/floor_decal/corner/pink{
 	dir = 5
 	},
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/white,
 /area/exodus/medical/patient_a)
 "bRj" = (
@@ -45881,7 +45601,7 @@
 /obj/effect/floor_decal/corner/pink{
 	dir = 5
 	},
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/white,
 /area/exodus/medical/patient_b)
 "bRn" = (
@@ -46066,7 +45786,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
 	dir = 4
 	},
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/white,
 /area/exodus/research/mixing)
 "bRF" = (
@@ -46116,7 +45836,7 @@
 /obj/structure/cable/green{
 	icon_state = "0-4"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -46475,7 +46195,7 @@
 /turf/floor/tiled/white,
 /area/exodus/crew_quarters/medbreak)
 "bSw" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/effect/floor_decal/corner/grey/diagonal,
 /obj/item/radio/intercom{
 	dir = 1;
@@ -47018,7 +46738,7 @@
 /area/exodus/medical/patient_a)
 "bTI" = (
 /obj/structure/iv_drip,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -47061,7 +46781,7 @@
 /area/exodus/medical/patient_b)
 "bTM" = (
 /obj/structure/iv_drip,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -47109,7 +46829,7 @@
 /turf/floor/tiled/white,
 /area/exodus/research/misc_lab)
 "bTQ" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -47160,7 +46880,7 @@
 /turf/floor/reinforced,
 /area/exodus/research/misc_lab)
 "bTT" = (
-/obj/structure/sign/department/star_of_life{
+/obj/structure/sign/department/cross/star_of_life{
 	name = "Medbay";
 	pixel_y = 32
 	},
@@ -47231,7 +46951,7 @@
 	pixel_y = -23;
 	dir = 1
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -47445,7 +47165,7 @@
 	pixel_x = -6;
 	pixel_y = 25
 	},
-/obj/machinery/atmospherics/unary/freezer{
+/obj/machinery/atmospherics/unary/temperature/freezer{
 	dir = 8;
 	icon_state = "freezer"
 	},
@@ -47571,15 +47291,6 @@
 	},
 /turf/floor/tiled/white,
 /area/exodus/medical/medbay4)
-"bUO" = (
-/obj/structure/table,
-/obj/machinery/alarm{
-	dir = 4;
-	pixel_x = -23
-	},
-/obj/machinery/recharger,
-/turf/floor/tiled/dark/monotile,
-/area/exodus/gateway)
 "bUP" = (
 /obj/item/radio/intercom{
 	pixel_y = 20
@@ -47717,7 +47428,7 @@
 /turf/floor/tiled/techfloor/grid,
 /area/exodus/medical/patient_wing)
 "bVe" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -47786,7 +47497,7 @@
 /obj/structure/cable/green{
 	icon_state = "4-8"
 	},
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/effect/floor_decal/corner/purple{
 	dir = 5
 	},
@@ -47868,7 +47579,7 @@
 /obj/machinery/alarm{
 	pixel_y = 22
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -47975,7 +47686,7 @@
 /turf/floor/laminate/walnut,
 /area/exodus/engineering/break_room)
 "bVF" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/white,
 /area/exodus/research/xenobiology/xenoflora)
 "bVG" = (
@@ -48183,7 +47894,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
 	dir = 5
 	},
-/obj/machinery/hologram/holopad{
+/obj/machinery/holopad{
 	holopad_id = "Emergency Scanning"
 	},
 /turf/floor/tiled/steel_grid,
@@ -48259,7 +47970,7 @@
 /turf/floor/tiled/white,
 /area/exodus/medical/medbay4)
 "bWl" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
 	dir = 4
 	},
@@ -48789,7 +48500,7 @@
 /area/exodus/engineering/storage)
 "bXs" = (
 /obj/machinery/atmospherics/unary/tank/oxygen{
-	volume = 3200
+	gas_volume = 3200
 	},
 /obj/effect/floor_decal/industrial/outline/yellow,
 /turf/floor/tiled/steel_grid,
@@ -48820,7 +48531,7 @@
 /area/exodus/engineering/break_room)
 "bXv" = (
 /obj/machinery/atmospherics/unary/tank/hydrogen{
-	volume = 3200
+	gas_volume = 3200
 	},
 /obj/effect/floor_decal/industrial/outline/yellow,
 /turf/floor/tiled/steel_grid,
@@ -48878,7 +48589,7 @@
 /obj/structure/disposalpipe/segment{
 	dir = 4
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -48909,7 +48620,7 @@
 /obj/structure/cable/green{
 	icon_state = "4-8"
 	},
-/obj/structure/sign/department/greencross{
+/obj/structure/sign/department/cross/green{
 	pixel_y = -32;
 	dir = 1
 	},
@@ -49059,7 +48770,7 @@
 /turf/floor/tiled/white,
 /area/exodus/medical/patient_wing)
 "bXR" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -49075,7 +48786,7 @@
 /turf/floor/tiled/white,
 /area/exodus/medical/patient_wing)
 "bXS" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/structure/cable/green{
 	icon_state = "4-8"
 	},
@@ -49185,7 +48896,7 @@
 /turf/wall/prepainted,
 /area/exodus/maintenance/research_port)
 "bYg" = (
-/obj/structure/sign/department/star_of_life{
+/obj/structure/sign/department/cross/star_of_life{
 	name = "Medbay";
 	pixel_x = -32
 	},
@@ -49417,7 +49128,7 @@
 /obj/machinery/light{
 	dir = 8
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -49586,7 +49297,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/crew_quarters/heads/chief)
 "bYP" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -49730,7 +49441,7 @@
 /obj/machinery/light_switch{
 	pixel_y = 27
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -50396,7 +50107,7 @@
 /turf/floor/tiled/techfloor/grid,
 /area/exodus/medical/medbay4)
 "caz" = (
-/obj/machinery/power/apc/high{
+/obj/machinery/apc/high{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -50451,7 +50162,7 @@
 /turf/wall/prepainted,
 /area/exodus/medical/ward)
 "caF" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -50507,7 +50218,7 @@
 /obj/effect/floor_decal/corner/pink{
 	dir = 5
 	},
-/obj/structure/sign/department/greencross{
+/obj/structure/sign/department/cross/green{
 	pixel_y = 32
 	},
 /turf/floor/tiled/white,
@@ -50518,7 +50229,7 @@
 	pixel_x = 22;
 	dir = 8
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -50630,7 +50341,7 @@
 /area/exodus/maintenance/research_starboard)
 "cbb" = (
 /obj/structure/iv_drip,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -50915,7 +50626,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/engineering/engine_eva)
 "cbE" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/structure/cable/green{
 	icon_state = "1-2"
 	},
@@ -50980,7 +50691,7 @@
 /turf/floor/plating,
 /area/exodus/maintenance/research_starboard)
 "cbM" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/machinery/atmospherics/pipe/manifold/hidden/supply{
 	dir = 4
 	},
@@ -51146,7 +50857,7 @@
 	icon_state = "0-2"
 	},
 /obj/structure/cable/green,
-/obj/machinery/power/sensor{
+/obj/machinery/power_sensor{
 	id_tag = "Research Subgrid";
 	name = "Powernet Sensor - Research Subgrid"
 	},
@@ -51373,7 +51084,7 @@
 /turf/floor/plating,
 /area/exodus/maintenance/cargo)
 "ccA" = (
-/obj/machinery/power/breakerbox/activated{
+/obj/machinery/breakerbox/activated{
 	RCon_tag = "Research Substation Bypass"
 	},
 /turf/floor/plating,
@@ -51664,7 +51375,7 @@
 /obj/structure/cable/green{
 	icon_state = "0-8"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -51824,7 +51535,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
 	dir = 10
 	},
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/white,
 /area/exodus/medical/ward)
 "cdq" = (
@@ -51961,7 +51672,7 @@
 /obj/effect/floor_decal/corner/pink{
 	dir = 10
 	},
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/white,
 /area/exodus/medical/patient_c)
 "cdC" = (
@@ -52021,7 +51732,7 @@
 /area/exodus/maintenance/substation/research)
 "cdH" = (
 /obj/structure/cable/green,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -52368,7 +52079,7 @@
 /turf/floor/plating/airless,
 /area/exodus/research/test_area)
 "cet" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -52392,7 +52103,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/hallway/secondary/entry/fore)
 "cew" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -52479,7 +52190,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/engineering/break_room)
 "ceG" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/effect/floor_decal/corner/white/diagonal,
 /turf/floor/tiled/steel_grid,
 /area/exodus/engineering/break_room)
@@ -52577,7 +52288,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/medical/surgeryobs)
 "ceS" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -53050,7 +52761,7 @@
 /area/exodus/engineering/break_room)
 "cfW" = (
 /obj/machinery/light,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -53443,7 +53154,7 @@
 /obj/random/tech_supply,
 /obj/random/tech_supply,
 /obj/random/tech_supply,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -53810,7 +53521,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/engineering/foyer)
 "chy" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -53974,7 +53685,7 @@
 "chM" = (
 /obj/structure/bedsheetbin/mapped,
 /obj/structure/table,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -54108,7 +53819,7 @@
 /turf/floor/tiled/white,
 /area/exodus/research/xenobiology/xenoflora)
 "chZ" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -54129,7 +53840,7 @@
 /turf/floor/tiled/white/monotile,
 /area/exodus/medical/surgery2)
 "cib" = (
-/obj/machinery/power/breakerbox/activated{
+/obj/machinery/breakerbox/activated{
 	RCon_tag = "Engineering Substation Bypass"
 	},
 /turf/floor/plating,
@@ -54174,7 +53885,7 @@
 /turf/floor/tiled/freezer,
 /area/exodus/research/xenobiology/xenoflora_storage)
 "cig" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -54302,7 +54013,7 @@
 	pixel_y = 3
 	},
 /obj/item/briefcase/inflatable,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -54314,7 +54025,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/engineering/engine_eva)
 "civ" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/steel_grid,
 /area/exodus/engineering/engine_eva)
 "ciw" = (
@@ -54408,7 +54119,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/engineering/foyer)
 "ciK" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/structure/cable/green{
 	icon_state = "1-2"
 	},
@@ -54461,7 +54172,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/engineering/locker_room)
 "ciQ" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -54682,7 +54393,7 @@
 /obj/machinery/light{
 	dir = 8
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -55045,7 +54756,7 @@
 /obj/structure/cable/green{
 	icon_state = "0-8"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -55072,7 +54783,7 @@
 /obj/structure/cable/green{
 	icon_state = "0-8"
 	},
-/obj/machinery/power/sensor{
+/obj/machinery/power_sensor{
 	id_tag = "Engineering Subgrid";
 	name = "Powernet Sensor - Engineering Subgrid"
 	},
@@ -55130,7 +54841,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/medical/surgeryprep)
 "cko" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
 /turf/floor/tiled/steel_grid,
@@ -56223,8 +55934,7 @@
 /obj/machinery/network/requests_console{
 	department = "Engineering";
 	name = "Engineering RC";
-	pixel_y = -32;
-	dir = 2
+	pixel_y = -32
 	},
 /turf/floor/tiled/steel_grid,
 /area/exodus/engineering/foyer)
@@ -56509,7 +56219,7 @@
 /turf/floor/plating,
 /area/exodus/maintenance/portsolar)
 "cnh" = (
-/obj/machinery/power/supermatter,
+/obj/structure/supermatter,
 /obj/machinery/mass_driver{
 	id_tag = "enginecore"
 	},
@@ -56920,7 +56630,7 @@
 /obj/machinery/light{
 	dir = 1
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -57064,7 +56774,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/research/xenobiology)
 "cot" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -57444,7 +57154,7 @@
 /turf/floor/plating,
 /area/exodus/engineering/sublevel_access)
 "cpp" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -58101,7 +57811,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/engineering)
 "crj" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -58490,7 +58200,7 @@
 /obj/structure/table/reinforced,
 /obj/machinery/light,
 /obj/item/flashlight,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -58533,7 +58243,7 @@
 /obj/structure/cable/green{
 	icon_state = "0-4"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -58571,7 +58281,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/engineering/workshop)
 "csx" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -58629,7 +58339,7 @@
 	dir = 8;
 	pixel_x = -24
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -58689,7 +58399,7 @@
 	dir = 4;
 	pixel_x = 24
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -58714,7 +58424,7 @@
 /area/space)
 "csN" = (
 /obj/structure/closet/wardrobe/virology_white,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -58793,7 +58503,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/hallway/primary/starboard)
 "ctg" = (
-/obj/item/stack/material/rods{
+/obj/item/stack/material/rods/mapped/steel{
 	amount = 6
 	},
 /turf/space,
@@ -58839,9 +58549,7 @@
 /turf/floor/plating,
 /area/exodus/engineering/engine_room)
 "cts" = (
-/obj/item/stack/material/rods{
-	amount = 10
-	},
+/obj/item/stack/material/rods/mapped/steel/ten,
 /obj/structure/lattice,
 /turf/space,
 /area/space)
@@ -58910,7 +58618,7 @@
 /turf/floor/tiled/white,
 /area/exodus/crew_quarters/heads/hor)
 "ctA" = (
-/obj/machinery/power/apc/high{
+/obj/machinery/apc/high{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -59787,7 +59495,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/engineering/workshop)
 "cvH" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/steel_grid,
 /area/exodus/engineering/workshop)
 "cvJ" = (
@@ -59824,7 +59532,7 @@
 /obj/structure/disposalpipe/segment{
 	dir = 4
 	},
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/white,
 /area/exodus/medical/virology)
 "cvM" = (
@@ -60000,7 +59708,7 @@
 /turf/floor/plating,
 /area/exodus/engineering/storage)
 "cwy" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -60071,7 +59779,7 @@
 /turf/floor/tiled/techfloor/grid,
 /area/exodus/engineering/storage)
 "cwX" = (
-/obj/structure/sign/department/star_of_life{
+/obj/structure/sign/department/cross/star_of_life{
 	name = "Medbay";
 	pixel_y = 32
 	},
@@ -60294,7 +60002,7 @@
 /turf/floor/reinforced,
 /area/exodus/research/xenobiology)
 "cxW" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/white,
 /area/exodus/research/xenobiology)
 "cxX" = (
@@ -60505,8 +60213,7 @@
 /obj/machinery/network/requests_console{
 	department = "Engineering";
 	name = "Engineering RC";
-	pixel_y = -32;
-	dir = 2
+	pixel_y = -32
 	},
 /obj/structure/reagent_dispensers/watertank,
 /turf/floor/tiled/steel_grid,
@@ -60700,7 +60407,7 @@
 /obj/structure/chair{
 	dir = 8
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -61103,7 +60810,7 @@
 /turf/floor/tiled/white,
 /area/exodus/medical/virology)
 "cCW" = (
-/obj/machinery/hologram/holopad{
+/obj/machinery/holopad{
 	holopad_id = "Virology Cafeteria"
 	},
 /turf/floor/tiled/white,
@@ -61513,7 +61220,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/engineering/engine_monitoring)
 "cEM" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -61813,7 +61520,7 @@
 /turf/floor/plating,
 /area/exodus/engineering/engine_waste)
 "cGI" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -61932,14 +61639,14 @@
 /area/space)
 "cHf" = (
 /obj/machinery/light,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
 /obj/structure/cable{
 	icon_state = "0-4"
 	},
-/obj/machinery/power/sensor{
+/obj/machinery/power_sensor{
 	id_tag = "Master";
 	name = "Powernet Sensor - Master Grid"
 	},
@@ -62056,9 +61763,7 @@
 /turf/floor/plating,
 /area/exodus/engineering/engine_room)
 "cHK" = (
-/obj/item/stack/material/rods{
-	amount = 10
-	},
+/obj/item/stack/material/rods/mapped/steel/ten,
 /turf/space,
 /area/space)
 "cHL" = (
@@ -62134,10 +61839,8 @@
 /turf/floor/plating,
 /area/exodus/engineering/engine_room)
 "cIa" = (
-/obj/machinery/emitter{
-	anchored = 1;
-	id_tag = "EngineEmitter";
-	state = 2
+/obj/machinery/emitter/anchored{
+	id_tag = "EngineEmitter"
 	},
 /obj/structure/cable/cyan,
 /obj/machinery/power/terminal{
@@ -62150,7 +61853,7 @@
 	dir = 4
 	},
 /obj/structure/cable/yellow,
-/obj/machinery/power/sensor{
+/obj/machinery/power_sensor{
 	id_tag = "Engine Output";
 	name = "Powernet Sensor - Engine Output"
 	},
@@ -62434,7 +62137,7 @@
 /turf/floor/plating,
 /area/exodus/maintenance/engi_engine)
 "cJf" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -62999,11 +62702,11 @@
 /obj/structure/cable/cyan{
 	icon_state = "0-8"
 	},
-/obj/machinery/power/sensor{
+/obj/machinery/power_sensor{
 	id_tag = "Engine Power";
 	name = "Powernet Sensor - Engine Power"
 	},
-/obj/machinery/power/apc/super/critical{
+/obj/machinery/apc/super/critical{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -63195,7 +62898,7 @@
 	dir = 1;
 	pixel_y = -22
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -63474,7 +63177,7 @@
 /turf/floor/plating,
 /area/ship/exodus_pod_research)
 "elq" = (
-/obj/machinery/hologram/holopad{
+/obj/machinery/holopad{
 	holopad_id = "Security North"
 	},
 /turf/floor/tiled/steel_grid,
@@ -63669,7 +63372,7 @@
 /turf/floor,
 /area/exodus/quartermaster/miningdock)
 "gpG" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/monotile,
 /area/exodus/teleporter)
 "gsd" = (
@@ -63855,7 +63558,7 @@
 /turf/floor/tiled/steel_grid,
 /area/ship/exodus_pod_mining)
 "igB" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/abstract/landmark/latejoin/observer,
 /turf/floor/tiled/dark/monotile,
 /area/shuttle/arrival/station)
@@ -64120,7 +63823,7 @@
 /turf/floor/tiled/dark/monotile,
 /area/shuttle/arrival/station)
 "lFM" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -64327,8 +64030,7 @@
 "oWh" = (
 /obj/machinery/network/requests_console{
 	department = "Arrival shuttle";
-	pixel_y = -32;
-	dir = 2
+	pixel_y = -32
 	},
 /obj/effect/floor_decal/corner/white{
 	dir = 10
@@ -64386,7 +64088,7 @@
 /turf/space,
 /area/space)
 "qlX" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/laminate/walnut,
 /area/exodus/library)
 "qmC" = (
@@ -64407,7 +64109,7 @@
 /obj/machinery/light{
 	dir = 4
 	},
-/obj/structure/sign/department/star_of_life{
+/obj/structure/sign/department/cross/star_of_life{
 	name = "Medbay";
 	pixel_x = 32
 	},
@@ -64485,6 +64187,10 @@
 /obj/machinery/light,
 /turf/floor/bluegrid,
 /area/exodus/turret_protected/ai_upload)
+"rAK" = (
+/obj/structure/girder/displaced,
+/turf/floor/plating,
+/area/exodus/maintenance/evahallway)
 "rNu" = (
 /obj/structure/table{
 	name = "plastic table frame"
@@ -64722,7 +64428,7 @@
 /turf/floor/tiled/white,
 /area/exodus/research)
 "tGf" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -64937,7 +64643,7 @@
 /turf/floor/tiled/steel_grid,
 /area/exodus/hallway/primary/port)
 "woj" = (
-/obj/machinery/hologram/holopad{
+/obj/machinery/holopad{
 	holopad_id = "Library Rec Area"
 	},
 /turf/floor/laminate/walnut,
@@ -65059,7 +64765,7 @@
 /turf/floor/tiled/white,
 /area/exodus/research)
 "xTe" = (
-/obj/machinery/hologram/holopad{
+/obj/machinery/holopad{
 	holopad_id = "Sorting Office"
 	},
 /turf/floor/tiled/steel_grid,
@@ -65106,7 +64812,7 @@
 /area/exodus/teleporter)
 "yjb" = (
 /obj/structure/cable/green,
-/obj/machinery/power/apc/super/critical{
+/obj/machinery/apc/super/critical{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -87835,15 +87541,15 @@ anX
 anX
 anX
 ayI
+anX
+anX
+anX
 apD
 apD
-apD
-apD
-apD
-apD
-apD
-apD
-apD
+anX
+anX
+anX
+anX
 aLK
 aNw
 aPi
@@ -88092,15 +87798,15 @@ aie
 aie
 anX
 axM
-apD
+anX
 aBM
+auc
+auc
+auc
+aAG
+auc
+auc
 aBM
-aAB
-arS
-aCP
-aGl
-bdL
-bUO
 aLK
 aNy
 aPi
@@ -88350,15 +88056,15 @@ aie
 anX
 axM
 apD
-aAA
-aBJ
-aCL
-aEb
-aFA
-aGK
-aIp
-aKl
-axv
+auc
+auc
+auc
+auc
+auc
+auc
+auc
+auc
+aLK
 wBc
 aPi
 hgF
@@ -88606,16 +88312,16 @@ awy
 aie
 anX
 axM
-apD
-aAD
-aBO
-aCO
-aEg
-aFF
-aGR
-aIt
-aKo
-aLG
+anX
+auc
+auc
+auc
+auc
+auc
+auc
+auc
+auc
+aLK
 aNA
 aPq
 bGp
@@ -88863,16 +88569,16 @@ awy
 awy
 anX
 axM
-apD
-aAC
-aBN
-aCN
-aEf
-aFA
-aGN
-aIs
-aKn
-axv
+anX
+auc
+aBM
+auc
+auc
+auc
+auc
+auc
+auc
+aLK
 qHU
 xFu
 hgF
@@ -89120,15 +88826,15 @@ awv
 awy
 atc
 axM
-apD
-aBM
-aBM
+anX
+auc
+auc
 aAG
-asu
-aCQ
-aGS
+auc
+auc
 aBM
-aJc
+auc
+auc
 aMb
 aNp
 aOQ
@@ -89377,15 +89083,15 @@ aQt
 awy
 axK
 axM
-apD
-apD
-apD
-apD
-apD
-apD
-apD
+anX
+anX
+rAK
+anX
+anX
+anX
+anX
 azI
-apD
+anX
 aMb
 aNE
 vcu

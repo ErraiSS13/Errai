@@ -243,7 +243,7 @@
 				var/good_branch = 0
 				entry += "<br><i>"
 				for(var/branch in branches)
-					var/datum/mil_branch/player_branch = mil_branches.get_branch(branch)
+					var/datum/mil_branch/player_branch = global.using_map.get_branch(branch)
 					if(player_branch.type in gear.allowed_branches)
 						branch_checks += "<font color=55cc55>[player_branch.name]</font>"
 						good_branch = 1
@@ -406,6 +406,13 @@
 	var/list/allowed_branches
 	/// Skills required to spawn with this item.
 	var/list/allowed_skills
+	// The various valid values for loadout_flags.
+	var/const/GEAR_HAS_COLOR_SELECTION = BITFLAG(0)
+	var/const/GEAR_HAS_TYPE_SELECTION = BITFLAG(1)
+	var/const/GEAR_HAS_SUBTYPE_SELECTION = BITFLAG(2)
+	var/const/GEAR_HAS_CUSTOM_SELECTION = BITFLAG(3)
+	var/const/GEAR_NO_EQUIP = BITFLAG(4)
+	var/const/GEAR_NO_FINGERPRINTS = BITFLAG(5)
 	/// Special tweaks in new
 	var/loadout_flags
 	/// Special tweak in New
@@ -491,10 +498,10 @@
 	var/location
 	var/material
 
-/datum/gear_data/New(var/path, var/location, var/material)
-	src.path = path
-	src.location = location
-	src.material = material
+/datum/gear_data/New(var/_path, var/_location, var/_mat)
+	src.path = _path
+	src.location = _location
+	src.material = _mat
 
 /datum/gear_data/proc/can_replace_existing(obj/item/candidate)
 	return istype(candidate, path)
@@ -536,22 +543,23 @@
 	item.loadout_setup(wearer, metadata)
 
 	var/obj/item/old_item = wearer.get_equipped_item(slot)
-	var/attached_as_accessory = FALSE
 	if(istype(old_item, /obj/item/clothing) && istype(item, /obj/item/clothing))
 		var/obj/item/clothing/worn = old_item
 		if(worn.can_attach_accessory(item, wearer))
 			worn.attach_accessory(wearer, item)
-			attached_as_accessory = TRUE
 			return TRUE
 
-	if(!attached_as_accessory && wearer.equip_to_slot_if_possible(item, slot, del_on_fail = TRUE, force = TRUE, delete_old_item = FALSE, ignore_equipped = replace_equipped))
+	var/resolution_strategy = old_item?.loadout_should_keep(item, wearer)
+	if(resolution_strategy == LOADOUT_CONFLICT_KEEP)
+		place_in_storage_or_drop(wearer, item)
+	else if(wearer.equip_to_slot_if_possible(item, slot, del_on_fail = TRUE, force = TRUE, delete_old_item = FALSE, ignore_equipped = replace_equipped))
 		if(old_item && wearer.get_equipped_item(slot) != old_item)
 			item.handle_loadout_equip_replacement(old_item)
-			if(old_item.loadout_should_keep(item, wearer))
+			if(resolution_strategy == LOADOUT_CONFLICT_STORAGE)
 				place_in_storage_or_drop(wearer, old_item)
 			else
 				qdel(old_item)
-		return item
+	return item
 
 /decl/loadout_option/proc/spawn_in_storage_or_drop(mob/living/human/wearer, metadata)
 	var/obj/item/item = spawn_and_validate_item(wearer, metadata)
@@ -570,9 +578,6 @@
 		to_chat(wearer, SPAN_NOTICE("Placing \the [item] in your hands!"))
 	else
 		to_chat(wearer, SPAN_DANGER("Dropping \the [item] on the ground!"))
-
-/decl/loadout_option/proc/can_replace_existing(obj/item/candidate)
-	return istype(candidate, path)
 
 /decl/loadout_option/proc/spawn_and_validate_item(mob/living/human/H, metadata)
 	PRIVATE_PROC(TRUE)

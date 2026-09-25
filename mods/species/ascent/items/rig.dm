@@ -108,7 +108,7 @@
 	icon = 'mods/species/ascent/icons/ascent.dmi'
 	icon_state = "welder1"
 	engage_string = "Toggle Welder"
-	device = /obj/item/weldingtool/electric/mantid
+	device = /obj/item/fuelled_tool/welding/electric/mantid
 	usable = TRUE
 	selectable = TRUE
 
@@ -135,7 +135,7 @@
 	name = "mantid gas tank"
 	icon = 'mods/species/ascent/icons/tank.dmi'
 	distribute_pressure = ONE_ATMOSPHERE*O2STANDARD
-	volume = 180
+	gas_volume = 180
 
 /obj/item/tank/mantid/methyl_bromide
 	starting_pressure = list(/decl/material/gas/methyl_bromide = 6 ATM)
@@ -249,7 +249,7 @@
 	allowed = list(
 		/obj/item/clustertool,
 		/obj/item/gun/energy/particle/small,
-		/obj/item/weldingtool/electric/mantid,
+		/obj/item/fuelled_tool/welding/electric/mantid,
 		/obj/item/multitool/mantid,
 		/obj/item/stack/medical/resin,
 		/obj/item/chems/drinks/cans/waterbottle/ascent
@@ -267,3 +267,17 @@
 	desc = "They look like a cross between a can opener and a Swiss army knife the size of a shoebox."
 	bodytype_equip_flags = BODY_EQUIP_FLAG_GYNE | BODY_EQUIP_FLAG_ALATE
 	_gyne_onmob_icon = 'mods/species/ascent/icons/rig/rig_gloves_gyne.dmi'
+
+/obj/random/ascent_tool
+	name = "random Ascent tool"
+	icon = /obj/item/clustertool::icon
+	icon_state = /obj/item/clustertool::icon_state
+
+/obj/random/ascent_tool/spawn_choices()
+	var/static/list/spawn_choices = list(
+		/obj/item/clustertool,
+		/obj/item/fuelled_tool/welding/electric/mantid,
+		/obj/item/multitool/mantid,
+		/obj/item/stack/medical/resin
+	)
+	return spawn_choices

@@ -705,7 +705,7 @@ Turf and target are seperate in case you want to teleport some distance from a t
 /obj/item/pen/can_puncture()
 	return 1
 
-/obj/item/weldingtool/can_puncture()
+/obj/item/fuelled_tool/welding/can_puncture()
 	return 1
 
 /obj/item/clothing/mask/smokable/cigarette/can_puncture()
@@ -715,7 +715,7 @@ Turf and target are seperate in case you want to teleport some distance from a t
 Checks if that loc and dir has a item on the wall
 */
 var/global/list/WALLITEMS = list(
-	/obj/machinery/power/apc, /obj/machinery/alarm, /obj/item/radio/intercom,
+	/obj/machinery/apc, /obj/machinery/alarm, /obj/item/radio/intercom,
 	/obj/structure/extinguisher_cabinet, /obj/structure/reagent_dispensers/peppertank,
 	/obj/machinery/status_display, /obj/machinery/network/requests_console, /obj/machinery/light_switch, /obj/structure/sign,
 	/obj/machinery/newscaster, /obj/machinery/firealarm, /obj/structure/noticeboard,
@@ -765,15 +765,17 @@ var/global/list/WALLITEMS = list(
 
 /**Returns a number string with its ordinal suffix th, st, nd, rd */
 /proc/get_ordinal_string(var/num)
-	if(num < 10 && num > 20) //11, 12, 13 are exceptions in english, and just get 'th' like everything else
+	. = num
+	num %= 100
+	if(num < 10 || num > 20) //11, 12, 13 are exceptions in english, and just get 'th' like everything else
 		switch(num % 10)
 			if(1)
-				return "[num]st"
+				return "[.]st"
 			if(2)
-				return "[num]nd"
+				return "[.]nd"
 			if(3)
-				return "[num]rd"
-	return "[num]th"
+				return "[.]rd"
+	return "[.]th"
 
 ///A do nothing proc used to prevent empty block warnings
 ///In hot code (like atmos checks), use EMPTY_BLOCK_GUARD instead.

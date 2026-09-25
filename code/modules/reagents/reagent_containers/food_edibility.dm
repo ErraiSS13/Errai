@@ -1,5 +1,5 @@
 /obj/item/food/get_edible_material_amount(mob/eater)
-	return reagents?.total_volume
+	return REAGENT_TOTAL_VOLUME(reagents)
 
 /obj/item/food/get_food_consumption_method(mob/eater)
 	return EATING_METHOD_EAT
@@ -35,6 +35,7 @@
 		if(trash_ref)
 			if(ispath(trash_ref, /obj/item))
 				var/obj/item/trash_item = new trash_ref(loc_ref)
+				trash_item.dropInto(loc_ref)
 				if(feeder)
 					feeder.put_in_hands(trash_item)
 			else if(istype(trash_ref, /obj/item))

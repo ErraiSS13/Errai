@@ -1,5 +1,5 @@
 /datum/codex_entry/apc
-	associated_paths = list(/obj/machinery/power/apc)
+	associated_paths = list(/obj/machinery/apc)
 	mechanics_text = "An APC (Area Power Controller) regulates and supplies backup power for the area they are in. Their power channels are divided \
 	out into 'environmental' (items that manipulate airflow and temperature), 'lighting' (the lights), and 'equipment' (everything else that consumes power).  \
 	Power consumption and backup power cell charge can be seen from the interface, further controls (turning a specific channel on, off or automatic, \
@@ -16,7 +16,7 @@
 
 /datum/codex_entry/welding_pack
 	associated_paths = list(/obj/item/chems/weldpack, /obj/item/chems/weldpack/empty)
-	mechanics_text = "This pack acts as a portable source of welding fuel. Use a welder on it to refill its tank - but make sure it's not lit! You can use this kit on a fuel tank or appropriate reagent dispenser to replenish its reserves."
+	mechanics_text = "This pack acts as a portable source of fuel. Use a welder or other tool on it to refill its tank - but make sure it's not lit! You can use this kit on a fuel tank or appropriate reagent dispenser to replenish its reserves."
 	lore_text = "The Shenzhen Chain of 2133 was an industrial accident of noteworthy infamy that occurred at Earth's L3 Lagrange Point. An apprentice welder, working for the Shenzhen Space Fabrication Group, failed to properly seal her fuel port, triggering a chain reaction that spread from laborer to laborer, instantly vaporizing a crew of fourteen. Don't let this happen to you!"
 	antag_text = "In theory, you could hold an open flame to this pack and produce some pretty catastrophic results. The trick is getting out of the blast radius."
 	disambiguator = "equipment"

@@ -42,7 +42,7 @@ var/global/list/global/tank_gauge_cache = list()
 	var/maxintegrity = 20
 	var/valve_welded = 0
 	var/obj/item/tankassemblyproxy/proxyassembly
-	var/volume = 70
+	var/gas_volume = 70
 	//Used by _onclick/hud/screen_objects.dm internals to determine if someone has messed with our tank or not.
 	//If they have and we haven't scanned it with the PDA or gas analyzer then we might just breath whatever they put in it.
 	var/manipulated_by = null
@@ -56,9 +56,9 @@ var/global/list/global/tank_gauge_cache = list()
 	proxyassembly = new /obj/item/tankassemblyproxy(src)
 	proxyassembly.tank = src
 
-	air_contents = new /datum/gas_mixture(volume, T20C)
+	air_contents = new /datum/gas_mixture(gas_volume, T20C)
 	for(var/gas in starting_pressure)
-		air_contents.adjust_gas(gas, starting_pressure[gas]*volume/(R_IDEAL_GAS_EQUATION*T20C), 0)
+		air_contents.adjust_gas(gas, starting_pressure[gas]*gas_volume/(R_IDEAL_GAS_EQUATION*T20C), 0)
 	air_contents.update_values()
 
 	START_PROCESSING(SSobj, src)
@@ -79,10 +79,12 @@ var/global/list/global/tank_gauge_cache = list()
 	. = ..()
 
 /obj/item/tank/get_single_monetary_worth()
+	if(worthless)
+		return 0
 	. = ..()
-	for(var/gas in air_contents?.gas)
-		var/decl/material/gas_data = GET_DECL(gas)
-		. += gas_data.get_value() * air_contents.gas[gas] * GAS_WORTH_MULTIPLIER
+	for(var/gas_type, gas_amount in air_contents?.gas)
+		var/decl/material/gas_data = GET_DECL(gas_type)
+		. += gas_data.get_value() * gas_amount * GAS_WORTH_MULTIPLIER
 	. = max(1, round(.))
 
 /obj/item/tank/get_examine_strings(mob/user, distance, infix, suffix)
@@ -119,7 +121,7 @@ var/global/list/global/tank_gauge_cache = list()
 		icon = loc
 
 	if (istype(used_item, /obj/item/scanner/gas))
-		return TRUE
+		return FALSE // allow afterattack to proceed
 
 	if (istype(used_item,/obj/item/latexballon))
 		var/obj/item/latexballon/LB = used_item
@@ -185,7 +187,7 @@ var/global/list/global/tank_gauge_cache = list()
 		return TRUE
 
 	if(IS_WELDER(used_item))
-		var/obj/item/weldingtool/welder = used_item
+		var/obj/item/fuelled_tool/welding/welder = used_item
 		if(welder.weld(1,user))
 			if(!valve_welded)
 				to_chat(user, "<span class='notice'>You begin welding \the [src] emergency pressure relief valve.</span>")
@@ -196,7 +198,7 @@ var/global/list/global/tank_gauge_cache = list()
 				else
 					global.bombers += "[key_name(user)] attempted to weld \a [src]. [air_contents.temperature-T0C]"
 					log_and_message_admins("attempted to weld \a [src]. [air_contents.temperature-T0C]", user)
-					if(welder.welding)
+					if(welder.running_state)
 						to_chat(user, "<span class='danger'>You accidentally rake \the [used_item] across \the [src]!</span>")
 						maxintegrity -= rand(2,6)
 						integrity = min(integrity,maxintegrity)
@@ -206,14 +208,6 @@ var/global/list/global/tank_gauge_cache = list()
 		add_fingerprint(user)
 		return TRUE
 
-	if(istype(used_item, /obj/item/flamethrower))
-		var/obj/item/flamethrower/F = used_item
-		if(!F.secured || F.tank || !user.try_unequip(src, F))
-			return TRUE
-
-		master = F
-		F.tank = src
-		return TRUE
 	return ..()
 
 /obj/item/tank/attack_self(mob/user)
@@ -366,7 +360,7 @@ var/global/list/global/tank_gauge_cache = list()
 
 	var/datum/gas_mixture/removed = remove_air(distribute_pressure*volume_to_return/(R_IDEAL_GAS_EQUATION*air_contents.temperature))
 	if(removed)
-		removed.volume = volume_to_return
+		removed.total_volume = volume_to_return
 	return removed
 
 /obj/item/tank/Process()
@@ -418,7 +412,7 @@ var/global/list/global/tank_gauge_cache = list()
 			pressure = air_contents.return_pressure()
 			var/strength = ((pressure-TANK_FRAGMENT_PRESSURE)/TANK_FRAGMENT_SCALE)
 
-			var/mult = ((air_contents.volume/140)**(1/2)) * (air_contents.total_moles**2/3)/((29*0.64) **2/3) //tanks appear to be experiencing a reduction on scale of about 0.64 total moles
+			var/mult = ((air_contents.total_volume/140)**(1/2)) * (air_contents.total_moles**2/3)/((29*0.64) **2/3) //tanks appear to be experiencing a reduction on scale of about 0.64 total moles
 			//tanks appear to be experiencing a reduction on scale of about 0.64 total moles
 
 			var/turf/T = get_turf(src)
@@ -436,7 +430,7 @@ var/global/list/global/tank_gauge_cache = list()
 				)
 
 			var/num_fragments = round(rand(8,10) * sqrt(strength * mult))
-			fragmentate(T, num_fragments, 7, list(/obj/item/projectile/bullet/pellet/fragment/tank/small = 7,/obj/item/projectile/bullet/pellet/fragment/tank = 2,/obj/item/projectile/bullet/pellet/fragment/strong = 1))
+			fragmentate(T, num_fragments, 7, list(/obj/item/projectile/bullet/pellet/fragment/tank/small = 7, /obj/item/projectile/bullet/pellet/fragment/tank = 2, /obj/item/projectile/bullet/pellet/fragment/tank/big = 1))
 
 			if(istype(loc, /obj/item/transfer_valve))
 				var/obj/item/transfer_valve/TTV = loc
@@ -466,7 +460,7 @@ var/global/list/global/tank_gauge_cache = list()
 			var/mult = (air_contents.total_moles**2/3)/((29*0.64) **2/3) //tanks appear to be experiencing a reduction on scale of about 0.64 total moles
 
 			var/num_fragments = round(rand(6,8) * sqrt(strength * mult)) //Less chunks, but bigger
-			fragmentate(T, num_fragments, 7, list(/obj/item/projectile/bullet/pellet/fragment/tank/small = 1,/obj/item/projectile/bullet/pellet/fragment/tank = 5,/obj/item/projectile/bullet/pellet/fragment/strong = 4))
+			fragmentate(T, num_fragments, 7, list(/obj/item/projectile/bullet/pellet/fragment/tank/small = 1,/obj/item/projectile/bullet/pellet/fragment/tank = 5, /obj/item/projectile/bullet/pellet/fragment/tank/big = 4))
 
 			if(istype(loc, /obj/item/transfer_valve))
 				var/obj/item/transfer_valve/TTV = loc
@@ -514,7 +508,7 @@ var/global/list/global/tank_gauge_cache = list()
 	desc = initial(tank_copy.desc)
 	icon = initial(tank_copy.icon)
 	icon_state = initial(tank_copy.icon_state)
-	volume = initial(tank_copy.volume)
+	gas_volume = initial(tank_copy.gas_volume)
 
 	// Set up explosive mix.
 	air_contents.gas[DEFAULT_GAS_ACCELERANT] = 4 + rand(4)

@@ -26,7 +26,7 @@ avoid code duplication. This includes items that may sometimes act as a standard
 
 // If TRUE, prevent afterattack from running.
 /obj/item/proc/resolve_attackby(atom/A, mob/user, var/click_params)
-	if(!user.check_dexterity(get_required_attack_dexterity(user, A)))
+	if(!user.check_dexterity(get_required_attack_dexterity(user, A), fail_message = "You lack the dexterity to use \the [src]."))
 		return TRUE
 	if(!(item_flags & ITEM_FLAG_NO_PRINT))
 		add_fingerprint(user)
@@ -94,8 +94,10 @@ avoid code duplication. This includes items that may sometimes act as a standard
 
 	var/oldhealth = current_health
 	. = used_item.use_on_mob(src, user)
-	if(used_item.get_attack_force(user) && istype(ai) && current_health < oldhealth)
-		ai.retaliate(user)
+	if(current_health < oldhealth && used_item.get_attack_force(user))
+		user.remove_cloak()
+		if(istype(ai))
+			ai.retaliate(user)
 
 	if(!. && user == src && user.get_target_zone() == BP_MOUTH && can_devour(used_item, silent = TRUE))
 		var/obj/item/blocked = src.check_mouth_coverage()
@@ -145,6 +147,10 @@ avoid code duplication. This includes items that may sometimes act as a standard
 				if(user == target)
 					to_chat(user, SPAN_WARNING("You refrain from hitting yourself with \the [src] as you are on help intent."))
 					return FALSE
+
+	if(user == target && user.check_intent(I_FLAG_HARM) && user.get_preference_value(/datum/client_preference/harm_intent_attack_blocking) == PREF_YES)
+		to_chat(user, SPAN_WARNING("You refrain from hitting yourself with \the [src]."))
+		return TRUE // Also skip afterattack.
 
 	/////////////////////////
 

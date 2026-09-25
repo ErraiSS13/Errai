@@ -82,6 +82,7 @@
 #define slot_r_store_str     "slot_r_store"
 #define slot_s_store_str     "slot_s_store"
 #define slot_in_backpack_str "slot_in_backpack"
+#define slot_in_wallet_str   "slot_in_wallet"
 
 // Defined here for consistency, not actually used for slots, just for species clothing offsets.
 #define slot_undershirt_str  "slot_undershirt"
@@ -266,3 +267,10 @@ var/global/list/all_hand_slots = list(
 	BP_R_HAND_UPPER,
 	BP_MOUTH
 )
+
+/// If this item conflicts with a loadout item, simply delete it.
+#define LOADOUT_CONFLICT_DELETE 0
+/// If this item conflicts with a loadout item, place this item in storage.
+#define LOADOUT_CONFLICT_STORAGE 1
+/// If this item conflicts with a loadout item, place THE LOADOUT ITEM in storage.
+#define LOADOUT_CONFLICT_KEEP 2

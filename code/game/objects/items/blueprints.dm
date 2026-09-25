@@ -29,7 +29,7 @@
 	return TRUE
 
 /obj/item/blueprints/attack_self(mob/user)
-	if (!ishuman(user) || !user.check_dexterity(DEXTERITY_COMPLEX_TOOLS)) // Monkeys et al. cannot blueprint.
+	if (!ishuman(user) || !user.check_dexterity(DEXTERITY_COMPLEX_TOOLS, silent = TRUE)) // Monkeys et al. cannot blueprint.
 		to_chat(user, SPAN_WARNING("This stack of blue paper means nothing to you."))
 		return
 
@@ -53,7 +53,7 @@
 
 	var/turf/T = get_turf(src)
 	if(istype(T) && length(global.using_map.overmap_ids))
-		var/obj/effect/overmap/visitable/sector/S = global.overmap_sectors[num2text(T.z)]
+		var/obj/effect/overmap/visitable/sector/S = global.overmap_sectors[T.z]
 		if(!S) // The blueprints are useless now, but keep them around for fluff.
 			desc = "Some dusty old blueprints. The markings are old, and seem entirely irrelevant for your whereabouts."
 			return FALSE
@@ -75,14 +75,14 @@
 	icon_state = "blueprints2"
 
 /obj/item/blueprints/outpost/attack_self(mob/user)
-	var/obj/effect/overmap/visitable/sector/S = global.overmap_sectors[num2text(get_z(user))]
+	var/obj/effect/overmap/visitable/sector/S = global.overmap_sectors[get_z(user)]
 	area_prefix = S.name
 	. = ..()
 
 /obj/item/blueprints/outpost/set_valid_z_levels()
 	var/turf/T = get_turf(src)
 	if(istype(T) && length(global.using_map.overmap_ids))
-		var/obj/effect/overmap/visitable/sector/S = global.overmap_sectors[num2text(T.z)]
+		var/obj/effect/overmap/visitable/sector/S = global.overmap_sectors[T.z]
 		if(istype(S))
 			T = locate(1, 1, S.z)
 			var/area/overmap/map = T && get_area(T)
@@ -100,8 +100,8 @@
 
 /obj/item/blueprints/shuttle/set_valid_z_levels()
 	var/turf/T = get_turf(src)
-	if(istype(T) && length(global.using_map.overmap_ids) && global.overmap_sectors[num2text(T.z)])
-		var/obj/effect/overmap/visitable/ship/landable/S = global.overmap_sectors[num2text(T.z)]
+	if(istype(T) && length(global.using_map.overmap_ids) && global.overmap_sectors[T.z])
+		var/obj/effect/overmap/visitable/ship/landable/S = global.overmap_sectors[T.z]
 		if(isnull(shuttle_name))
 			shuttle_name = S.shuttle
 		update_linked_name(S, null, S.name)

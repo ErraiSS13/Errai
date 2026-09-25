@@ -22,12 +22,11 @@
 		BP_TAIL = /obj/item/organ/external/tail/kobaloi
 	)
 	default_sprite_accessories = list(
-		SAC_MARKINGS = list(
-			/decl/sprite_accessory/marking/kobaloi/left_ear  = list(SAM_COLOR = "#8f974a"),
-			/decl/sprite_accessory/marking/kobaloi/right_ear = list(SAM_COLOR = "#8f974a")
+		SAC_EARS = list(
+			/decl/sprite_accessory/ears/kobaloi = list(SAM_COLOR = "#8f974a")
 		)
 	)
-	eye_low_light_vision_effectiveness    = 0.15
+	eye_low_light_vision_effectiveness    = 0.45
 	eye_low_light_vision_adjustment_speed = 0.3
 	uid = "bodytype_kobaloi"
 

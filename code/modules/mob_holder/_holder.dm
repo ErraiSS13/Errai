@@ -24,6 +24,11 @@
 		AM.vis_flags |= (VIS_INHERIT_ID|VIS_INHERIT_LAYER|VIS_INHERIT_PLANE)
 		add_vis_contents(AM)
 
+/obj/item/holder/examined_by(mob/user, distance, infix, suffix)
+	for(var/atom/thing in get_contained_external_atoms())
+		thing.examined_by(user, distance, infix, suffix)
+	return TRUE
+
 // No scooping mobs and handing them to people who can't scoop them.
 /obj/item/holder/equipped(mob/user, slot)
 	. = ..()
@@ -118,9 +123,18 @@
 		if(length(cards))
 			LAZYDISTINCTADD(., cards)
 
+/obj/item/holder/handle_mouse_drop(atom/over, mob/user, params)
+	if(over == user && user != src && !(user in src))
+		for(var/mob/my_mob in contents)
+			my_mob.show_stripping_window(user) // TODO: verify that you can even strip items from a mob currently in an item
+			. = TRUE
+	. = . || ..()
+
 /obj/item/holder/attack_self(mob/user)
-	for(var/mob/M in contents)
-		M.show_stripping_window(user)
+	var/mob/living/my_mob = locate() in contents
+	if(istype(my_mob?.ai))
+		my_mob.ai.process_holder_interaction(user)
+	return TRUE
 
 /obj/item/holder/use_on_mob(mob/living/target, mob/living/user, animate = TRUE)
 

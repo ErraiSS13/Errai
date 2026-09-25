@@ -10,6 +10,8 @@
 		'icons/turf/walls/stone.dmi' = TRUE,
 		'icons/turf/walls/brick.dmi' = TRUE,
 		'icons/turf/walls/log.dmi' = TRUE,
+		'icons/turf/walls/wattle.dmi' = TRUE,
+		'icons/turf/walls/wattledaub.dmi' = TRUE,
 		'icons/turf/walls/metal.dmi' = TRUE
 	)
 	icon_reinf = list(
@@ -37,7 +39,7 @@
 	dooropen_noise = 'sound/effects/doorcreaky.ogg'
 	door_icon_base = "wood"
 	destruction_desc = "splinters"
-	hitsound = 'sound/effects/woodhit.ogg'
+	hitsound = 'sound/effects/hit_wood.ogg'
 	conductive = 0
 	construction_difficulty = MAT_VALUE_NORMAL_DIY
 	dissolves_into = list(
@@ -54,6 +56,7 @@
 	compost_value = 0.2
 	paint_verb = "stained"
 	liquid_name = "wood pulp"
+	wall_damage_threshold = 8
 
 /decl/material/solid/organic/wood/oak
 	name = "oak"
@@ -79,7 +82,7 @@
 	uid = "solid_holographic_wood"
 	color = WOOD_COLOR_CHOCOLATE //the very concept of wood should be brown
 	adjective_name = "holowood"
-	holographic = TRUE
+	visual_only = TRUE
 
 /decl/material/solid/organic/wood/mahogany
 	name = "mahogany"

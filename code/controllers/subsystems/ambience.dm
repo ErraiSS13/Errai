@@ -4,11 +4,22 @@ SUBSYSTEM_DEF(ambience)
 	priority = SS_PRIORITY_LIGHTING
 	init_order = SS_INIT_LIGHTING
 	runlevels = RUNLEVEL_LOBBY | RUNLEVELS_DEFAULT // Copied from icon update subsystem.
-	flags = SS_NO_INIT
 	var/list/queued = list()
 
 /datum/controller/subsystem/ambience/stat_entry()
 	..("P:[length(queued)]")
+
+/datum/controller/subsystem/ambience/Initialize(start_timeofday)
+	for(var/datum/level_data/the_level as anything in SSmapping.levels_by_z)
+		// this may actually be faster than adding them to the queue. TBD.
+		for(var/turf/target_turf as anything in block(the_level.level_inner_min_x, the_level.level_inner_min_y, the_level.level_z, the_level.level_inner_max_x, the_level.level_inner_max_y, the_level.level_z))
+			if(target_turf.ambience_queued) // Somehow wound up queued, handle it then.
+				continue
+			if(!target_turf.simulated)
+				continue
+			target_turf.update_ambient_light_from_z_or_area()
+	// also flush the queue prior to roundstart
+	fire(no_mc_tick = TRUE)
 
 /datum/controller/subsystem/ambience/fire(resumed = FALSE, no_mc_tick = FALSE)
 	var/list/curr = queued
@@ -78,7 +89,7 @@ SUBSYSTEM_DEF(ambience)
 			var/turf/above = src
 			var/datum/level_data/above_level_data
 			while ((above = GetAbove(above)))
-				if((above.z_flags & ZM_TERMINATOR) || !HasAbove(above.z))
+				if((above.z_flags & ZM_OVERRIDE) || !HasAbove(above.z))
 					break
 				above_level_data = SSmapping.levels_by_z[above.z]
 				if(above_level_data.daycycle_id)
@@ -90,13 +101,20 @@ SUBSYSTEM_DEF(ambience)
 			var/datum/daycycle/daycycle = SSdaycycle.get_daycycle(daycycle_id)
 			var/new_power = daycycle?.current_period?.power
 			if(!isnull(new_power))
+				new_power = clamp(new_power + ambient_light_modifier, 0, 1)
 				if(new_power > 0)
-					set_ambient_light(daycycle.current_period.color, clamp(new_power + ambient_light_modifier, 0, 1))
+					set_ambient_light(daycycle.current_period.color, new_power)
+				else
+					clear_ambient_light()
 				return TRUE
 
 		// Apply general level ambience.
-		if(level_data?.ambient_light_level)
-			set_ambient_light(level_data.ambient_light_color, clamp(level_data.ambient_light_level + ambient_light_modifier, 0, 1))
+		var/effective_power = isnull(level_data?.ambient_light_level) ? null : clamp(level_data.ambient_light_level + ambient_light_modifier, 0, 1)
+		if(!isnull(effective_power))
+			if(effective_power > 0)
+				set_ambient_light(level_data.ambient_light_color, effective_power)
+			else
+				clear_ambient_light()
 			return TRUE
 
 	return FALSE

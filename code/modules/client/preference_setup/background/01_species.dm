@@ -6,6 +6,10 @@
 	sort_order = 1
 	var/hide_species = TRUE
 
+/datum/category_item/player_setup_item/background/species/populate_mob_snapshot(datum/mob_snapshot/snapshot, is_preview_copy = FALSE)
+	snapshot.root_species = pref.get_species_decl()
+	snapshot.root_species = RESOLVE_TO_DECL(snapshot.root_species)
+
 // This must always return a decl, NEVER null.
 /datum/preferences/proc/get_species_decl()
 	RETURN_TYPE(/decl/species)
@@ -81,10 +85,12 @@
 	if(current_species.roleplay_summary)
 		desc = "[desc]<h3>Roleplaying Summary</h3><p>[current_species.roleplay_summary]</p>"
 
-	if(hide_species && length(desc) > 200)
+	var/was_hidden = hide_species && length(desc) > 200
+	if(was_hidden)
 		desc = "[copytext(desc, 1, 194)] <small>\[...\]</small>"
 	. += "<td width>[desc]</td>"
-	. += "<td width = '50px'><a href='byond://?src=\ref[src];toggle_species_verbose=1'>[hide_species ? "Expand" : "Collapse"]</a></td>"
+	if(was_hidden)
+		. += "<td width = '50px'><a href='byond://?src=\ref[src];toggle_species_verbose=1'>[hide_species ? "Expand" : "Collapse"]</a></td>"
 
 	. += "</tr>"
 

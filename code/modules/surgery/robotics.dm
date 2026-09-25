@@ -201,8 +201,8 @@
 			to_chat(user, SPAN_WARNING("\The [target]'s [affected.name] is too brittle to be repaired normally."))
 			return FALSE
 		if(IS_WELDER(tool))
-			var/obj/item/weldingtool/welder = tool
-			if(!welder.isOn() || !welder.weld(1,user))
+			var/obj/item/fuelled_tool/welding/welder = tool
+			if(!welder.tool_is_running() || !welder.weld(1,user))
 				return FALSE
 		if(istype(tool, /obj/item/gun/energy/plasmacutter))
 			var/obj/item/gun/energy/plasmacutter/cutter = tool
@@ -463,12 +463,12 @@
 			var/image/radial_button = image(icon = I.icon, icon_state = I.icon_state)
 			radial_button.name = "Reattach \the [I]"
 			LAZYSET(removable_organs, I.organ_tag, radial_button)
-	var/organ_to_replace = show_radial_menu(user, tool, removable_organs, radius = 42, require_near = TRUE, use_labels = RADIAL_LABELS_OFFSET, check_locs = list(tool))
+	var/obj/item/organ/internal/organ_to_replace = show_radial_menu(user, tool, removable_organs, radius = 42, require_near = TRUE, use_labels = RADIAL_LABELS_OFFSET, check_locs = list(tool))
 	if(!organ_to_replace)
 		return FALSE
-	var/obj/item/organ/internal/augment/A = organ_to_replace
-	if(istype(A) && !(A.augment_flags & AUGMENTATION_MECHANIC))
-		to_chat(user, SPAN_WARNING("\The [A] cannot function within a robotic limb."))
+	var/attach_failure_reason = organ_to_replace.get_attachment_failure_reason(affected, robotic = TRUE) // if this returns FALSE, it can attach
+	if(attach_failure_reason)
+		to_chat(user, attach_failure_reason)
 		return FALSE
 	return organ_to_replace
 

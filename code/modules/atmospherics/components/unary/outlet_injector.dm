@@ -56,7 +56,7 @@
 /obj/machinery/atmospherics/unary/outlet_injector/Initialize()
 	. = ..()
 	//Give it a small reservoir for injecting. Also allows it to have a higher flow rate limit than vent pumps, to differentiate injectors a bit more.
-	air_contents.volume = ATMOS_DEFAULT_VOLUME_PUMP + 500
+	air_contents.total_volume = ATMOS_DEFAULT_VOLUME_PUMP + 500
 
 /obj/machinery/atmospherics/unary/outlet_injector/on_update_icon()
 	if(stat & NOPOWER)
@@ -94,7 +94,7 @@
 	var/datum/gas_mixture/environment = loc.return_air()
 
 	if(environment && air_contents.temperature > 0)
-		var/transfer_moles = (volume_rate/air_contents.volume)*air_contents.total_moles //apply flow rate limit
+		var/transfer_moles = (volume_rate/air_contents.total_volume)*air_contents.total_moles //apply flow rate limit
 		power_draw = pump_gas(src, air_contents, environment, transfer_moles, power_rating)
 		if(transfer_moles > 0)
 			update_networks()
@@ -141,13 +141,13 @@
 	desc = "The rate at which the machine pumps (a number)."
 	can_write = TRUE
 	has_updates = FALSE
-	var_type = IC_FORMAT_NUMBER
+	var_type = VAR_FORMAT_NUMBER
 
 /decl/public_access/public_variable/volume_rate/access_var(obj/machinery/atmospherics/unary/outlet_injector/machine)
 	return machine.volume_rate
 
 /decl/public_access/public_variable/volume_rate/write_var(obj/machinery/atmospherics/unary/outlet_injector/machine, new_value)
-	new_value = clamp(new_value, 0, machine.air_contents.volume)
+	new_value = clamp(new_value, 0, machine.air_contents.total_volume)
 	. = ..()
 	if(.)
 		machine.volume_rate = new_value

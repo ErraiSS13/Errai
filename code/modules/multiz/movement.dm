@@ -48,29 +48,27 @@
 /mob/proc/can_overcome_gravity()
 	return FALSE
 
-/mob/living/human/can_overcome_gravity()
+/mob/living/can_overcome_gravity()
 	//First do species check
-	if(species && species.can_overcome_gravity(src))
-		return 1
-	else
-		var/turf/T = loc
-		if(((T.get_physical_height() + T.get_fluid_depth()) >= FLUID_DEEP) || T.get_fluid_depth() >= FLUID_MAX_DEPTH)
-			if(can_float())
-				return 1
-
-		for(var/atom/a in src.loc)
-			if(a.atom_flags & ATOM_FLAG_CLIMBABLE)
-				return 1
-
-		//Last check, list of items that could plausibly be used to climb but aren't climbable themselves
-		var/list/objects_to_stand_on = list(
-				/obj/item/stool,
-				/obj/structure/bed,
-			)
-		for(var/type in objects_to_stand_on)
-			if(locate(type) in src.loc)
-				return 1
-	return 0
+	var/decl/species/my_species = get_species()
+	if(my_species?.can_overcome_gravity(src))
+		return TRUE
+	var/turf/T = loc
+	if(((T.get_physical_height() + T.get_fluid_depth()) >= FLUID_DEEP) || T.get_fluid_depth() >= FLUID_MAX_DEPTH)
+		if(can_float_on_liquids())
+			return TRUE
+	for(var/atom/climbable in src.loc)
+		if((climbable.atom_flags & ATOM_FLAG_CLIMBABLE) && climbable.can_climb(src, silent = TRUE))
+			return TRUE
+	//Last check, list of items that could plausibly be used to climb but aren't climbable themselves
+	var/static/list/objects_to_stand_on = list(
+		/obj/item/stool,
+		/obj/structure/bed,
+	)
+	for(var/type in objects_to_stand_on)
+		if(locate(type) in src.loc)
+			return TRUE
+	return FALSE
 
 //FALLING STUFF
 
@@ -98,6 +96,7 @@
 // Entered() which is part of Move(), by spawn()ing we let that complete.  But we want to preserve if we were in client movement
 // or normal movement so other move behavior can continue.
 /atom/movable/proc/begin_falling(var/lastloc, var/below)
+	moving_diagonally = FALSE // cancel diagonal movement immediately
 	addtimer(CALLBACK(src, TYPE_PROC_REF(/atom/movable, fall_callback), below), 0)
 
 /atom/movable/proc/fall_callback(var/turf/below)
@@ -133,7 +132,7 @@
 		if(location_override.get_fluid_depth() >= FLUID_DEEP && (below == loc))
 			if(!(below.get_fluid_depth() >= 0.95 * FLUID_MAX_DEPTH)) //No salmon skipping up a stream of falling water
 				return TRUE
-			return !can_float()
+			return !can_float_on_liquids()
 
 	return TRUE
 
@@ -322,6 +321,7 @@
 
 /mob/living/verb/check_sky()
 	set name = "Check Sky"
+	set category = "IC"
 	if(!client || is_physically_disabled() || !isturf(loc))
 		to_chat(src, SPAN_WARNING("You can't check the sky right now."))
 		return
@@ -373,19 +373,25 @@
 		to_chat(src, "<span class='notice'>You can't look below right now.</span>")
 
 //Swimming and floating
-/atom/movable/proc/can_float()
+/atom/movable/proc/can_float_on_liquids()
 	return FALSE
 
-/mob/living/can_float()
+/mob/living/can_float_on_liquids()
+	if(buckled)
+		return buckled.can_float_on_liquids()
 	return !is_physically_disabled()
 
-/mob/living/simple_animal/can_float()
+/mob/living/simple_animal/can_float_on_liquids()
+	if(buckled)
+		return ..()
 	return is_aquatic
 
-/mob/living/human/can_float()
-	return species.can_float(src)
+/mob/living/human/can_float_on_liquids()
+	return ..() && species.can_float_on_liquids(src)
 
-/mob/living/silicon/can_float()
+/mob/living/silicon/can_float_on_liquids()
+	if(buckled)
+		return ..()
 	return FALSE //If they can fly otherwise it will be checked first
 
 /mob/living

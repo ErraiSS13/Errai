@@ -8,7 +8,6 @@
 
 	/// Multiplier for degree of comfort offered to mobs buckled to this furniture.
 	var/user_comfort = 0 // TODO: extremely uncomfortable chairs
-
 	var/structure_flags
 	var/last_damage_message
 	var/hitsound = 'sound/weapons/Genhit.ogg'
@@ -16,9 +15,8 @@
 	var/parts_amount
 	var/footstep_type
 	var/mob_offset
-
-	var/paint_color
 	var/paint_verb
+	var/show_painted = TRUE
 
 /obj/structure/get_color()
 	if(paint_color)
@@ -27,13 +25,14 @@
 		return material.color
 	return initial(color)
 
-/obj/structure/set_color(new_color)
+/obj/structure/set_color(new_color, skip_update)
 	if(new_color == COLOR_WHITE)
 		new_color = null
 	if(paint_color != new_color)
 		paint_color = new_color
 		. = TRUE
-		refresh_color()
+		if(!skip_update)
+			refresh_color()
 
 /obj/structure/refresh_color()
 	if(paint_color)
@@ -66,22 +65,37 @@
 	. = ..()
 	update_materials()
 	paint_verb ||= "painted" // fallback for the case of no material
-	if(lock && !istype(loc))
+	if(lock && !istype(lock))
 		lock = new /datum/lock(src, lock)
 	if(!CanFluidPass())
 		fluid_update(TRUE)
+	if (!isnull(get_possible_reagent_transfer_amounts()))
+		verbs |= /obj/structure/proc/set_reagent_amount_dispensed_verb
 
 /obj/structure/get_examine_strings(mob/user, distance, infix, suffix)
 	. = ..()
-	if(distance <= 3)
-		if(distance <= 1 && lock)
-			. += SPAN_NOTICE("\The [src] appears to have a lock, opened by '[lock.lock_data]'.")
-		var/damage_desc = get_examined_damage_string()
-		if(length(damage_desc))
-			. += damage_desc
-		if(paint_color)
-			var/decl/pronouns/structure_pronouns = get_pronouns() // so we can do 'have' for plural objects like sheets
-			. += "\The [src] [structure_pronouns.has] been <font color='[paint_color]'>[paint_verb]</font>."
+	if(distance > 3)
+		return
+	if(distance <= 1 && lock)
+		. += SPAN_NOTICE("\The [src] appears to have a lock, opened by '[lock.lock_data]'.")
+	var/damage_desc = get_examined_damage_string()
+	if(length(damage_desc))
+		. += damage_desc
+	if(show_painted && paint_color)
+		var/decl/pronouns/structure_pronouns = get_pronouns() // so we can do 'have' for plural objects like sheets
+		. += "\The [src] [structure_pronouns.has] been <font color='[paint_color]'>[paint_verb]</font>."
+	if(distance <= 2 && !isnull(get_possible_reagent_transfer_amounts()) && reagents)
+		. += SPAN_NOTICE("It contains:")
+		var/reagent_volumes = REAGENT_VOLUMES(reagents)
+		if(LAZYLEN(reagent_volumes))
+			for(var/decl/material/reagent as anything in REAGENT_LIQUID_VOLUMES(reagents))
+				. += SPAN_NOTICE("[LIQUID_VOLUME(reagents, reagent)] unit\s of [reagent.get_reagent_name(reagents, MAT_PHASE_LIQUID)].")
+			for(var/decl/material/reagent as anything in REAGENT_SOLID_VOLUMES(reagents))
+				. += SPAN_NOTICE("[SOLID_VOLUME(reagents, reagent)] unit\s of [reagent.get_reagent_name(reagents, MAT_PHASE_SOLID)].")
+		else
+			. += SPAN_NOTICE("Nothing.")
+		if(REAGENT_MAXIMUM_VOLUME(reagents))
+			. += "It may contain up to [REAGENT_MAXIMUM_VOLUME(reagents)] unit\s."
 
 /obj/structure/get_examine_hints(mob/user, distance, infix, suffix)
 	. = ..()
@@ -125,7 +139,7 @@
 	return FALSE
 
 /obj/structure/take_damage(damage, damage_type = BRUTE, damage_flags, inflicter, armor_pen = 0, silent, do_update_health)
-	if(current_health == -1) // This object does not take damage.
+	if(current_health == ITEM_HEALTH_NO_DAMAGE) // This object does not take damage.
 		return
 
 	if(material && material.is_brittle())
@@ -253,7 +267,7 @@
 				victim.standard_weapon_hit_effects(S, user, S.expend_attack_force()*2, BP_HEAD)
 		qdel(grab)
 		return TRUE
-	else if(can_buckle && !buckled_mob && istype(victim) && istype(user))
+	else if(max_buckled_mobs && !has_buckled_mob() && istype(victim) && istype(user))
 		user.visible_message(SPAN_NOTICE("\The [user] attempts to put \the [victim] onto \the [src]!"))
 		if(do_after(user, 2 SECONDS, src) && !QDELETED(victim) && !QDELETED(user) && !QDELETED(grab) && user_buckle_mob(victim, user))
 			qdel(grab)
@@ -346,3 +360,8 @@ Note: This proc can be overwritten to allow for different types of auto-alignmen
 		visible_message(SPAN_DANGER("\The [src] was hit by \the [AM]."))
 		playsound(src.loc, hitsound, 100, 1)
 		take_damage(AM.get_thrown_attack_force() * (TT.speed/THROWFORCE_SPEED_DIVISOR), AM.atom_damage_type)
+
+/obj/structure/get_alt_interactions(var/mob/user)
+	. = ..()
+	if(!isnull(get_possible_reagent_transfer_amounts()))
+		LAZYADD(., /decl/interaction_handler/set_transfer/structure)

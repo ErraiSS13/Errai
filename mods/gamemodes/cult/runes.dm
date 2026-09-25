@@ -88,9 +88,9 @@
 
 //Makes the speech a proc so all verbal components can be easily manipulated as a whole, or individually easily
 /obj/effect/rune/proc/speak_incantation(var/mob/living/user, var/incantation)
-	var/decl/language/L = GET_DECL(/decl/language/cultcommon)
-	if(istype(L) && incantation && (L in user.languages))
-		user.say(incantation, L)
+	var/decl/language/language = GET_DECL(/decl/language/cultcommon)
+	if(istype(language) && incantation && (language in user.languages))
+		user.say(incantation, language)
 
 /obj/effect/rune/get_surgery_success_modifier(delicate)
 	return delicate ? -10 : 0
@@ -519,7 +519,7 @@
 		victim = M
 	if(!victim)
 		return fizzle(user)
-	if(victim.vessel.total_volume < 20)
+	if(REAGENT_TOTAL_VOLUME(victim.vessel) < 20)
 		to_chat(user, SPAN_WARNING("This body has no blood in it."))
 		return fizzle(user)
 	victim.vessel.remove_any(20)
@@ -534,7 +534,7 @@
 	var/list/statuses = list()
 	var/charges = 20
 	var/use
-	use = min(charges, user.species.blood_volume - user.vessel.total_volume)
+	use = min(charges, user.species.blood_volume - REAGENT_TOTAL_VOLUME(user.vessel))
 	if(use > 0)
 		user.adjust_blood(use)
 		charges -= use
@@ -568,7 +568,7 @@
 	if(charges >= 15)
 		for(var/obj/item/organ/external/e in user.get_external_organs())
 			if(e && e.status & ORGAN_BROKEN)
-				e.status &= ~ORGAN_BROKEN
+				e.mend_fracture()
 				statuses += "bones in your [e.name] snap into place"
 				charges -= 15
 				if(charges < 15)

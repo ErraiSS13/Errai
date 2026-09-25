@@ -18,7 +18,8 @@
 
 /decl/material/liquid/drink/affect_blood(var/mob/living/M, var/removed, var/datum/reagents/holder)
 	. = ..()
-	M.take_damage(removed, TOX) // Probably not a good idea; not very deadly though
+	if(!injectable_nutrition)
+		M.take_damage(removed, TOX) // Probably not a good idea; not very deadly though
 
 /decl/material/liquid/drink/affect_ingest(var/mob/living/M, var/removed, var/datum/reagents/holder)
 	. = ..()
@@ -90,7 +91,11 @@
 
 /decl/material/liquid/drink/juice/carrot/affect_ingest(var/mob/living/M, var/removed, var/datum/reagents/holder)
 	..()
-	M.add_to_reagents(/decl/material/liquid/eyedrops, removed * 0.2)
+	var/obj/item/organ/internal/eyes = GET_INTERNAL_ORGAN(M, BP_EYES)
+	if(istype(eyes) && !eyes.is_broken())
+		ADJ_STATUS(M, STAT_BLURRY, -1)
+		ADJ_STATUS(M, STAT_BLIND, -1)
+		eyes.adjust_organ_damage(-removed)
 
 /decl/material/liquid/drink/juice/grape
 	name = "grape juice"
@@ -181,10 +186,13 @@
 	name = "garlic oil"
 	lore_text = "A strong-smelling, pungent oil pressed from garlic cloves. It has some antibiotic properties, and can help with infections."
 	taste_description = "bad breath"
-	nutriment_factor = 1
+	nutriment_factor = 0.5 // Injectable Nutrition flag causes it to be digested twice
+	hydration_factor = 3 // Cut in half from 6 so double digestion gives normal amount
 	color = "#eeddcc"
 	uid = "chem_drink_garlic"
 	antibiotic_strength = 0.65
+	affect_blood_on_ingest = TRUE
+	injectable_nutrition = TRUE
 
 	glass_name = "garlic oil"
 	glass_desc = "A potion of guaranteed bad breath."
@@ -369,10 +377,10 @@
 	if(M.has_trait(/decl/trait/metabolically_inert))
 		return
 
-	var/volume = REAGENT_VOLUME(holder, src)
-	if(volume > 15)
+	var/affect_volume = REAGENT_VOLUME(holder, src)
+	if(affect_volume > 15)
 		M.add_chemical_effect(CE_PULSE, 1)
-	if(volume > 45)
+	if(affect_volume > 45)
 		M.add_chemical_effect(CE_PULSE, 1)
 
 /decl/material/liquid/drink/coffee/affect_blood(var/mob/living/M, var/removed, var/datum/reagents/holder)

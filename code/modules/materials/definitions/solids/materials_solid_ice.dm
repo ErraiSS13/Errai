@@ -20,6 +20,7 @@
 	heating_products       = list(
 		/decl/material/liquid/water = 1
 	)
+	wall_damage_threshold = 5
 
 /decl/material/solid/ice/Initialize()
 	liquid_name ||= "liquid [name]" // avoiding the 'molten ice' issue
@@ -43,6 +44,8 @@
 	dug_drop_type = /obj/item/stack/material/ore/handful
 	default_solid_form = /obj/item/stack/material/lump/large
 	can_backfill_floor_type = /decl/flooring/snow
+	sound_manipulate = 'sound/foley/paperpickup2.ogg'
+	sound_dropped = 'sound/foley/paperpickup1.ogg'
 
 /decl/material/solid/ice/snow/handle_stain_dry(obj/effect/decal/cleanable/blood/stain)
 	var/ambient_temperature = stain.get_ambient_temperature()

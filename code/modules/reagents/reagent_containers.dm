@@ -8,19 +8,17 @@
 	obj_flags = OBJ_FLAG_HOLLOW
 	abstract_type = /obj/item/chems
 	watertight = TRUE
+	chem_volume = 30
 
 	var/amount_per_transfer_from_this = 5
 	var/possible_transfer_amounts = @"[5,10,15,25,30]"
-	var/volume = 30
 	var/label_text
 	var/presentation_flags = 0
-	var/show_reagent_name = FALSE
 	var/detail_color
 	var/detail_state
 
 /obj/item/chems/Initialize(ml, material_key)
 	. = ..()
-	initialize_reagents()
 	if(!possible_transfer_amounts)
 		src.verbs -= /obj/item/chems/verb/set_amount_per_transfer_from_this
 
@@ -56,7 +54,7 @@
 /obj/item/chems/update_name()
 	. = ..() // handles material, etc
 	var/newname = name
-	if(presentation_flags & PRESENTATION_FLAG_NAME)
+	if(istype(reagents) && (presentation_flags & PRESENTATION_FLAG_NAME))
 		var/decl/material/primary = reagents?.get_primary_reagent_decl()
 		if(primary)
 			newname += " of [primary.get_presentation_name(src)]"
@@ -101,16 +99,16 @@
 
 	// Skimming off cream, repurposed from crucibles.
 	// TODO: potentially make this an alt interaction and unify with slag skimming.
-	if(istype(used_item, /obj/item/chems) && ATOM_IS_OPEN_CONTAINER(used_item) && used_item.reagents?.maximum_volume && reagents?.total_volume && length(reagents.reagent_volumes) > 1)
+	if(istype(used_item, /obj/item/chems) && ATOM_IS_OPEN_CONTAINER(used_item) && REAGENT_MAXIMUM_VOLUME(used_item.reagents) && REAGENT_TOTAL_VOLUME(reagents) && length(REAGENT_VOLUMES(reagents)) > 1)
 		var/list/skimmable_reagents = reagents.get_skimmable_reagents()
 		if(length(skimmable_reagents))
 			var/removing = min(amount_per_transfer_from_this, REAGENTS_FREE_SPACE(used_item.reagents))
 			if(removing <= 0)
 				to_chat(user, SPAN_WARNING("\The [used_item] is full."))
 			else
-				var/old_amt = used_item.reagents.total_volume
-				reagents.trans_to_holder(used_item.reagents, removing, skip_reagents = (reagents.reagent_volumes - skimmable_reagents))
-				to_chat(user, SPAN_NOTICE("You skim [used_item.reagents.total_volume-old_amt] unit\s of [used_item.reagents.get_primary_reagent_name()] from the top of \the [reagents.get_primary_reagent_name()]."))
+				var/old_amt = REAGENT_TOTAL_VOLUME(used_item.reagents)
+				reagents.trans_to_holder(used_item.reagents, removing, skip_reagents = (REAGENT_VOLUMES(reagents) - skimmable_reagents))
+				to_chat(user, SPAN_NOTICE("You skim [REAGENT_TOTAL_VOLUME(used_item.reagents)-old_amt] unit\s of [used_item.reagents.get_primary_reagent_name()] from the top of \the [reagents.get_primary_reagent_name()]."))
 			return TRUE
 
 	if(used_item.user_can_attack_with(user, silent = TRUE))
@@ -149,14 +147,7 @@
 /obj/item/chems/shatter(consumed)
 	//Skip splashing if we are in nullspace, since splash isn't null guarded
 	if(loc)
-		reagents.splash(get_turf(src), reagents.total_volume)
-	. = ..()
-
-/obj/item/chems/initialize_reagents(populate = TRUE)
-	if(!reagents)
-		create_reagents(volume)
-	else
-		reagents.maximum_volume = max(reagents.maximum_volume, volume)
+		reagents.splash(get_turf(src), REAGENT_TOTAL_VOLUME(reagents))
 	. = ..()
 
 /obj/item/chems/proc/set_detail_color(var/new_color)
@@ -170,15 +161,17 @@
 
 	. = ..()
 
-	if(QDELETED(src) || !reagents?.total_volume || !ATOM_IS_OPEN_CONTAINER(src) || !isatom(loc))
+	if(QDELETED(src) || !REAGENT_TOTAL_VOLUME(reagents) || !ATOM_IS_OPEN_CONTAINER(src) || !isatom(loc))
 		return
 
 	// Vaporize anything over its boiling point.
 	var/update_reagents = FALSE
-	for(var/decl/material/reagent as anything in reagents.reagent_volumes)
-		if(reagent.can_boil_to_gas && !isnull(reagent.boiling_point) && temperature >= reagent.boiling_point)
+	var/datum/gas_mixture/environment = loc?.return_air()
+	var/ambient_pressure = environment ? environment.return_pressure() : ONE_ATMOSPHERE
+	for(var/decl/material/reagent as anything in REAGENT_VOLUMES(reagents))
+		if(reagent.can_boil_to_gas && reagent.phase_at_temperature(temperature, ambient_pressure) == MAT_PHASE_GAS)
 			// TODO: reduce atom temperature?
-			var/removing = min(reagent.boil_evaporation_per_run, reagents.reagent_volumes[reagent])
+			var/removing = min(reagent.boil_evaporation_per_run, REAGENT_VOLUME(reagents, reagent))
 			reagents.remove_reagent(reagent, removing, defer_update = TRUE, removed_phases = MAT_PHASE_LIQUID)
 			update_reagents = TRUE
 			loc.take_vaporized_reagent(reagent, removing)
@@ -186,7 +179,7 @@
 		reagents.update_total()
 
 /obj/item/chems/take_vaporized_reagent(reagent, amount)
-	if(!reagents?.maximum_volume)
+	if(!REAGENT_MAXIMUM_VOLUME(reagents))
 		return ..()
 	var/take_reagent = min(amount, REAGENTS_FREE_SPACE(reagents))
 	if(take_reagent > 0)
@@ -235,4 +228,4 @@
 	var/turf/T = get_turf(user)
 	if(T)
 		to_chat(user, SPAN_NOTICE("You empty \the [target] onto the floor."))
-		target.reagents.trans_to(T, target.reagents.total_volume)
+		target.reagents.trans_to(T, REAGENT_TOTAL_VOLUME(target.reagents))

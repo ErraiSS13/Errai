@@ -31,18 +31,22 @@
 /datum/unit_test/atoms_should_use_valid_json
 	name = "JSON: Atoms using JSON should have valid JSON values"
 
-/datum/unit_test/atoms_should_use_valid_json/start_test()
-	// Tried doing this with a list, but accessing initial vars is noodly
-	// without an object instance so I'm being slack and hardcoding it.
-	var/list/failures
+// This exists so that modpacks can easily add their own JSON tests.
+// TODO: declize this or something
+/datum/unit_test/atoms_should_use_valid_json/proc/get_json_to_check()
 	var/list/json_to_check
-
 	for(var/atom/movable/subtype as anything in typesof(/obj))
 		if(TYPE_IS_ABSTRACT(subtype))
 			continue
-		var/check_json = subtype::buckle_pixel_shift
+		var/check_json = subtype::_buckle_pixel_shift
 		if(istext(check_json))
-			LAZYSET(json_to_check, "[subtype].buckle_pixel_shift", check_json)
+			LAZYSET(json_to_check, "[subtype]._buckle_pixel_shift", check_json)
+		else if(islist(check_json))
+			var/i = 0
+			for(var/json_offset in check_json)
+				i++
+				LAZYSET(json_to_check, "[subtype]._buckle_pixel_shift\[[i]\]", check_json)
+
 	for(var/subtype in typesof(/obj))
 		var/obj/test = subtype
 		var/check_json = initial(test.directional_offset)
@@ -82,12 +86,13 @@
 		var/check_json = quad_bodytype.riding_offset
 		if(istext(check_json))
 			LAZYSET(json_to_check, "[quad_bodytype_path].riding_offset", check_json)
-	var/list/prefabs = decls_repository.get_decls_of_subtype(/decl/prefab/ic_assembly)
-	for(var/assembly_path in prefabs)
-		var/decl/prefab/ic_assembly/assembly = prefabs[assembly_path]
-		var/check_json = assembly.data
-		if(!isnull(check_json))
-			LAZYSET(json_to_check, "[assembly_path].data", check_json)
+	return json_to_check
+
+/datum/unit_test/atoms_should_use_valid_json/start_test()
+	// Tried doing this with a list, but accessing initial vars is noodly
+	// without an object instance so I'm being slack and hardcoding it.
+	var/list/failures
+	var/list/json_to_check = get_json_to_check()
 	// Validate JSON.
 	for(var/check_key in json_to_check)
 		try

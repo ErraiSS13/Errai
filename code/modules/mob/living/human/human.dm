@@ -9,7 +9,10 @@
 
 /mob/living/human/Initialize(mapload, species_uid, datum/mob_snapshot/supplied_appearance)
 
-	current_health = max_health
+	// Health is dynamically calculated from organ state, so no point keeping a
+	// serialized or modified value, it will be recalculated almost immediately.
+	current_health = get_max_health()
+	species_uid ||= species // Pass our current species in as an arg (in case of serde)
 	reset_hud_overlays()
 	var/list/newargs = args.Copy(2)
 	setup_human(arglist(newargs))
@@ -100,24 +103,25 @@
 				cell_status = "[rig.cell.charge]/[rig.cell.maxcharge]"
 			stat(null, "Hardsuit charge: [cell_status]")
 
-/mob/living/human/proc/implant_loyalty(mob/living/human/M, override = FALSE) // Won't override by default.
-	if(!get_config_value(/decl/config/toggle/use_loyalty_implants) && !override) return // Nuh-uh.
+/mob/living/human/proc/implant_loyalty(mob/living/human/victim, override = FALSE) // Won't override by default.
+	if(!get_config_value(/decl/config/toggle/use_loyalty_implants) && !override)
+		return // Nuh-uh.
 
-	var/obj/item/implant/loyalty/L = new/obj/item/implant/loyalty(M)
-	L.imp_in = M
-	L.implanted = 1
-	var/obj/item/organ/external/affected = GET_EXTERNAL_ORGAN(M, BP_HEAD)
-	LAZYDISTINCTADD(affected.implants, L)
-	L.part = affected
-	L.implanted(src)
+	var/obj/item/implant/loyalty/loyalty_implant = new/obj/item/implant/loyalty(victim)
+	loyalty_implant.imp_in = victim
+	loyalty_implant.implanted = TRUE
+	var/obj/item/organ/external/affected = GET_EXTERNAL_ORGAN(victim, BP_HEAD)
+	LAZYDISTINCTADD(affected.implants, loyalty_implant)
+	loyalty_implant.part = affected
+	loyalty_implant.implanted(src)
 
-/mob/living/human/proc/is_loyalty_implanted(mob/living/human/M)
-	for(var/L in M.contents)
-		if(istype(L, /obj/item/implant/loyalty))
-			for(var/obj/item/organ/external/O in M.get_external_organs())
-				if(L in O.implants)
-					return 1
-	return 0
+/mob/living/human/proc/is_loyalty_implanted(mob/living/human/victim)
+	for(var/obj/item/implant/loyalty/loyalty_implant in victim.contents)
+		// Make sure the implant is actually implanted in the expected part,
+		// and that the part is in the victim (should always be, but just in case)
+		if(victim.get_organ(loyalty_implant.part?.organ_tag) == loyalty_implant.part)
+			return TRUE
+	return FALSE
 
 /mob/living/human/get_additional_stripping_options()
 	. = ..()
@@ -301,7 +305,7 @@
 	var/obj/item/organ/internal/stomach/stomach = get_organ(BP_STOMACH, /obj/item/organ/internal/stomach)
 	var/nothing_to_puke = FALSE
 	if(should_have_organ(BP_STOMACH))
-		if(!stomach || (stomach.ingested.total_volume <= 0 && stomach.contents.len == 0))
+		if(!stomach || (REAGENT_TOTAL_VOLUME(stomach.ingested) <= 0 && stomach.contents.len == 0))
 			nothing_to_puke = TRUE
 	else if(!(locate(/mob) in contents))
 		nothing_to_puke = TRUE
@@ -327,8 +331,8 @@
 	var/turf/location = loc
 	if(istype(location) && location.simulated)
 		var/obj/effect/decal/cleanable/vomit/splat = new /obj/effect/decal/cleanable/vomit(location)
-		if(stomach.ingested.total_volume)
-			stomach.ingested.trans_to_obj(splat, min(15, stomach.ingested.total_volume))
+		if(REAGENT_TOTAL_VOLUME(stomach.ingested))
+			stomach.ingested.trans_to_obj(splat, min(15, REAGENT_TOTAL_VOLUME(stomach.ingested)))
 		handle_additional_vomit_reagents(splat)
 		splat.update_icon()
 
@@ -458,7 +462,7 @@
 /mob/proc/set_bodytype(var/decl/bodytype/new_bodytype)
 	return
 
-/mob/living/human/set_bodytype(var/decl/bodytype/new_bodytype)
+/mob/living/human/set_bodytype(var/decl/bodytype/new_bodytype, var/datum/mob_snapshot/snapshot_to_use = null)
 
 	var/decl/bodytype/old_bodytype = get_bodytype()
 	if(ispath(new_bodytype))
@@ -485,7 +489,7 @@
 //set_species should not handle the entirety of initing the mob, and should not trigger deep updates
 //It focuses on setting up species-related data, without force applying them uppon organs and the mob's appearance.
 // For transforming an existing mob, look at change_species()
-/mob/living/human/set_species(var/new_species_uid, var/new_bodytype = null)
+/mob/living/human/set_species(var/new_species_uid, var/new_bodytype = null, var/datum/mob_snapshot/snapshot_to_use = null)
 	if(!new_species_uid)
 		CRASH("set_species on mob '[src]' was passed a null species uid!")
 	var/decl/species/new_species = decls_repository.get_decl_by_id(new_species_uid)
@@ -514,9 +518,9 @@
 	//Handle bodytype
 	if(!new_bodytype)
 		new_bodytype = species.get_bodytype_by_pronouns(new_pronouns)
-	set_bodytype(new_bodytype)
+	set_bodytype(new_bodytype, snapshot_to_use = snapshot_to_use)
 
-	available_maneuvers = species.maneuvers.Copy()
+	_available_maneuvers = species.maneuvers?.Copy()
 
 	butchery_data = species.butchery_data
 
@@ -559,7 +563,8 @@
 //Drop anything that cannot be worn by the current species of the mob
 /mob/living/human/proc/apply_species_inventory_restrictions()
 
-	if(!(get_bodytype().appearance_flags & HAS_UNDERWEAR))
+	var/decl/bodytype/check_bodytype = get_bodytype()
+	if(!istype(check_bodytype) || !(check_bodytype.appearance_flags & HAS_UNDERWEAR))
 		QDEL_NULL_LIST(worn_underwear)
 
 	var/list/new_slots
@@ -609,7 +614,7 @@
 	for(var/obj/item/organ/external/E in get_external_organs())
 		E.sanitize_sprite_accessories()
 
-	for(var/acc_cat in root_bodytype.default_sprite_accessories)
+	for(var/acc_cat in root_bodytype?.default_sprite_accessories)
 		var/decl/sprite_accessory_category/acc_cat_decl = GET_DECL(acc_cat)
 		if(!acc_cat_decl.always_apply_defaults)
 			continue
@@ -648,12 +653,12 @@
 
 	for(var/decl/language/lang in languages)
 		// Forbidden languages are always removed.
-		if(!(lang.flags & LANG_FLAG_FORBIDDEN))
+		if(!(lang.language_flags & LANG_FLAG_FORBIDDEN))
 			// Admin can have whatever available language they want.
 			if(has_admin_rights())
 				continue
 			// Whitelisted languages are fine.
-			if((lang.flags & LANG_FLAG_WHITELISTED) && is_alien_whitelisted(src, lang))
+			if((lang.language_flags & LANG_FLAG_WHITELISTED) && is_alien_whitelisted(src, lang))
 				continue
 			// Background-granted languages are fine.
 			if(lang.type in permitted_languages)
@@ -683,11 +688,11 @@
 
 	if(!affecting)
 		to_chat(user, SPAN_WARNING("\The [src] is missing that limb."))
-		return 0
+		return FALSE
 
 	if(BP_IS_PROSTHETIC(affecting))
 		to_chat(user, SPAN_WARNING("That limb is prosthetic."))
-		return 0
+		return FALSE
 
 	. = CAN_INJECT
 	for(var/slot in list(slot_head_str, slot_wear_mask_str, slot_wear_suit_str, slot_w_uniform_str, slot_gloves_str, slot_shoes_str))
@@ -696,8 +701,8 @@
 			if(istype(C, /obj/item/clothing/suit/space))
 				. = INJECTION_PORT //it was going to block us, but it's a space suit so it doesn't because it has some kind of port
 			else
-				to_chat(user, "<span class='warning'>There is no exposed flesh or thin material on [src]'s [affecting.name] to inject into.</span>")
-				return 0
+				to_chat(user, SPAN_WARNING("There is no exposed flesh or thin material on [src]'s [affecting.name] to inject into."))
+				return FALSE
 
 
 /mob/living/human/print_flavor_text(var/shrink = 1)
@@ -878,7 +883,7 @@
 
 /mob/living/human/fluid_act(var/datum/reagents/fluids)
 	..()
-	if(!QDELETED(src) && fluids?.total_volume)
+	if(!QDELETED(src) && REAGENT_TOTAL_VOLUME(fluids))
 		species.fluid_act(src, fluids)
 
 /mob/living/human/proc/set_background_value(var/cat_type, var/decl/background_detail/_background, var/defer_language_update)
@@ -889,20 +894,10 @@
 		if(!defer_language_update)
 			update_languages()
 
-/mob/living/proc/get_background_datum_by_flag(background_flag)
-	var/list/all_categories = global.using_map.get_background_categories()
-	for(var/cat_type in all_categories)
-		var/decl/background_category/background_cat = all_categories[cat_type]
-		if(background_cat.background_flags && (background_cat.background_flags & background_flag))
-			return get_background_datum(cat_type)
-
-/mob/living/proc/get_background_datum(cat_type)
-	return null
-
 /mob/living/human/get_background_datum(cat_type)
 	. = LAZYACCESS(background_info, cat_type)
 	if(!istype(., /decl/background_detail))
-		. = global.using_map.default_background_info[cat_type]
+		. = ..()
 		PRINT_STACK_TRACE("get_background_datum() tried to return a non-instance value for background category '[cat_type]' - full background list: [json_encode(background_info)] default species culture list: [json_encode(global.using_map.default_background_info)]")
 
 /mob/living/human/get_digestion_product()
@@ -979,7 +974,7 @@
 	else if(!species_uid)
 		species_uid = global.using_map.default_species //Humans cannot exist without a species!
 
-	set_species(species_uid, supplied_appearance?.root_bodytype)
+	set_species(species_uid, supplied_appearance?.root_bodytype, snapshot_to_use = supplied_appearance)
 	var/decl/bodytype/root_bodytype = get_bodytype() // root bodytype is set in set_species
 	ASSERT((!supplied_appearance?.root_bodytype) || (root_bodytype == supplied_appearance.root_bodytype))
 	if(!get_skin_colour())
@@ -1079,8 +1074,10 @@
 		return //no feet no footsteps
 	return TRUE
 
-/mob/living/human/get_skin_tone(value)
-	return skin_tone
+/mob/living/human/get_skin_tone()
+	if(get_bodytype()?.appearance_flags & HAS_A_SKIN_TONE)
+		return skin_tone
+	return null
 
 /mob/living/human/set_skin_tone(value)
 	skin_tone = value
@@ -1141,3 +1138,7 @@
 				robolimb_count++
 		full_prosthetic = robolimb_count > 0 && (robolimb_count == LAZYLEN(limbs)) //If no organs, no way to tell
 	return full_prosthetic
+
+// Don't tag your crewmates please.
+/mob/living/human/is_tagging_suitable()
+	return FALSE

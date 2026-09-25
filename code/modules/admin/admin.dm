@@ -209,16 +209,16 @@ var/global/BSACooldown = 0
 	var/f = 1
 	var/list/language_types = decls_repository.get_decls_of_subtype(/decl/language)
 	for(var/k in language_types)
-		var/decl/language/L = language_types[k]
-		if(!(L.flags & LANG_FLAG_INNATE))
+		var/decl/language/language = language_types[k]
+		if(!(language.language_flags & LANG_FLAG_INNATE))
 			if(!f)
 				body += " | "
 			else
 				f = 0
-			if(L in M.languages)
-				body += "<a href='byond://?src=\ref[src];toglang=\ref[M];lang=\ref[L]' style='color:#006600'>[L.name]</a>"
+			if(language in M.languages)
+				body += "<a href='byond://?src=\ref[src];toglang=\ref[M];lang=\ref[language]' style='color:#006600'>[language.name]</a>"
 			else
-				body += "<a href='byond://?src=\ref[src];toglang=\ref[M];lang=\ref[L]' style='color:#ff0000'>[L.name]</a>"
+				body += "<a href='byond://?src=\ref[src];toglang=\ref[M];lang=\ref[language]' style='color:#ff0000'>[language.name]</a>"
 
 	body += {"<br>
 		</body></html>
@@ -277,7 +277,7 @@ var/global/BSACooldown = 0
 	var/savefile/info = new("data/player_saves/[copytext(key, 1, 2)]/[key]/info.sav")
 	var/list/infos
 	from_file(info, infos)
-	if(!infos || !infos.len) return 0
+	if(!LAZYLEN(infos)) return 0
 	else return 1
 
 
@@ -1156,35 +1156,8 @@ var/global/BSACooldown = 0
 	var/out = "<font size=3><b>Current mode: [SSticker.mode.name] (<a href='byond://?src=\ref[SSticker.mode];debug_antag=self'>[SSticker.mode.uid]</a>)</b></font><br/>"
 	out += "<hr>"
 
-	if(SSticker.mode.ert_disabled)
-		out += "<b>Emergency Response Teams:</b> <a href='byond://?src=\ref[SSticker.mode];toggle=ert'>disabled</a>"
-	else
-		out += "<b>Emergency Response Teams:</b> <a href='byond://?src=\ref[SSticker.mode];toggle=ert'>enabled</a>"
-	out += "<br/>"
-
-	if(SSticker.mode.deny_respawn)
-		out += "<b>Respawning:</b> <a href='byond://?src=\ref[SSticker.mode];toggle=respawn'>disallowed</a>"
-	else
-		out += "<b>Respawning:</b> <a href='byond://?src=\ref[SSticker.mode];toggle=respawn'>allowed</a>"
-	out += "<br/>"
-
-	out += "<b>Shuttle delay multiplier:</b> <a href='byond://?src=\ref[SSticker.mode];set=shuttle_delay'>[SSticker.mode.shuttle_delay]</a><br/>"
-
-	if(SSticker.mode.auto_recall_shuttle)
-		out += "<b>Shuttle auto-recall:</b> <a href='byond://?src=\ref[SSticker.mode];toggle=shuttle_recall'>enabled</a>"
-	else
-		out += "<b>Shuttle auto-recall:</b> <a href='byond://?src=\ref[SSticker.mode];toggle=shuttle_recall'>disabled</a>"
-	out += "<br/><br/>"
-
-	if(SSticker.mode.event_delay_mod_moderate)
-		out += "<b>Moderate event time modifier:</b> <a href='byond://?src=\ref[SSticker.mode];set=event_modifier_moderate'>[SSticker.mode.event_delay_mod_moderate]</a><br/>"
-	else
-		out += "<b>Moderate event time modifier:</b> <a href='byond://?src=\ref[SSticker.mode];set=event_modifier_moderate'>unset</a><br/>"
-
-	if(SSticker.mode.event_delay_mod_major)
-		out += "<b>Major event time modifier:</b> <a href='byond://?src=\ref[SSticker.mode];set=event_modifier_severe'>[SSticker.mode.event_delay_mod_major]</a><br/>"
-	else
-		out += "<b>Major event time modifier:</b> <a href='byond://?src=\ref[SSticker.mode];set=event_modifier_severe'>unset</a><br/>"
+	var/list/options = SSticker.get_game_mode_options()
+	out += jointext(options, "<br/>")
 
 	out += "<hr>"
 

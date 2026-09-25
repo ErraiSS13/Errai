@@ -92,7 +92,6 @@
 /area/icarus/vessel)
 "av" = (
 /obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
 /turf/floor/tiled,
 /area/icarus/vessel)
 "aw" = (
@@ -750,13 +749,13 @@
 /turf/floor/tiled,
 /area/icarus/vessel)
 "cB" = (
-/obj/structure/sign/double/solgovflag/left{
+/obj/structure/sign/double/flag/solgov/left{
 	pixel_y = -32
 	},
 /turf/floor/tiled,
 /area/icarus/vessel)
 "cC" = (
-/obj/structure/sign/double/solgovflag/right{
+/obj/structure/sign/double/flag/solgov/right{
 	pixel_y = -32
 	},
 /turf/floor/tiled,
@@ -775,7 +774,6 @@
 /turf/floor/tiled,
 /area/icarus/vessel)
 "cF" = (
-/obj/effect/decal/cleanable/dirt/visible,
 /obj/effect/decal/cleanable/dirt/visible,
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
@@ -1280,8 +1278,6 @@
 /area/icarus/open)
 "ed" = (
 /obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
 /turf/floor/tiled,
 /area/icarus/open)
 "ee" = (
@@ -1290,7 +1286,6 @@
 /turf/floor/tiled,
 /area/icarus/open)
 "ef" = (
-/obj/effect/decal/cleanable/dirt/visible,
 /obj/effect/decal/cleanable/dirt/visible,
 /turf/floor/tiled,
 /area/icarus/open)

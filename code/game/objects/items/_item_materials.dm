@@ -1,6 +1,6 @@
 /obj/item/on_update_icon()
-	. = ..()
 	SHOULD_CALL_PARENT(TRUE)
+	. = ..()
 	cut_overlays()
 	if((material_alteration & MAT_FLAG_ALTERATION_COLOR) && material)
 		alpha = 100 + material.opacity * 255
@@ -53,10 +53,6 @@
 		material.place_shards(T)
 	qdel(src)
 
-/obj/item/get_material()
-	RETURN_TYPE(/decl/material)
-	return material
-
 // TODO: Refactor more code to use this where necessary, and then make this use
 // some sort of generalized system for hitting with different parts of an item
 // e.g. pommel vs blade, rifle butt vs bayonet, knife hilt vs blade
@@ -91,6 +87,7 @@
 			obj_flags &= (~OBJ_FLAG_CONDUCTIBLE)
 		if(isnull(initial(paint_verb)))
 			paint_verb = material.paint_verb
+		refresh_color() // apply material color
 		update_attack_force()
 		update_name()
 		if(material_armor_multiplier)

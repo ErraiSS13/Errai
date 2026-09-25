@@ -3,8 +3,9 @@
 	desc = "A hard, sturdy bowl used to hold organic matter for crushing."
 	icon = 'icons/obj/items/chem/mortar.dmi'
 	icon_state = ICON_STATE_WORLD
-	volume = 40
+	chem_volume = 40
 	material = /decl/material/solid/stone/basalt
+	color = /decl/material/solid/stone/basalt::color
 	material_alteration = MAT_FLAG_ALTERATION_ALL
 	storage = /datum/storage/hopper/mortar
 	var/grinding = FALSE
@@ -21,7 +22,7 @@
 /obj/item/chems/glass/mortar/proc/try_grind(obj/item/used_item, mob/living/user)
 	if(!istype(used_item))
 		return FALSE
-	if(!CanPhysicallyInteract(user) || !user.check_dexterity(DEXTERITY_HOLD_ITEM))
+	if(!CanPhysicallyInteract(user) || !user.check_dexterity(DEXTERITY_HOLD_ITEM, fail_message = "You lack the dexterity to use \the [src]."))
 		return TRUE
 	if(grinding)
 		to_chat(user, SPAN_WARNING("Something is already being crushed in \the [src]."))
@@ -36,11 +37,11 @@
 	if(attacking_material.hardness <= crushing_material.hardness)
 		to_chat(user, SPAN_NOTICE("\The [used_item] is not hard enough to crush \the [crushing_item]."))
 		return TRUE
-	if(REAGENTS_FREE_SPACE(reagents) < crushing_item.reagents.total_volume)
+	if(REAGENTS_FREE_SPACE(reagents) < REAGENT_TOTAL_VOLUME(crushing_item.reagents))
 		to_chat(user, SPAN_WARNING("\The [src] is too full to grind \the [crushing_item], it'd spill everywhere!"))
 		return TRUE
-	if(crushing_item.reagents?.total_volume) // if it has no reagents, skip all the fluff and destroy it instantly
-		var/stamina_to_consume = max(crushing_item.reagents.total_volume * (1 + user.get_stamina_skill_mod()/2), 5)
+	if(REAGENT_TOTAL_VOLUME(crushing_item.reagents)) // if it has no reagents, skip all the fluff and destroy it instantly
+		var/stamina_to_consume = max(REAGENT_TOTAL_VOLUME(crushing_item.reagents) * (1 + user.get_stamina_skill_mod()/2), 5)
 		if(stamina_to_consume > 100) // TODO: add user.get_max_stamina()?
 			to_chat(user, SPAN_WARNING("\The [crushing_item] is too large for you to grind in \the [src]!"))
 			return TRUE
@@ -57,7 +58,7 @@
 		if(QDELETED(crushing_item))
 			return TRUE // already been ground!
 		user.adjust_stamina(-stamina_to_consume)
-		crushing_item.reagents.trans_to(src, crushing_item.reagents.total_volume, skill_factor)
+		crushing_item.reagents.trans_to(src, REAGENT_TOTAL_VOLUME(crushing_item.reagents), skill_factor)
 		to_chat(user, SPAN_NOTICE("You finish grinding \the [crushing_item] with \the [used_item]."))
 	QDEL_NULL(crushing_item)
 	// If there's more to crush, try looping

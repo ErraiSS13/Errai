@@ -23,10 +23,6 @@
 	var/image/transverse_left // Images for displaying the range of the turret's transverse
 	var/image/transverse_right
 
-	// Sounds
-	var/turn_on_sound = null // Played when turret goes from off to on.
-	var/turn_off_sound = null // The above, in reverse.
-
 	// Shooting
 	var/obj/item/gun/installed_gun = /obj/item/gun/energy/laser/practice // Instance of the gun inside the turret.
 	var/gun_looting_prob = 25 // If the turret dies and then is disassembled, this is the odds of getting the gun.
@@ -234,7 +230,7 @@
 	return angle_between_two_angles(leftmost_traverse, angle, rightmost_traverse)
 
 /obj/machinery/turret/set_dir(ndir)
-	..()
+	. = ..()
 	calculate_traverse()
 
 // Instantly turns the turret to a specific absolute angle.

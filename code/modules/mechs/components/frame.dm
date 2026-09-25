@@ -18,12 +18,12 @@
 	var/is_reinforced = 0
 	var/set_name
 
-/obj/structure/heavy_vehicle_frame/set_color(new_colour)
+/obj/structure/heavy_vehicle_frame/set_color(new_color, skip_update)
 	var/painted_component = FALSE
 	for(var/obj/item/mech_component/comp in list(body, arms, legs, head))
-		if(comp.set_color(new_colour))
+		if(comp.set_color(new_color, skip_update))
 			painted_component = TRUE
-	if(painted_component)
+	if(!skip_update && painted_component)
 		queue_icon_update()
 
 /obj/structure/heavy_vehicle_frame/Destroy()
@@ -229,14 +229,14 @@
 		is_reinforced = (is_reinforced == FRAME_REINFORCED_SECURE) ? FRAME_REINFORCED : FRAME_REINFORCED_SECURE
 	// Welding metal.
 	else if(IS_WELDER(used_item))
-		var/obj/item/weldingtool/welder = used_item
+		var/obj/item/fuelled_tool/welding/welder = used_item
 		if(!is_reinforced)
 			to_chat(user, SPAN_WARNING("There is no metal to secure inside \the [src]."))
 			return TRUE
 		if(is_reinforced == FRAME_REINFORCED)
 			to_chat(user, SPAN_WARNING("The reinforcement inside \the [src] has not been secured."))
 			return TRUE
-		if(!welder.isOn())
+		if(!welder.tool_is_running())
 			to_chat(user, SPAN_WARNING("Turn \the [welder] on, first."))
 			return TRUE
 		if(welder.weld(1, user))
@@ -295,9 +295,10 @@
 	return TRUE
 
 /obj/structure/heavy_vehicle_frame/proc/install_component(var/obj/item/thing, var/mob/user)
-	var/obj/item/mech_component/MC = thing
-	if(istype(MC) && !MC.ready_to_install())
-		to_chat(user, SPAN_WARNING("\The [MC] [MC.gender == PLURAL ? "are" : "is"] not ready to install."))
+	var/obj/item/mech_component/component = thing
+	if(istype(component) && !component.ready_to_install())
+		var/decl/pronouns/component_pronouns = component.get_pronouns()
+		to_chat(user, SPAN_WARNING("\The [component] [component_pronouns.is] not ready to install."))
 		return 0
 	if(user)
 		visible_message(SPAN_NOTICE("\The [user] begins installing \the [thing] into \the [src]."))

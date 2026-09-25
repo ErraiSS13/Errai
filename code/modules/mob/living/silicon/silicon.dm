@@ -127,9 +127,9 @@
 	if(!Proj.nodamage)
 		switch(Proj.atom_damage_type)
 			if(BRUTE)
-				take_damage(Proj.damage)
+				take_damage(Proj.get_projectile_damage(src))
 			if(BURN)
-				take_damage(Proj.damage, BURN)
+				take_damage(Proj.get_projectile_damage(src), BURN)
 	Proj.on_hit(src,100) //wow this is a terrible hack
 	return 100
 
@@ -207,16 +207,16 @@
 		var/decl/language/lang = GET_DECL(default_language)
 		dat += "Current default language: [lang.name] - <a href='byond://?src=\ref[src];default_lang=reset'>reset</a><br/><br/>"
 
-	for(var/decl/language/L in languages)
-		if(!(L.flags & LANG_FLAG_NONGLOBAL))
+	for(var/decl/language/language in languages)
+		if(!(language.language_flags & LANG_FLAG_NONGLOBAL))
 			var/default_str
-			if(L == default_language)
+			if(language == default_language)
 				default_str = " - default - <a href='byond://?src=\ref[src];default_lang=reset'>reset</a>"
 			else
-				default_str = " - <a href='byond://?src=\ref[src];default_lang=\ref[L]'>set default</a>"
+				default_str = " - <a href='byond://?src=\ref[src];default_lang=\ref[language]'>set default</a>"
 
-			var/synth = (L in speech_synthesizer_langs)
-			dat += "<b>[L.name] ([get_language_prefix()][L.key])</b>[synth ? default_str : null]<br/>Speech Synthesizer: <i>[synth ? "YES" : "NOT SUPPORTED"]</i><br/>[L.desc]<br/><br/>"
+			var/synth = (language in speech_synthesizer_langs)
+			dat += "<b>[language.name] ([get_language_prefix()][language.language_key])</b>[synth ? default_str : null]<br/>Speech Synthesizer: <i>[synth ? "YES" : "NOT SUPPORTED"]</i><br/>[language.desc]<br/><br/>"
 
 	show_browser(src, dat, "window=checklanguage")
 	return
@@ -271,7 +271,7 @@
 	if(!(alarm.alarm_z() in SSmapping.get_connected_levels(my_z)))
 		return // Didn't actually hear it as far as we're concerned.
 	if(!next_alarm_notice)
-		next_alarm_notice = world.time + SecondsToTicks(10)
+		next_alarm_notice = world.time + (10 SECONDS)
 
 	var/list/alarms = queued_alarms[alarm_handler]
 	if(was_raised)
@@ -440,7 +440,7 @@
 /mob/living/silicon/get_dexterity(var/silent)
 	return dexterity
 
-/mob/living/silicon/robot/remove_implant(var/obj/item/implant, var/surgical_removal = FALSE, obj/item/organ/external/affected)
+/mob/living/silicon/robot/remove_implant(obj/item/implant, surgical_removal = FALSE, obj/item/organ/external/affected)
 	. = ..()
 	if(.)
 		adjustBruteLoss(5, do_update_health = FALSE)

@@ -81,13 +81,17 @@
 		loc.storage.on_item_pre_deletion(src)
 	UNQUEUE_TEMPERATURE_ATOM(src)
 	QDEL_NULL(reagents)
-	LAZYCLEARLIST(our_overlays)
-	LAZYCLEARLIST(priority_overlays)
+
+	if (simple_overlays)
+		simple_overlays = null
+	if (grouped_overlays)
+		grouped_overlays = null
+
 	LAZYCLEARLIST(climbers)
 	QDEL_NULL(light)
 	if(simulated && opacity)
 		updateVisibility(src)
-	if(atom_codex_ref && atom_codex_ref != TRUE) // may be null, TRUE or a datum instance
+	if(istype(atom_codex_ref) && !atom_codex_ref.store_codex_entry) // may be null, TRUE or a datum instance
 		QDEL_NULL(atom_codex_ref)
 	. = ..()
 	// This might need to be moved onto a Del() override at some point.
@@ -95,6 +99,8 @@
 
 // Called if an atom is deleted before it initializes. Only call Destroy in this if you know what you're doing.
 /atom/proc/EarlyDestroy(force = FALSE)
+	// since this is set up in New, we have to make sure it's cleared in EarlyDestroy too
+	QDEL_NULL(storage)
 	return QDEL_HINT_QUEUE
 
 
@@ -112,7 +118,7 @@
 	// Changing this behavior will almost certainly break power; update accordingly.
 	if (!ml && loc)
 		loc.Entered(src, null)
-	if(loc && (z_flags & ZMM_WIDE_LOAD))
+	if(loc && MOVABLE_SHALL_MIMIC(src) && MOVABLE_IS_BELOW_ZTURF(src))
 		SSzcopy.discover_movable(src)
 
 /atom/movable/EarlyDestroy(force = FALSE)
@@ -182,5 +188,5 @@
 
 /atom/movable/PopulateClone(atom/movable/clone)
 	clone = ..()
-	clone.anchored = anchored
+	clone.set_anchored(anchored)
 	return clone

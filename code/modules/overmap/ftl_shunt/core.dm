@@ -17,7 +17,6 @@
 	var/shunt_x = 1
 	var/shunt_y = 1
 	var/chargepercent = 0
-	var/last_percent_tick = 0
 	var/obj/machinery/computer/ship/ftl/ftl_computer
 	var/required_fuel_joules
 	var/required_charge //This is a function of the required fuel joules.
@@ -238,7 +237,7 @@
 	return FTL_START_CONFIRMED
 
 /obj/machinery/ftl_shunt/core/proc/calculate_jump_requirements()
-	var/obj/effect/overmap/visitable/site = global.overmap_sectors[num2text(z)]
+	var/obj/effect/overmap/visitable/site = global.overmap_sectors[z]
 	if(site)
 		var/shunt_distance
 		var/vessel_mass = ftl_computer.linked.get_vessel_mass()
@@ -275,7 +274,7 @@
 		cancel_shunt()
 		return //If for some reason we don't have fuel now, just return.
 
-	var/obj/effect/overmap/visitable/site = global.overmap_sectors[num2text(z)]
+	var/obj/effect/overmap/visitable/site = global.overmap_sectors[z]
 	if(site)
 		var/destination = locate(shunt_x, shunt_y, site.z)
 		var/jumpdist = get_dist(get_turf(ftl_computer.linked), destination)
@@ -357,7 +356,7 @@
 				if(prob(35))
 					L.flicker()
 
-	for(var/obj/machinery/power/apc/A in SSmachines.machinery)
+	for(var/obj/machinery/apc/A in SSmachines.machinery)
 		if(!(A.z in ftl_computer.linked.map_z))
 			continue
 		switch(shunt_sev)
@@ -403,7 +402,7 @@
 
 			explosion(get_turf(src),-1,-1,8,10) //Effect Two: blow the windows out.
 
-			for(var/obj/machinery/power/apc/A in SSmachines.machinery) //Effect Three: shut down power across the ship.
+			for(var/obj/machinery/apc/A in SSmachines.machinery) //Effect Three: shut down power across the ship.
 				if(!(A.z in ftl_computer.linked.map_z))
 					continue
 				A.energy_fail(rand(60,80))
@@ -411,7 +410,7 @@
 		if(SHUNT_SABOTAGE_CRITICAL)
 			announcetxt = shunt_sabotage_text_critical
 
-			for(var/obj/machinery/power/apc/A in SSmachines.machinery) //Effect One: shut down power across the ship.
+			for(var/obj/machinery/apc/A in SSmachines.machinery) //Effect One: shut down power across the ship.
 				if(!(A.z in ftl_computer.linked.map_z))
 					continue
 				A.energy_fail(rand(100,120))
@@ -555,7 +554,7 @@
 		/decl/material/gas/hydrogen/deuterium = 25000,
 		/decl/material/gas/hydrogen = 25000,
 		/decl/material/solid/exotic_matter = 50000
-		)
+	)
 	var/obj/item/fuel_assembly/fuel
 	var/obj/machinery/ftl_shunt/core/master
 	var/max_fuel = 0
@@ -655,4 +654,7 @@
 	icon = 'icons/obj/items/stock_parts/stock_parts.dmi'
 	icon_state = "smes_coil"
 	color = COLOR_YELLOW
-	matter = list(/decl/material/solid/exotic_matter = MATTER_AMOUNT_REINFORCEMENT, /decl/material/solid/metal/plasteel = MATTER_AMOUNT_PRIMARY)
+	matter = list(
+		/decl/material/solid/exotic_matter = MATTER_AMOUNT_REINFORCEMENT,
+		/decl/material/solid/metal/plasteel = MATTER_AMOUNT_PRIMARY
+	)

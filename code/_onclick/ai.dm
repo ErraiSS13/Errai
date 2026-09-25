@@ -72,7 +72,7 @@
 	The below is only really for safety, or you can alter the way
 	it functions and re-insert it above.
 */
-/mob/living/silicon/ai/UnarmedAttack(atom/A)
+/mob/living/silicon/ai/ResolveUnarmedAttack(atom/A)
 	return A.attack_ai(src)
 
 /mob/living/silicon/ai/RangedAttack(atom/A, var/params)
@@ -158,7 +158,7 @@
 		Topic(src, list("command"="bolts", "activate" = "1"))
 	return TRUE
 
-/obj/machinery/power/apc/AICtrlClick(mob/living/silicon/user) // turns off/on APCs.
+/obj/machinery/apc/AICtrlClick(mob/living/silicon/user) // turns off/on APCs.
 	if(user.incapacitated())
 		return FALSE
 	Topic(src, list("breaker"="1"))

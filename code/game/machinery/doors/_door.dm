@@ -15,6 +15,7 @@
 	uncreated_component_parts = null
 	required_interaction_dexterity = DEXTERITY_SIMPLE_MACHINES
 	max_health = 300
+	interaction_priority = TRUE
 
 	var/can_open_manually = TRUE
 
@@ -248,7 +249,6 @@
 	else if(density)
 		do_animate("deny")
 
-	update_icon()
 	return TRUE
 
 /obj/machinery/door/proc/handle_repair(obj/item/used_item, mob/user)
@@ -291,11 +291,11 @@
 			to_chat(user, "<span class='warning'>\The [src] must be closed before you can repair it.</span>")
 			return TRUE
 
-		var/obj/item/weldingtool/welder = used_item
+		var/obj/item/fuelled_tool/welding/welder = used_item
 		if(welder.weld(0,user))
 			to_chat(user, "<span class='notice'>You start to fix dents and weld \the [repairing] into place.</span>")
 			playsound(src, 'sound/items/Welder.ogg', 100, 1)
-			if(do_after(user, 5 * repairing.amount, src) && welder && welder.isOn())
+			if(do_after(user, 5 * repairing.amount, src) && welder && welder.tool_is_running())
 				to_chat(user, "<span class='notice'>You finish repairing the damage to \the [src].</span>")
 				current_health = clamp(current_health + repairing.amount*DOOR_REPAIR_AMOUNT,current_health, get_max_health())
 				update_icon()
@@ -466,8 +466,8 @@
 	close_door_at = 0
 	do_animate("closing")
 
-	sleep(0.5 SECONDS)
 	src.set_density(TRUE)
+	sleep(0.5 SECONDS)
 	update_nearby_tiles()
 	src.layer = closed_layer
 
@@ -574,6 +574,8 @@
 	aft = aft || fore
 
 	if (!fore && !aft)
+		return list()
+	else if (fore.override_unlock || aft.override_unlock)
 		return list()
 	else if (fore.secure || aft.secure)
 		return req_access_union(fore, aft)

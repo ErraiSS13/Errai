@@ -55,7 +55,7 @@
 		material_info += "<br>This substance has the following properties in standard temperature and pressure:<ul>"
 		material_info += "<ul>"
 		material_info += "<li>Its melting point is [mat.melting_point] K.</li>"
-		material_info += "<li>Its boiling point is [mat.boiling_point] K.</li>"
+		material_info += "<li>Its boiling point is [mat.boiling_point] K (at 1ATM).</li>"
 		if(mat.solvent_power > MAT_SOLVENT_NONE)
 			if(mat.solvent_power <= MAT_SOLVENT_MILD)
 				material_info += "<li>It is a mild solvent.</li>"
@@ -64,13 +64,13 @@
 			else if(mat.solvent_power <= MAT_SOLVENT_STRONG)
 				material_info += "<li>It is a strong solvent and will burn exposed skin on contact.</li>"
 		if(mat.dissolves_in != MAT_SOLVENT_IMMUNE && LAZYLEN(mat.dissolves_into))
-			var/chems = list()
+			var/list/chemicals = list()
 			for(var/chemical in mat.dissolves_into)
-				var/decl/material/material = GET_DECL(chemical)
-				var/material_link = "<span codexlink='[material.codex_name || material.name] (substance)'>[material.name]</span>"
-				if(material.hidden_from_codex)
-					material_link = material.name
-				chems += "[material_link] ([mat.dissolves_into[chemical]*100]%)"
+				var/decl/material/chemical_decl = GET_DECL(chemical)
+				var/material_link = "<span codexlink='[chemical_decl.codex_name || chemical_decl.name] (substance)'>[chemical_decl.name]</span>"
+				if(chemical_decl.hidden_from_codex)
+					material_link = chemical_decl.name
+				chemicals += "[material_link] ([mat.dissolves_into[chemical]*100]%)"
 			var/solvent_needed
 			if(mat.dissolves_in <= MAT_SOLVENT_NONE)
 				solvent_needed = "any liquid"
@@ -80,7 +80,7 @@
 				solvent_needed = "a moderately strong solvent, like acetone"
 			else if(mat.dissolves_in <= MAT_SOLVENT_STRONG)
 				solvent_needed = "a strong solvent, like sulfuric acid"
-			material_info += "<li>It can be dissolved with [solvent_needed] solvent, producing [english_list(chems)].</li>"
+			material_info += "<li>It can be dissolved with [solvent_needed] solvent, producing [english_list(chemicals)].</li>"
 		if(mat.radioactivity)
 			material_info += "<li>It is radioactive.</li>"
 		if(mat.flags & MAT_FLAG_FUSION_FUEL)

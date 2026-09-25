@@ -32,7 +32,7 @@
 
 	var/storage_desc = "crewmembers"
 	var/storage_name = "Cryogenic Oversight Control"
-	var/allow_items = 1
+	var/allow_items = TRUE
 
 /obj/machinery/computer/cryopod/Destroy()
 	QDEL_NULL_LIST(frozen_items)
@@ -46,7 +46,14 @@
 
 	storage_desc = "cyborgs"
 	storage_name = "Robotic Storage Control"
-	allow_items = 0
+	allow_items = FALSE
+
+/obj/machinery/computer/cryopod/checkpoint
+	name = "travel oversight console"
+	desc = "An interface between visitors and the checkpoint systems tasked with keeping track of all visitors who enter or exit from the area."
+
+	storage_desc = "visitors"
+	storage_name = "Travel Oversight Control"
 
 /obj/machinery/computer/cryopod/interface_interact(mob/user)
 	interact(user)
@@ -133,6 +140,11 @@
 	build_path = /obj/machinery/computer/cryopod/robot
 	origin_tech = @'{"programming":3}'
 
+/obj/item/stock_parts/circuitboard/checkpointcontrol
+	name = "circuit board (Checkpoint Console)"
+	build_path = /obj/machinery/computer/cryopod/checkpoint
+	origin_tech = @'{"programming":3}'
+
 //Decorative structures to go alongside cryopods.
 /obj/structure/cryofeed
 
@@ -157,7 +169,9 @@
 	var/occupied_icon_state = "body_scanner_1"
 	var/on_store_message = "has entered long-term storage."
 	var/on_store_name = "Cryogenic Oversight"
+	var/on_store_visible_message = "$TARGET$ hums and hisses as it moves $USER$ into storage." //! A visible message to display when the user is despawned. $USER$ will be replaced with the user's name, $TARGET$ will be replaced with the pod's name.
 	var/on_enter_occupant_message = "You feel cool air surround you. You go numb as your senses turn inward."
+	var/on_enter_visible_message = "$USER$ starts climbing into $TARGET$." //! A visible message to display when the user enters the pod. $USER$ will be replaced with the user's name.
 	var/allow_occupant_types = list(/mob/living/human)
 	var/disallow_occupant_types = list()
 
@@ -187,6 +201,39 @@
 	allow_occupant_types = list(/mob/living/silicon/robot)
 	disallow_occupant_types = list(/mob/living/silicon/robot/drone)
 	applies_stasis = 0
+
+/obj/machinery/cryopod/robot/door
+	//This inherits from the robot cryo, so synths can be properly cryo'd.  If a non-synth enters and is cryo'd, ..() is called and it'll still work.
+	abstract_type = /obj/machinery/cryopod/robot/door
+	name = "Airlock of Wonders"
+	desc = "An airlock that isn't an airlock, and shouldn't exist.  Yell at a coder/mapper."
+	icon = 'icons/obj/machines/pod_doors.dmi'
+	icon_state = "door_closed"
+	base_icon_state = "door_closed"
+	occupied_icon_state = "door_locked"
+	on_enter_visible_message = "$USER$ steps into $TARGET$."
+
+	time_till_despawn = 1 MINUTE //We want to be much faster then normal cryo, since waiting in an elevator for half an hour is a special kind of hell.
+
+	allow_occupant_types = list(/mob/living/silicon/robot,/mob/living/human)
+	disallow_occupant_types = list(/mob/living/silicon/robot/drone)
+
+/obj/machinery/cryopod/robot/door/dorms
+	name = "Residential District Elevator"
+	desc = "A small elevator that goes down to the deeper section of the colony."
+	on_store_message = "has departed for the residential district."
+	on_store_name = "Residential Oversight"
+	on_enter_occupant_message = "The elevator door closes slowly, ready to bring you down to the residential district."
+	on_store_visible_message = "$TARGET$ makes a ding as it moves $USER$ to the residential district."
+
+/obj/machinery/cryopod/robot/door/checkpoint
+	name = "automated checkpoint"
+	desc = "A reinforced, automated checkpoint tracking arrivals and departures from the outpost. Beyond this vault is a small airstrip, then nothing but untamed wilderness."
+	on_store_message = "has departed from the colony."
+	on_store_name = "Travel Oversight"
+	on_enter_occupant_message = "The checkpoint unseals and grinds open, and you step through."
+	on_store_visible_message = "The checkpoint grinds closed after $TARGET$ passes through it."
+	time_till_despawn = 1 SECOND
 
 /obj/machinery/cryopod/lifepod
 	name = "life pod"
@@ -221,7 +268,7 @@
 	var/newz
 	if(prob(90))
 		var/list/possible_locations
-		var/obj/effect/overmap/visitable/O = global.overmap_sectors[num2text(z)]
+		var/obj/effect/overmap/visitable/O = global.overmap_sectors[z]
 		if(istype(O))
 			for(var/obj/effect/overmap/visitable/OO in range(O,2))
 				if((OO.sector_flags & OVERMAP_SECTOR_IN_SPACE) || istype(OO,/obj/effect/overmap/visitable/sector/planetoid))
@@ -359,6 +406,7 @@
 		control_computer._admin_logs += "[key_name(occupant)] ([role_alt_title]) at [stationtime2text()]"
 	log_and_message_admins("[key_name(occupant)] ([role_alt_title]) entered cryostorage.")
 
+	visible_message(SPAN_NOTICE(capitalize_proper_html(emote_replace_user_tokens(emote_replace_target_tokens(on_store_visible_message, src), occupant))))
 	do_telecomms_announcement(src, "[occupant.real_name], [role_alt_title], [on_store_message]", "[on_store_name]")
 	despawn_character(occupant)
 	set_occupant(null)
@@ -369,7 +417,10 @@
 			if(alert(target,"Would you like to enter long-term storage?",,"Yes","No") != "Yes")
 				return
 	if(!user.incapacitated() && !user.anchored && user.Adjacent(src) && user.Adjacent(target))
-		visible_message("[user] starts putting [target] into \the [src].", range = 3)
+		if(target == user)
+			visible_message(SPAN_NOTICE(capitalize_proper_html(emote_replace_user_tokens(emote_replace_target_tokens(on_enter_visible_message, src), usr))), range = 3)
+		else
+			visible_message("[user] starts putting [target] into \the [src].", range = 3)
 		if(!do_after(user, 20, src)|| QDELETED(target))
 			return
 		set_occupant(target)
@@ -444,7 +495,7 @@
 	if(!usr.can_enter_cryopod(usr))
 		return
 
-	visible_message("\The [usr] starts climbing into \the [src].", range = 3)
+	visible_message(capitalize_proper_html(emote_replace_user_tokens(emote_replace_target_tokens(on_enter_visible_message, src), usr)), range = 3)
 
 	if(do_after(usr, 20, src))
 
@@ -487,7 +538,7 @@
 
 	if(occupant.client)
 		if(!silent)
-			to_chat(occupant, SPAN_NOTICE("[on_enter_occupant_message]"))
+			occupant.visible_message("\The [src] [emote_replace_target_tokens(on_enter_visible_message)]", SPAN_NOTICE(on_enter_occupant_message))
 			to_chat(occupant, SPAN_NOTICE("<b>If you ghost, log out or close your client now, your character will shortly be permanently removed from the round.</b>"))
 		occupant.client.perspective = EYE_PERSPECTIVE
 		occupant.client.eye = src

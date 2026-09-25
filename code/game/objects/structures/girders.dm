@@ -9,7 +9,8 @@
 	material_alteration =    MAT_FLAG_ALTERATION_NAME | MAT_FLAG_ALTERATION_COLOR
 	tool_interaction_flags = (TOOL_INTERACTION_ANCHOR | TOOL_INTERACTION_DECONSTRUCT)
 	max_health = 100
-	parts_amount = 2
+	material = /decl/material/solid/metal/steel
+	parts_amount = 5
 	parts_type = /obj/item/stack/material/rods
 
 	var/cover = 50
@@ -50,7 +51,7 @@
 
 /obj/structure/girder/displaced/Initialize()
 	. = ..()
-	anchored = prob(50)
+	set_anchored(prob(50))
 
 /obj/structure/girder/bullet_act(var/obj/item/projectile/Proj)
 
@@ -60,7 +61,7 @@
 	if(!anchored)
 		effective_cover *= 0.5
 	effective_cover = clamp(floor(effective_cover), 0, 100)
-	if(Proj.original != src && !prob(effective_cover))
+	if(Proj.original_ref?.resolve() != src && !prob(effective_cover))
 		return PROJECTILE_CONTINUE
 	var/damage = Proj.get_structure_damage()
 	if(!damage)

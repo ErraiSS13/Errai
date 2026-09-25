@@ -53,8 +53,6 @@ var/global/list/bodytypes_by_category = list()
 	var/nail_noun
 	/// What tech levels should limbs of this type use/need?
 	var/limb_tech            = @'{"biotech":2}'
-	/// Determines if eyes should render on heads using this bodytype.
-	var/has_eyes             = TRUE
 	/// Prefixed to the initial name of the limb, if non-null.
 	var/modifier_string
 	/// Modifies min and max broken damage for the limb.
@@ -91,6 +89,10 @@ var/global/list/bodytypes_by_category = list()
 	var/z_flags              = 0
 	/// Amount to shift overlays when lying. TODO: check if this is still needed with KEEP_TOGETHER
 	var/list/prone_overlay_offset
+	/// Set to TRUE to skip unit testing as a primary bodytype in a human. Generally for partial prosthetic models.
+	var/skip_organ_validation = FALSE
+	/// Simplified 'animal' version used by mob mimics.
+	var/simple_variant = /decl/bodytype/animal
 
 	/// Per-bodytype per-zone message strings, see /mob/proc/get_hug_zone_messages
 	var/list/default_hug_message
@@ -231,7 +233,7 @@ var/global/list/bodytypes_by_category = list()
 	var/eye_contaminant_guard       = 0
 	/// Are the eyes of this bodytype resistant to flashes?
 	var/eye_innate_flash_protection = FLASH_PROTECTION_NONE
-	/// Icon to draw eye overlays from.
+	/// Icon to draw eye overlays from. If null, eyes will not be drawn.
 	var/eye_icon                    = 'icons/mob/human_races/species/default_eyes.dmi'
 	/// Do the eyes of this mob apply a pref colour like hair?
 	var/apply_eye_colour            = TRUE
@@ -417,20 +419,19 @@ var/global/list/bodytypes_by_category = list()
 		var/list/organ_data = has_limbs[organ_tag]
 		var/obj/item/organ/organ = organ_data["path"]
 		organ_data["descriptor"] = initial(organ.name)
-		var/organ_cat = initial(organ.organ_category)
-		if(organ_cat)
+		for(var/organ_cat in cached_json_decode(initial(organ.organ_categories)))
 			LAZYINITLIST(_organs_by_category)
 			LAZYADD(_organs_by_category[organ_cat], organ)
 			LAZYINITLIST(_organ_tags_by_category)
 			LAZYADD(_organ_tags_by_category[organ_cat], organ_tag)
+
 		var/list/parent_organ_data = has_limbs[organ::parent_organ]
 		if(parent_organ_data)
 			parent_organ_data["has_children"]++
 
 	for(var/organ_tag in has_organ)
 		var/obj/item/organ/organ = has_organ[organ_tag]
-		var/organ_cat = initial(organ.organ_category)
-		if(organ_cat)
+		for(var/organ_cat in cached_json_decode(initial(organ.organ_categories)))
 			LAZYINITLIST(_organs_by_category)
 			LAZYADD(_organs_by_category[organ_cat], organ)
 			LAZYINITLIST(_organ_tags_by_category)
@@ -640,7 +641,7 @@ var/global/list/bodytypes_by_category = list()
 		set_extension(limb, /datum/extension/armor, natural_armour_values)
 
 //fully_replace: If true, all existing organs will be discarded. Useful when doing mob transformations, and not caring about the existing organs
-/decl/bodytype/proc/create_missing_organs(mob/living/human/H, fully_replace = FALSE)
+/decl/bodytype/proc/create_missing_organs(mob/living/human/H, fully_replace = FALSE, datum/mob_snapshot/snapshot_to_use = null)
 	if(fully_replace)
 		H.delete_organs()
 
@@ -660,8 +661,10 @@ var/global/list/bodytypes_by_category = list()
 				qdel(O)
 
 	//Create missing limbs
-	var/datum/mob_snapshot/supplied_data = H.get_mob_snapshot()
-	supplied_data.root_bodytype = src // This may not have been set on the target mob torso yet.
+	var/datum/mob_snapshot/supplied_data = snapshot_to_use
+	if(!supplied_data)
+		supplied_data = H.get_mob_snapshot()
+		supplied_data.root_bodytype = src // This may not have been set on the target mob torso yet.
 
 	for(var/limb_type in has_limbs)
 		if(GET_EXTERNAL_ORGAN(H, limb_type)) //Skip existing
@@ -678,7 +681,7 @@ var/global/list/bodytypes_by_category = list()
 		var/organ_type = has_organ[organ_tag]
 		var/obj/item/organ/O = new organ_type(H, null, supplied_data)
 		if(organ_tag != O.organ_tag)
-			warning("[O.type] has a default organ tag \"[O.organ_tag]\" that differs from the species' organ tag \"[organ_tag]\". Updating organ_tag to match.")
+			warning("[O.type] has a default organ tag \"[O.organ_tag]\" that differs from the bodytype organ tag \"[organ_tag]\". Updating organ_tag to match.")
 			O.organ_tag = organ_tag
 		H.add_organ(O, GET_EXTERNAL_ORGAN(H, O.parent_organ), FALSE, FALSE, skip_health_update = TRUE)
 	H.update_health()
@@ -723,19 +726,10 @@ var/global/list/bodytypes_by_category = list()
 /decl/bodytype/proc/set_default_sprite_accessories(var/mob/living/setting)
 	if(!istype(setting))
 		return
-	for(var/obj/item/organ/external/E in setting.get_external_organs())
-		E.skin_colour = base_color
-		E.clear_sprite_accessories(skip_update = TRUE)
-	if(!length(default_sprite_accessories))
-		return
-	for(var/accessory_category in default_sprite_accessories)
-		for(var/accessory in default_sprite_accessories[accessory_category])
-			var/decl/sprite_accessory/accessory_decl = GET_DECL(accessory)
-			var/accessory_metadata = default_sprite_accessories[accessory_category][accessory]
-			for(var/bodypart in accessory_decl.body_parts)
-				var/obj/item/organ/external/O = GET_EXTERNAL_ORGAN(setting, bodypart)
-				if(O)
-					O.set_sprite_accessory(accessory, null, accessory_metadata, skip_update = TRUE)
+	setting.clear_sprite_accessories(base_color, skip_update = TRUE)
+	if(length(default_sprite_accessories))
+		setting.set_sprite_accessories(default_sprite_accessories, skip_update = TRUE)
+	setting.update_body(TRUE)
 
 /decl/bodytype/proc/customize_preview_mannequin(mob/living/human/dummy/mannequin/mannequin)
 	set_default_sprite_accessories(mannequin)
@@ -853,3 +847,11 @@ var/global/list/limbs_with_nails = list(
 
 /decl/bodytype/proc/get_footprints_icon()
 	return footprints_icon
+
+/decl/bodytype/proc/get_custom_pain_strings()
+	var/static/list/custom_pain_strings = list(
+		"It hurts so much!",
+		"You really need some painkillers!",
+		"Dear god, the pain!"
+	)
+	return custom_pain_strings

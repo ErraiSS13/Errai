@@ -9,52 +9,6 @@
 		return TRUE
 	. = ..()
 
-/mob/living/exosuit/RelayMouseDrag(atom/src_object, atom/over_object, src_location, over_location, src_control, over_control, params, mob/user)
-	if(user && (user in pilots) && user.loc == src)
-		return OnMouseDrag(src_object, over_object, src_location, over_location, src_control, over_control, params, user)
-	return ..()
-
-/mob/living/exosuit/OnMouseDrag(atom/src_object, atom/over_object, src_location, over_location, src_control, over_control, params, mob/user)
-	if(!user || incapacitated() || user.incapacitated())
-		return FALSE
-
-	if(!(user in pilots) && user != src)
-		return FALSE
-
-	//This is handled at active module level really, it is the one who has to know if it's supposed to act
-	if(selected_system)
-		return selected_system.MouseDragInteraction(src_object, over_object, src_location, over_location, src_control, over_control, params, user)
-
-/mob/living/exosuit/RelayMouseDown(atom/object, location, control, params, mob/user)
-	if(user && (user in pilots) && user.loc == src)
-		return OnMouseDown(object, location, control, params, user)
-	return ..()
-
-/mob/living/exosuit/OnMouseDown(atom/object, location, control, params, mob/user)
-	if(!user || incapacitated() || user.incapacitated())
-		return FALSE
-
-	if(!(user in pilots) && user != src)
-		return FALSE
-
-	if(selected_system)
-		return selected_system.MouseDownInteraction(object, location, control, params, user)
-
-/mob/living/exosuit/RelayMouseUp(atom/object, location, control, params, mob/user)
-	if(user && (user in pilots) && user.loc == src)
-		return OnMouseUp(object, location, control, params, user)
-	return ..()
-
-/mob/living/exosuit/OnMouseUp(atom/object, location, control, params, mob/user)
-	if(!user || incapacitated() || user.incapacitated())
-		return FALSE
-
-	if(!(user in pilots) && user != src)
-		return FALSE
-
-	if(selected_system)
-		return selected_system.MouseUpInteraction(object, location, control, params, user)
-
 /datum/click_handler/default/mech/OnClick(var/atom/A, var/params)
 	var/mob/living/exosuit/E = user.loc
 	if(!istype(E))
@@ -85,6 +39,10 @@
 	if(user in pilots)
 		return STATUS_INTERACTIVE
 	return ..()
+
+/mob/living/exosuit/get_held_items()
+	for(var/h in hardpoints)
+		LAZYADD(., hardpoints[h])
 
 /mob/living/exosuit/get_dexterity(var/silent)
 	return DEXTERITY_FULL
@@ -171,7 +129,7 @@
 			// Hackery for preventing embedding of melee weapons.
 			if(temp_system)
 				temp_old_anchored = temp_system.anchored
-				temp_system.anchored = TRUE
+				temp_system.set_anchored(TRUE)
 
 			// Slip up and attack yourself maybe.
 			failed = FALSE
@@ -215,7 +173,7 @@
 			if(!QDELETED(temp_system))
 				if(system_moved)
 					temp_system.forceMove(selected_system)
-				temp_system.anchored = temp_old_anchored
+				temp_system.set_anchored(temp_old_anchored)
 
 			current_user = null
 			return
@@ -349,8 +307,8 @@
 		var/to_place = input("Where would you like to install it?") as null|anything in (realThing.restricted_hardpoints & free_hardpoints)
 		if(!to_place)
 			to_chat(user, SPAN_WARNING("There is no room to install \the [used_item]."))
-		else if(!install_system(used_item, to_place, user))
-			to_chat(user, SPAN_WARNING("\The [used_item] could not be installed in that hardpoint."))
+		else
+			install_system(used_item, to_place, user)
 		return TRUE
 
 	// Apply customisation.

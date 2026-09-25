@@ -25,14 +25,20 @@
 		SAC_MARKINGS = list(
 			/decl/sprite_accessory/marking/hnoll/belly      = list(SAM_COLOR = "#b6b0a8"),
 			/decl/sprite_accessory/marking/hnoll/spots/body = list(SAM_COLOR = "#46331d"),
-			/decl/sprite_accessory/marking/hnoll/ears       = list(SAM_COLOR = "#46331d")
+		),
+		SAC_EARS = list(
+			/decl/sprite_accessory/ears/hnoll               = list(
+				SAM_COLOR =       "#46331d",
+				SAM_COLOR_INNER = "#c0a88d",
+				SAM_COLOR_EXTRA = "#201406"
+			)
 		)
 	)
 
 	eye_darksight_range                   = 7
 	eye_flash_mod                         = 2
 	eye_blend                             = ICON_MULTIPLY
-	eye_low_light_vision_effectiveness    = 0.15
+	eye_low_light_vision_effectiveness    = 0.30
 	eye_low_light_vision_adjustment_speed = 0.3
 
 	override_limb_types = list(

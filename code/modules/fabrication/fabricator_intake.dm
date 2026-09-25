@@ -6,7 +6,7 @@
 /obj/machinery/fabricator/proc/take_reagents(var/obj/item/thing, var/mob/user, var/destructive = FALSE)
 	if(!thing.reagents || (!destructive && !ATOM_IS_OPEN_CONTAINER(thing)))
 		return SUBSTANCE_TAKEN_NONE
-	for(var/decl/material/reagent as anything in thing.reagents.reagent_volumes)
+	for(var/decl/material/reagent as anything in REAGENT_VOLUMES(thing.reagents))
 		if(!base_storage_capacity[reagent.type])
 			continue
 		var/taking_reagent = min(REAGENT_VOLUME(thing.reagents, reagent), floor((storage_capacity[reagent.type] - stored_material[reagent.type]) * REAGENT_UNITS_PER_MATERIAL_UNIT))
@@ -24,7 +24,7 @@
 		// Otherwise take the first applicable and useful reagent.
 		if(stored_material[reagent.type] == storage_capacity[reagent.type])
 			return SUBSTANCE_TAKEN_FULL
-		else if(thing.reagents.total_volume > 0)
+		else if(REAGENT_TOTAL_VOLUME(thing.reagents) > 0)
 			return SUBSTANCE_TAKEN_SOME
 		else
 			return SUBSTANCE_TAKEN_ALL
@@ -40,22 +40,22 @@
 	var/mat_colour = thing.color
 	for(var/mat in thing.matter)
 
-		var/decl/material/material_def = GET_DECL(mat)
-		if(!material_def || !base_storage_capacity[material_def.type])
+		var/decl/material/ingest_material = GET_DECL(mat)
+		if(!ingest_material || !base_storage_capacity[mat])
 			continue
 
-		var/taking_material = min(thing.matter[mat], storage_capacity[material_def.type] - stored_material[material_def.type])
+		var/taking_material = min(thing.matter[mat], storage_capacity[mat] - stored_material[mat])
 		if(taking_material <= 0)
 			continue
 
 		if(!mat_colour)
-			mat_colour = material_def.color
+			mat_colour = ingest_material.color
 
-		stored_material[material_def.type] += taking_material
+		stored_material[mat] += taking_material
 		if(stack_ref)
 			stacks_used = max(stacks_used, ceil(taking_material/stack_matter_div))
 
-		if(storage_capacity[material_def.type] == stored_material[material_def.type])
+		if(storage_capacity[mat] == stored_material[mat])
 			. = SUBSTANCE_TAKEN_FULL
 		else if(. != SUBSTANCE_TAKEN_FULL)
 			. = SUBSTANCE_TAKEN_ALL
@@ -124,6 +124,11 @@
 			design_cache |= disk.blueprint
 			visible_message(SPAN_NOTICE("\The [user] inserts \the [used_item] into \the [src], and after a second or so of loud clicking, the fabricator beeps and spits it out again."))
 			return TRUE
+
+	// Attempt to bash on harm intent.
+	// I'd like for this to be a more general parent call but instead it's just a direct check-and-call.
+	else if(!(used_item.item_flags & ITEM_FLAG_NO_BLUDGEON) && (. = bash(used_item, user))) // Bash successful, no need to try intake.
+		return
 
 	// TEMP HACK FIX:
 	// Autolathes currently do not process atom contents. As a workaround, refuse all atoms with contents.

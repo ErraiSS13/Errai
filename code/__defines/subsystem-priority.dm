@@ -35,7 +35,6 @@
 #define SS_PRIORITY_VOTE          10  // Vote management.
 #define SS_PRIORITY_INACTIVITY    10  // Idle kicking.
 #define SS_PRIORITY_SUPPLY        10  // Supply point accumulation.
-#define SS_PRIORITY_TRADE         10  // Adds/removes traders.
 #define SS_PRIORITY_GHOST_IMAGES  10  // Updates ghost client images.
 #define SS_PRIORITY_ZCOPY         10  // Builds appearances for Z-Mimic.
 #define SS_PRIORITY_PROJECTILES   10  // Projectile processing!
@@ -47,7 +46,6 @@
 #define SS_PRIORITY_PROCESSING    95  // Generic datum processor. Replaces objects processor.
 #define SS_PRIORITY_PLANTS        90  // Plant processing, slow ticks.
 #define SS_PRIORITY_VINES         50  // Spreading vine effects.
-#define SS_PRIORITY_PSYCHICS      45  // Psychic complexus processing.
 #define SS_PRIORITY_MOB_AI        45  // Mob AI logic; finding targets, attacking, etc.
 #define SS_PRIORITY_AUTO_MOVE     42  // Automated atom movement, fires much more frequently than MOB_AI.
 #define SS_PRIORITY_NANO          40  // Updates to nanoui uis.

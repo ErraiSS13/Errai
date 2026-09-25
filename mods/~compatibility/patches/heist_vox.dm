@@ -1,6 +1,6 @@
 /decl/special_role/raider/Initialize()
 	. = ..()
-	LAZYSET(outfits_per_species, /decl/species/vox::uid, /decl/outfit/vox_raider)
+	LAZYSET(outfits_per_species, /decl/species/vox::uid, /decl/outfit/vox/raider)
 
 // The following mirror is ~special~.
 /obj/structure/mirror/raider
@@ -22,7 +22,7 @@
 	if(choice != "Yes")
 		return TRUE
 
-	var/decl/outfit/outfit = GET_DECL(/decl/outfit/vox_raider)
+	var/decl/outfit/outfit = GET_DECL(/decl/outfit/vox/raider)
 	var/mob/living/human/vox/vox = new(get_turf(src), /decl/species/vox::uid)
 	outfit.equip_outfit(vox)
 	if(user.mind)
@@ -35,7 +35,7 @@
 	var/newname = sanitize_safe(input(vox,"Enter a name, or leave blank for the default name.", "Name change","") as text, MAX_NAME_LEN)
 	if(!newname || newname == "")
 		var/decl/background_detail/background = GET_DECL(/decl/background_detail/heritage/vox/raider)
-		newname = background.get_random_name()
+		newname = background.get_random_cultural_name()
 	vox.real_name = newname
 	vox.SetName(vox.real_name)
 	var/decl/special_role/raider/raiders = GET_DECL(/decl/special_role/raider)

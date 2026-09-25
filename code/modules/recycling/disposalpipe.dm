@@ -202,23 +202,23 @@
 //attack by item
 //weldingtool: unfasten and convert to obj/disposalconstruct
 /obj/structure/disposalpipe/attackby(var/obj/item/used_item, var/mob/user)
-	if(!istype(used_item, /obj/item/weldingtool))
+	if(!istype(used_item, /obj/item/fuelled_tool/welding))
 		return ..()
 	if(!can_deconstruct())
 		return TRUE
 	src.add_fingerprint(user, 0, used_item)
-	var/obj/item/weldingtool/welder = used_item
+	var/obj/item/fuelled_tool/welding/welder = used_item
 	if(welder.weld(0,user))
 		playsound(src.loc, 'sound/items/Welder2.ogg', 100, 1)
 		to_chat(user, "You begin slicing \the [src].")
 		if(!do_after(user, 3 SECONDS, src))
 			to_chat(user, "You must stay still while welding the pipe.")
 			return TRUE
-		if(!welder.isOn())
+		if(!welder.tool_is_running())
 			return TRUE
 		welded()
 		return TRUE
-	to_chat(user, "You need more welding fuel to cut the pipe.")
+	to_chat(user, "You need more fuel to cut the pipe.")
 	return TRUE
 
 	// called when pipe is cut with welder
@@ -226,7 +226,7 @@
 	var/obj/structure/disposalconstruct/C = new (src.loc, src)
 	src.transfer_fingerprints_to(C)
 	C.set_density(0)
-	C.anchored = TRUE
+	C.set_anchored(TRUE)
 	C.update()
 
 	qdel(src)
@@ -592,9 +592,21 @@
 
 	dpdir = sortdir | posdir | negdir
 
-/obj/structure/disposalpipe/sortjunction/Initialize()
+/obj/structure/disposalpipe/sortjunction/proc/validate_sort_type()
+	. = istext(sort_type) && sort_type != ""
+	if(!.)
+		if(name == initial(name))
+			sort_type = "Unknown"
+		else
+			sort_type = name || "Unknown"
+		log_debug("Mapped untagged junction had empty sort_type, setting to '[sort_type]'.")
+
+/obj/structure/disposalpipe/sortjunction/Initialize(ml)
 	. = ..()
-	if(sort_type) global.tagger_locations |= sort_type
+	if(sort_type)
+		global.tagger_locations |= sort_type
+	if(ml && !validate_sort_type())
+		log_warning("Mapped sorting junction of type [type] initializing at [x],[y],[z] with invalid sort_type '[sort_type || "EMPTY"]'!")
 
 	updatedir()
 	updatename()
@@ -662,6 +674,9 @@
 	desc = "An underfloor disposal pipe which filters all wrapped and tagged items."
 	flipped_state = /obj/structure/disposalpipe/sortjunction/wildcard/flipped
 
+/obj/structure/disposalpipe/sortjunction/wildcard/validate_sort_type()
+	return TRUE // Special case
+
 /obj/structure/disposalpipe/sortjunction/wildcard/divert_check(var/checkTag)
 	return checkTag != ""
 
@@ -670,6 +685,12 @@
 	name = "untagged sorting junction"
 	desc = "An underfloor disposal pipe which filters all untagged items."
 	flipped_state = /obj/structure/disposalpipe/sortjunction/untagged/flipped
+
+/obj/structure/disposalpipe/sortjunction/untagged/validate_sort_type()
+	. = (sort_type == "")
+	if(!.)
+		log_debug("Mapped untagged junction had non-empty sort_type, setting to empty string.")
+		sort_type = ""
 
 /obj/structure/disposalpipe/sortjunction/untagged/divert_check(var/checkTag)
 	return checkTag == ""

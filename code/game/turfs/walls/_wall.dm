@@ -25,7 +25,6 @@ var/global/list/wall_fullblend_objects = list(
 	density = TRUE
 	blocks_air = 1
 	thermal_conductivity = WALL_HEAT_TRANSFER_COEFFICIENT
-	heat_capacity = 312500 //a little over 5 cm thick , 312500 for 1 m by 2.5 m by 0.25 m plasteel wall
 	explosion_resistance = 10
 	color = COLOR_STEEL
 	turf_flags = TURF_IS_HOLOMAP_OBSTACLE
@@ -37,11 +36,8 @@ var/global/list/wall_fullblend_objects = list(
 	var/unique_merge_identifier
 	var/damage = 0
 	var/can_open = 0
-	var/decl/material/material
-	var/decl/material/reinf_material
 	var/decl/material/girder_material = /decl/material/solid/metal/steel
 	var/construction_stage
-	var/hitsound = 'sound/weapons/Genhit.ogg'
 	/// A list of connections to walls for each corner, used for icon generation. Can be converted to a list of dirs with corner_states_to_dirs().
 	var/list/wall_connections
 	/// A list of connections to non-walls for each corner, used for icon generation. Can be converted to a list of dirs with corner_states_to_dirs().
@@ -124,10 +120,6 @@ var/global/list/wall_fullblend_objects = list(
 	if(!radiate())
 		return PROCESS_KILL
 
-/turf/wall/get_material()
-	RETURN_TYPE(/decl/material)
-	return material
-
 /turf/wall/bullet_act(var/obj/item/projectile/Proj)
 	if(istype(Proj,/obj/item/projectile/beam))
 		burn(2500)
@@ -136,8 +128,10 @@ var/global/list/wall_fullblend_objects = list(
 
 	var/proj_damage = Proj.get_structure_damage()
 
-	if(Proj.ricochet_sounds && prob(15))
-		playsound(src, pick(Proj.ricochet_sounds), 100, 1)
+	if(prob(15))
+		var/list/ricochet_sounds = Proj.get_ricochet_sounds()
+		if(length(ricochet_sounds))
+			playsound(src, pick(ricochet_sounds), 100, 1)
 
 	if(reinf_material)
 		if(Proj.atom_damage_type == BURN)
@@ -154,7 +148,7 @@ var/global/list/wall_fullblend_objects = list(
 	. = ..()
 	if(. && density && !ismob(AM))
 		var/tforce = AM.get_thrown_attack_force() * (TT.speed/THROWFORCE_SPEED_DIVISOR)
-		playsound(src, hitsound, tforce >= 15 ? 60 : 25, TRUE)
+		playsound(src, get_hit_sound(), tforce >= 15 ? 60 : 25, TRUE)
 		if(tforce > 0)
 			take_damage(tforce)
 
@@ -200,11 +194,8 @@ var/global/list/wall_fullblend_objects = list(
 	if(!can_melt())
 		return
 	var/turf/floor/F = ChangeTurf(/turf/floor/plating)
-	if(!istype(F))
-		return
-	F.burn_tile()
-	F.icon_state = "wall_thermite"
-	visible_message(SPAN_DANGER("\The [src] spontaneously combusts!"))
+	if(istype(F))
+		F.burn_tile()
 
 /turf/wall/take_damage(damage, damage_type = BRUTE, damage_flags, inflicter, armor_pen = 0, silent, do_update_health)
 	if(damage)
@@ -245,7 +236,7 @@ var/global/list/wall_fullblend_objects = list(
 	if(girder_material)
 		placed_girders = girder_material.place_dismantled_girder(src, reinf_material)
 	for(var/obj/structure/girder/placed_girder in placed_girders)
-		placed_girder.anchored = TRUE
+		placed_girder.set_anchored(TRUE)
 		placed_girder.prepped_for_fakewall = can_open
 		placed_girder.update_icon()
 	if(material)
@@ -306,9 +297,13 @@ var/global/list/wall_fullblend_objects = list(
 				addtimer(CALLBACK(wall, TYPE_PROC_REF(/turf/wall, burn), temperature/4), 2)
 		physically_destroyed()
 
-/turf/wall/set_color(new_color)
-	paint_color = new_color
-	update_icon()
+/turf/wall/set_color(new_color, skip_update)
+	if(paint_color != new_color)
+		paint_color = new_color
+		if(!skip_update)
+			update_icon()
+		return TRUE
+	return FALSE
 
 /turf/wall/proc/CheckPenetration(var/base_chance, var/damage)
 	return round(damage/material.integrity*180)
@@ -323,7 +318,7 @@ var/global/list/wall_fullblend_objects = list(
 	handle_melting()
 
 /turf/wall/proc/get_hit_sound()
-	return 'sound/effects/metalhit.ogg'
+	return material?.hitsound || 'sound/weapons/Genhit.ogg'
 
 // Mapped premade for false walls
 /turf/wall/false

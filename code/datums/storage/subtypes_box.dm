@@ -18,6 +18,9 @@
 /datum/storage/box/animal_cube
 	can_hold = list(/obj/item/food/animal_cube)
 
+/datum/storage/box/large/metal
+	use_sound = 'sound/effects/closet_open.ogg'
+
 /datum/storage/box/snappop
 	can_hold = list(/obj/item/toy/snappop)
 
@@ -51,7 +54,7 @@
 	if(istype(removing, /obj/item/clothing/mask/smokable/cigarette/cigar) && isatom(holder))
 		var/atom/atom_holder = holder
 		if(atom_holder.reagents)
-			atom_holder.reagents.trans_to_obj(removing, (atom_holder.reagents.total_volume/max(1, length(get_contents()))))
+			atom_holder.reagents.trans_to_obj(removing, (REAGENT_TOTAL_VOLUME(atom_holder.reagents)/max(1, length(get_contents()))))
 	return ..()
 
 /datum/storage/box/cigarettes
@@ -63,7 +66,7 @@
 	if(istype(removing, /obj/item/clothing/mask/smokable/cigarette) && isatom(holder))
 		var/atom/atom_holder = holder
 		if(atom_holder.reagents)
-			atom_holder.reagents.trans_to_obj(removing, (atom_holder.reagents.total_volume/max(1, length(get_contents()))))
+			atom_holder.reagents.trans_to_obj(removing, (REAGENT_TOTAL_VOLUME(atom_holder.reagents)/max(1, length(get_contents()))))
 	return ..()
 
 /datum/storage/box/cigarettes/cigarello

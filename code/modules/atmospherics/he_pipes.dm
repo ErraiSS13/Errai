@@ -11,7 +11,7 @@
 	atom_flags       = 0 // no painting
 	maximum_pressure = 360 ATM
 	fatigue_pressure = 300 ATM
-	can_buckle       = TRUE
+	max_buckled_mobs  = 1
 	buckle_lying     = TRUE
 	appearance_flags = KEEP_TOGETHER
 
@@ -63,6 +63,7 @@
 	// Handle pipe heat exchange.
 	var/turf/turf = loc
 	var/datum/gas_mixture/pipe_air = return_air()
+	var/heat_radiated = FALSE
 	if(istype(loc, /turf/space))
 		parent.radiate_heat_to_space(surface, 1)
 	else if(istype(turf) && turf.simulated)
@@ -71,19 +72,24 @@
 			environment_temperature = turf.temperature
 		else
 			var/datum/gas_mixture/environment = turf.return_air()
+			if(environment.get_total_moles() == 0) // We're in a vacuum
+				if(loc.is_outside()) // But we're outside, so we're in space
+					parent.radiate_heat_to_space(surface, 0.5) // Radiate out at half efficiency
+				// Else, we're inside, no gas means no heat capacity.  Nothing to do, heat was dealt with either way
+				heat_radiated = TRUE // Skip temperature_interact() either way
 			environment_temperature = environment?.temperature || 0
-		if(abs(environment_temperature-pipe_air.temperature) > minimum_temperature_difference)
-			parent.temperature_interact(turf, volume, thermal_conductivity)
+		if(!heat_radiated && abs(environment_temperature-pipe_air.temperature) > minimum_temperature_difference)
+			parent.temperature_interact(turf, gas_volume, thermal_conductivity)
 
 	// Burn mobs buckled to this pipe.
-	if(buckled_mob)
+	for(var/mob/buckle_mob in get_buckled_mobs())
 		var/hc = pipe_air.heat_capacity()
-		var/avg_temp = (pipe_air.temperature * hc + buckled_mob.bodytemperature * 3500) / (hc + 3500)
+		var/avg_temp = (pipe_air.temperature * hc + buckle_mob.bodytemperature * 3500) / (hc + 3500)
 		pipe_air.temperature = avg_temp
-		buckled_mob.bodytemperature = avg_temp
-		var/heat_limit = buckled_mob.get_mob_temperature_threshold(HEAT_LEVEL_3)
+		buckle_mob.bodytemperature = avg_temp
+		var/heat_limit = buckle_mob.get_mob_temperature_threshold(HEAT_LEVEL_3)
 		if(pipe_air.temperature > heat_limit + 1)
-			buckled_mob.apply_damage(4 * log(pipe_air.temperature - heat_limit), BURN, BP_CHEST, used_weapon = "Excessive Heat")
+			buckle_mob.apply_damage(4 * log(pipe_air.temperature - heat_limit), BURN, BP_CHEST, used_weapon = "Excessive Heat")
 
 	//fancy radiation glowing
 	if(pipe_air.temperature && (icon_temperature > 500 || pipe_air.temperature > 500)) //start glowing at 500K
@@ -124,5 +130,5 @@
 
 // Doubling up on initialize_directions is necessary to allow HE pipes to connect
 /obj/machinery/atmospherics/pipe/simple/heat_exchanging/junction/set_dir(new_dir)
-	..()
+	. = ..()
 	initialize_directions_he = dir

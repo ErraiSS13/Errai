@@ -35,7 +35,7 @@
 	. = ..(mapload, species_uid, supplied_appearance) // do not pass the corpse landmark
 	var/decl/background_detail/background = get_background_datum_by_flag(BACKGROUND_FLAG_NAMING)
 	if(background)
-		var/newname = background.get_random_name(src, gender, species.uid)
+		var/newname = background.get_random_cultural_name(src, gender, get_species())
 		if(newname && newname != name)
 			real_name = newname
 			SetName(newname)
@@ -73,6 +73,6 @@
 
 /mob/living/human/monkey/Initialize(mapload, species_uid, datum/mob_snapshot/supplied_appearance)
 	if(gender == PLURAL)
-		gender = pick(MALE, FEMALE)
+		set_gender(pick(MALE, FEMALE))
 	species_uid = /decl/species/monkey::uid
 	. = ..()

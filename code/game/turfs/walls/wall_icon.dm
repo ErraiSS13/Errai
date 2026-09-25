@@ -11,7 +11,6 @@
 		material = get_default_material()
 	if(material)
 		explosion_resistance = material.explosion_resistance
-		hitsound = material.hitsound
 	if(reinf_material)
 		reinf_icon = islist(reinf_material.icon_reinf) ? pick(reinf_material.icon_reinf) : reinf_material.icon_reinf
 		if(reinf_material.explosion_resistance > explosion_resistance)
@@ -112,6 +111,7 @@
 	other_connections = dirs_to_corner_states(other_dirs)
 
 /turf/wall/proc/update_wall_icon()
+
 	var/material_icon_base = get_wall_icon()
 	var/base_color = get_base_color()
 

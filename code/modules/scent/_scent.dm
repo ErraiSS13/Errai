@@ -1,7 +1,3 @@
-var/global/const/SCENT_DESC_ODOR      = "odour"
-var/global/const/SCENT_DESC_SMELL     = "smell"
-var/global/const/SCENT_DESC_FRAGRANCE = "fragrance"
-
 /*****
 Scent intensity
 *****/
@@ -129,9 +125,9 @@ To add a scent extension to an atom using a reagent's info, where reagent. is th
 /proc/get_smelliest_reagent(var/datum/reagents/holder)
 	var/decl/material/smelliest
 	var/scent_intensity
-	if(!holder || !holder.total_volume)
+	if(!holder || !REAGENT_TOTAL_VOLUME(holder))
 		return
-	for(var/decl/material/reagent as anything in holder.reagent_volumes)
+	for(var/decl/material/reagent as anything in REAGENT_VOLUMES(holder))
 		if(!reagent.scent)
 			continue
 		var/decl/scent_intensity/scent = GET_DECL(reagent.scent_intensity)

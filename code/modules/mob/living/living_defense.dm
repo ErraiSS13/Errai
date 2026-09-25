@@ -28,7 +28,7 @@
 		visible_message(SPAN_WARNING("[src] triggers their deadman's switch!"))
 		signaler.signal()
 	//Armor
-	var/damage = P.damage
+	var/damage = P.get_projectile_damage(src)
 	var/flags = P.damage_flags()
 	var/damaged
 	if(!P.nodamage)
@@ -37,19 +37,23 @@
 	if(damaged || P.nodamage) // Run the block computation if we did damage or if we only use armor for effects (nodamage)
 		. = get_blocked_ratio(def_zone, P.atom_damage_type, flags, P.armor_penetration, P.damage)
 	P.on_hit(src, ., def_zone)
-	if(istype(ai) && isliving(P.firer) && !ai.get_target() && current_health < oldhealth && !incapacitated(INCAPACITATION_KNOCKOUT))
-		ai.retaliate(P.firer)
+	if(current_health < oldhealth)
+		remove_cloak()
+		var/atom/movable/firer = P.firer_ref?.resolve()
+		if(istype(ai) && isliving(firer) && !ai.get_target() && !incapacitated(INCAPACITATION_KNOCKOUT))
+			ai.retaliate(firer)
 
 // For visuals and blood splatters etc
 /mob/living/proc/bullet_impact_visuals(var/obj/item/projectile/P, var/def_zone, var/damage)
-	var/list/impact_sounds = LAZYACCESS(P.impact_sounds, get_bullet_impact_effect_type(def_zone))
+	var/list/all_impact_sounds = P.get_impact_sounds()
+	var/list/impact_sounds = LAZYACCESS(all_impact_sounds, get_bullet_impact_effect_type(def_zone))
 	if(length(impact_sounds))
 		playsound(src, pick(impact_sounds), 75)
 	if(get_bullet_impact_effect_type(def_zone) != BULLET_IMPACT_MEAT)
 		return
 	if(!damage || P.atom_damage_type != BRUTE)
 		return
-	var/hit_dir = get_dir(P.starting, src)
+	var/hit_dir = get_dir(P.starting_ref?.resolve(), src)
 	var/obj/effect/decal/cleanable/blood/B = blood_splatter(get_step(src, hit_dir), src, 1, hit_dir)
 	if(!QDELETED(B))
 		B.icon_state = pick("dir_splatter_1","dir_splatter_2")
@@ -137,12 +141,13 @@
 	if(I.attack_message_name())
 		weapon_mention = " with [I.attack_message_name()]"
 	if(effective_force)
-		visible_message(SPAN_DANGER("\The [src] has been [DEFAULTPICK(I.attack_verb, "attacked")][weapon_mention] by \the [user]!"))
+		visible_message(SPAN_DANGER("\The [src] has been [I.pick_attack_verb()][weapon_mention] by \the [user]!"))
 	else
-		visible_message(SPAN_WARNING("\The [src] has been [DEFAULTPICK(I.attack_verb, "attacked")][weapon_mention] by \the [user]!"))
+		visible_message(SPAN_WARNING("\The [src] has been [I.pick_attack_verb()][weapon_mention] by \the [user]!"))
 	. = standard_weapon_hit_effects(I, user, effective_force, hit_zone)
 	if(I.atom_damage_type == BRUTE && prob(33))
 		blood_splatter(get_turf(loc), src)
+	remove_cloak()
 	if(istype(ai))
 		ai.retaliate(user)
 
@@ -160,7 +165,7 @@
 		ai.retaliate(TT.thrower)
 
 	if(.)
-
+		remove_cloak()
 		if(isliving(AM))
 			var/mob/living/M = AM
 			playsound(loc, 'sound/weapons/pierce.ogg', 25, 1, -1)
@@ -314,10 +319,10 @@
 	user.do_attack_animation(src)
 	return 1
 
-/mob/living/proc/get_cold_protection()
+/mob/living/proc/get_cold_protection(temperature)
 	return 0
 
-/mob/living/proc/get_heat_protection()
+/mob/living/proc/get_heat_protection(temperature)
 	return 0
 
 //Finds the effective temperature that the mob is burning at.

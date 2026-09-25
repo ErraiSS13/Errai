@@ -42,6 +42,8 @@
 /mob/living/bot/Initialize()
 	. = ..()
 	update_icon()
+	add_language(/decl/language/human/common)
+	set_default_language(GET_DECL(/decl/language/human/common))
 
 	botcard = new /obj/item/card/id(src)
 	botcard.access = botcard_access?.Copy()
@@ -198,12 +200,8 @@
 /mob/living/bot/proc/CanAccessMaintenance(var/mob/user)
 	return (open || issilicon(user))
 
-/mob/living/bot/say(var/message)
-	var/verb = "beeps"
-
-	message = sanitize(message)
-
-	..(message, null, verb)
+/mob/living/bot/say(datum/speech/phrases, verb = "beeps", whispering)
+	return ..() // Overrides default verb
 
 /mob/living/bot/Bump(var/atom/A)
 	if(on && botcard && istype(A, /obj/machinery/door))

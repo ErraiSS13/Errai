@@ -115,7 +115,7 @@
 
 	var/flavor_text = ""
 
-	var/datum/skillset/skillset = /datum/skillset
+	var/datum/skillset/skillset
 
 	var/list/additional_vision_handlers // A lazylist of atoms from which additional vision data is retrieved
 
@@ -134,10 +134,14 @@
 
 	// Offset the overhead text if necessary.
 	var/offset_overhead_text_x = 0
-	var/offset_overhead_text_y = 0
+	var/offset_overhead_text_y = 24
 
 	/// What bodypart are we currently targetting?
 	var/selected_zone = BP_CHEST
 
 	/// Are you trying not to hurt your opponent?
 	var/pulling_punches
+
+	// Cache vars for mob modifier totals.
+	var/modifier_click_cooldown_mult = null
+	var/modifier_movement_slowdown   = null

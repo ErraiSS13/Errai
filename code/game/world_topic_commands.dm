@@ -263,7 +263,6 @@
 		info["turf"] = MT ? "[MT] @ [MT.x], [MT.y], [MT.z]" : "null"
 		info["area"] = MT ? "[MT.loc]" : "null"
 		info["antag"] = M.mind ? (M.mind.get_special_role_name("Not antag")) : "No mind"
-		info["hasbeenrev"] = M.mind ? M.mind.has_been_rev : "No mind"
 		info["stat"] = M.stat
 		info["type"] = M.type
 		if(isliving(M))
@@ -350,11 +349,3 @@
 			return "Ckey not found"
 	else
 		return "Database connection failed or not set up"
-
-/decl/topic_command/secure/prometheus_metrics
-	name = "prometheus_metrics"
-	uid = "topic_command_prometheus_metrics"
-
-/decl/topic_command/secure/prometheus_metrics/use()
-	var/static/decl/prometheus_metrics/prometheus_metrics = IMPLIED_DECL
-	return prometheus_metrics.collect()

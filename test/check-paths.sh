@@ -32,16 +32,16 @@ exactly 2 "/mob text paths" '"/mob'
 exactly 6 "/obj text paths" '"/obj'
 exactly 10 "/turf text paths" '"/turf'
 exactly 1 "world<< uses" 'world\s*<<'
-exactly 75 "'in world' uses" '\s+\bin world\b(?=\s*$|\s*//|\s*\))' -P
+exactly 76 "'in world' uses" '\s+\bin world\b(?=\s*$|\s*//|\s*\))' -P
 exactly 1 "world.log<< uses" 'world.log\s*<<'
-exactly 18 "<< uses" '(?<![<\\])<<(?!<)' -P
+exactly 23 "<< uses" '(?<![<\\])<<(?!<)' -P
 exactly 1 "direct_output uses" '\bdirect_output\('
 exactly 3 ">> uses" '(?<![>\\])>>(?!>)' -P
 exactly 0 "incorrect indentations" '^( {4,})' -P
 exactly 22 "text2path uses" 'text2path'
 exactly 4 "update_icon() overrides" '\/update_icon\(' -P
 exactly 0 "goto uses" '\bgoto\b'
-exactly 10 "atom/New uses" '^/(obj|atom|area|mob|turf).*/New\('
+exactly 11 "atom/New uses" '^/(obj|atom|area|mob|turf).*/New\('
 exactly 1 "decl/New uses" '^/decl.*/New\('
 exactly 3 "tag uses" '(?<!/)\btag\s*=(?!=)' -P '*.dm *.dmm'
 exactly 3 "unmarked globally scoped variables" '^/?var/(?!global)' -P
@@ -53,7 +53,7 @@ exactly 6  "pronoun macro use" '\\(he|she|him|her|his|hers|himself|herself|He|Sh
 exactly 0 "magic number mouse opacity set" 'mouse_opacity\s*=\s*[0-2]' -P
 exactly 0 "magic number density set" '\bdensity\s*=\s*[01]\b' -P
 exactly 0 "magic number anchored set" '\banchored\s*=\s*[01]\b' -P
-exactly 0 "magic number opacity set" '\bopacity\s*=\s*[01](?!\.)' -P
+exactly 0 "magic number opacity set" '\bopacity\s*=\s*[01]\b(?!\.)' -P
 
 # With the potential exception of << if you increase any of these numbers you're probably doing it wrong
 

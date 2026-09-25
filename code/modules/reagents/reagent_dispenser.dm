@@ -10,49 +10,35 @@
 	matter                            = list(/decl/material/solid/metal/steel = MATTER_AMOUNT_SECONDARY)
 	max_health                        = 100
 	tool_interaction_flags            = TOOL_INTERACTION_DECONSTRUCT
+	chem_volume                       = 1000
 
 	var/wrenchable                    = TRUE
 	var/unwrenched                    = FALSE
-	var/tmp/volume                    = 1000
 	var/amount_dispensed              = 10
 	var/can_toggle_open               = TRUE
 	var/tmp/possible_transfer_amounts = @"[10,25,50,100,500]"
 
-/obj/structure/reagent_dispensers/Initialize(ml, _mat, _reinf_mat)
-	. = ..()
-	initialize_reagents()
-	if (!possible_transfer_amounts)
-		verbs -= /obj/structure/reagent_dispensers/verb/set_amount_dispensed
+/obj/structure/reagent_dispensers/get_reagent_amount_dispensed()
+	return amount_dispensed
 
-/obj/structure/reagent_dispensers/receive_mouse_drop(atom/dropping, mob/user, params)
-	if(!(. = ..()) && user?.get_active_held_item() == dropping && isitem(dropping))
-		// Awful. Sorry.
-		var/obj/item/item = dropping
-		var/old_atom_flags = atom_flags
-		atom_flags |= ATOM_FLAG_OPEN_CONTAINER
-		if(item.standard_pour_into(user, src))
-			. = TRUE
-		atom_flags = old_atom_flags
+/obj/structure/reagent_dispensers/set_reagent_amount_dispensed(new_amount)
+	amount_dispensed = new_amount
+
+/obj/structure/reagent_dispensers/get_possible_reagent_transfer_amounts()
+	return cached_json_decode(possible_transfer_amounts)
 
 /obj/structure/reagent_dispensers/on_reagent_change()
 	if(!(. = ..()))
 		return
-	if(reagents?.total_volume > 0)
+	if(REAGENT_TOTAL_VOLUME(reagents) > 0)
 		tool_interaction_flags &= ~TOOL_INTERACTION_DECONSTRUCT
 	else
 		tool_interaction_flags |= TOOL_INTERACTION_DECONSTRUCT
 
-/obj/structure/reagent_dispensers/initialize_reagents(populate = TRUE)
-	if(!reagents)
-		create_reagents(volume)
-	else
-		reagents.maximum_volume = max(reagents.maximum_volume, volume)
-	. = ..()
-
 /obj/structure/reagent_dispensers/proc/leak()
 	var/turf/T = get_turf(src)
 	if(reagents && T)
-		reagents.trans_to_turf(T, min(reagents.total_volume, FLUID_PUDDLE))
+		reagents.trans_to_turf(T, min(REAGENT_TOTAL_VOLUME(reagents), FLUID_PUDDLE))
 
 /obj/structure/reagent_dispensers/Move()
 	. = ..()
@@ -69,26 +55,8 @@
 				. += "Its refilling cap is open."
 			else
 				. += "Its refilling cap is closed."
-		. += SPAN_NOTICE("It contains:")
-		if(LAZYLEN(reagents?.reagent_volumes))
-			for(var/decl/material/reagent as anything in reagents.liquid_volumes)
-				. += SPAN_NOTICE("[LIQUID_VOLUME(reagents, reagent)] unit\s of [reagent.get_reagent_name(reagents, MAT_PHASE_LIQUID)].")
-			for(var/decl/material/reagent as anything in reagents.solid_volumes)
-				. += SPAN_NOTICE("[SOLID_VOLUME(reagents, reagent)] unit\s of [reagent.get_reagent_name(reagents, MAT_PHASE_SOLID)].")
-		else
-			. += SPAN_NOTICE("Nothing.")
-		if(reagents?.maximum_volume)
-			. += "It may contain up to [reagents.maximum_volume] unit\s of fluid."
 
 /obj/structure/reagent_dispensers/attackby(obj/item/used_item, mob/user)
-
-	// We do this here to avoid putting the vessel straight into storage.
-	// This is usually handled by afterattack on /chems.
-	if(storage && ATOM_IS_OPEN_CONTAINER(used_item) && user.check_intent(I_FLAG_HELP))
-		if(used_item.standard_dispenser_refill(user, src))
-			return TRUE
-		if(used_item.standard_pour_into(user, src))
-			return TRUE
 
 	if(wrenchable && IS_WRENCH(used_item))
 		unwrenched = !unwrenched
@@ -99,20 +67,6 @@
 		return TRUE
 
 	. = ..()
-
-/obj/structure/reagent_dispensers/verb/set_amount_dispensed()
-	set name = "Set amount dispensed"
-	set category = "Object"
-	set src in view(1)
-	if(!CanPhysicallyInteract(usr))
-		to_chat(usr, SPAN_NOTICE("You're in no condition to do that!'"))
-		return
-	var/N = input("Amount dispensed:","[src]") as null|anything in cached_json_decode(possible_transfer_amounts)
-	if(!CanPhysicallyInteract(usr))  // because input takes time and the situation can change
-		to_chat(usr, SPAN_NOTICE("You're in no condition to do that!'"))
-		return
-	if (N)
-		amount_dispensed = N
 
 /obj/structure/reagent_dispensers/explosion_act(severity)
 	. = ..()
@@ -126,12 +80,12 @@
 	icon_state                = "watertank"
 	amount_dispensed          = 10
 	possible_transfer_amounts = @"[10,25,50,100]"
-	volume                    = 7500
+	chem_volume               = 7500
 	atom_flags                = ATOM_FLAG_CLIMBABLE
 	movable_flags             = MOVABLE_FLAG_WHEELED
 
 /obj/structure/reagent_dispensers/watertank/populate_reagents()
-	add_to_reagents(/decl/material/liquid/water, reagents.maximum_volume)
+	add_to_reagents(/decl/material/liquid/water, REAGENT_MAXIMUM_VOLUME(reagents))
 
 /obj/structure/reagent_dispensers/watertank/high
 	name = "high-capacity water tank"
@@ -140,8 +94,8 @@
 	icon_state = ICON_STATE_WORLD
 
 /obj/structure/reagent_dispensers/watertank/firefighter
-	name   = "firefighting water reserve"
-	volume = 50000
+	name        = "firefighting water reserve"
+	chem_volume = 50000
 
 /obj/structure/reagent_dispensers/watertank/attackby(obj/item/used_item, mob/user)
 	//FIXME: Maybe this should be handled differently? Since it can essentially make the tank unusable.
@@ -154,7 +108,7 @@
 
 /obj/structure/reagent_dispensers/fueltank
 	name             = "fuel tank"
-	desc             = "A tank containing welding fuel."
+	desc             = "A tank containing fuel."
 	icon_state       = "weldtank"
 	amount_dispensed = 10
 	atom_flags       = ATOM_FLAG_CLIMBABLE
@@ -162,7 +116,7 @@
 	var/obj/item/assembly_holder/rig
 
 /obj/structure/reagent_dispensers/fueltank/populate_reagents()
-	add_to_reagents(/decl/material/liquid/fuel, reagents.maximum_volume)
+	add_to_reagents(/decl/material/liquid/fuel, REAGENT_MAXIMUM_VOLUME(reagents))
 
 /obj/structure/reagent_dispensers/fueltank/get_examine_strings(mob/user, distance, infix, suffix)
 	. = ..()
@@ -216,11 +170,12 @@
 /obj/structure/reagent_dispensers/fueltank/bullet_act(var/obj/item/projectile/Proj)
 	//FIXME: Probably should check if it can actual inflict that structure damage first.
 	if(Proj.get_structure_damage())
-		if(isliving(Proj.firer))
+		var/atom/movable/firer = Proj.firer_ref?.resolve()
+		if(isliving(firer))
 			var/turf/turf = get_turf(src)
 			if(turf)
 				var/area/area = turf.loc || "*unknown area*"
-				log_and_message_admins("[key_name_admin(Proj.firer)] shot a fuel tank in \the [area.proper_name].")
+				log_and_message_admins("[key_name_admin(firer)] shot a fuel tank in \the [area.proper_name].")
 			else
 				log_and_message_admins("shot a fuel tank outside the world.")
 
@@ -244,7 +199,7 @@
 	amount_dispensed = 45
 
 /obj/structure/reagent_dispensers/peppertank/populate_reagents()
-	add_to_reagents(/decl/material/liquid/capsaicin/condensed, reagents.maximum_volume)
+	add_to_reagents(/decl/material/liquid/capsaicin/condensed, REAGENT_MAXIMUM_VOLUME(reagents))
 
 /obj/structure/reagent_dispensers/water_cooler
 	name                      = "water cooler"
@@ -254,14 +209,14 @@
 	possible_transfer_amounts = null
 	amount_dispensed          = 5
 	anchored                  = TRUE
-	volume                    = 500
+	chem_volume               = 500
 	tool_interaction_flags    = (TOOL_INTERACTION_ANCHOR | TOOL_INTERACTION_DECONSTRUCT)
 	var/cups                  = 12
 	var/tmp/max_cups          = 12
 	var/tmp/cup_type          = /obj/item/chems/drinks/sillycup
 
 /obj/structure/reagent_dispensers/water_cooler/populate_reagents()
-	add_to_reagents(/decl/material/liquid/water, reagents.maximum_volume)
+	add_to_reagents(/decl/material/liquid/water, REAGENT_MAXIMUM_VOLUME(reagents))
 
 /obj/structure/reagent_dispensers/water_cooler/attack_hand(var/mob/user)
 	if(user.check_dexterity(DEXTERITY_HOLD_ITEM, TRUE))
@@ -297,7 +252,7 @@
 /obj/structure/reagent_dispensers/water_cooler/on_reagent_change()
 	. = ..()
 	// Bubbles in top of cooler.
-	if(reagents?.total_volume)
+	if(REAGENT_TOTAL_VOLUME(reagents))
 		var/vend_state = "[icon_state]-vend"
 		if(check_state_in_icon(vend_state, icon))
 			flick(vend_state, src)
@@ -312,7 +267,7 @@
 	matter           = list(/decl/material/solid/metal/stainlesssteel = MATTER_AMOUNT_TRACE)
 
 /obj/structure/reagent_dispensers/beerkeg/populate_reagents()
-	add_to_reagents(/decl/material/liquid/alcohol/beer, reagents.maximum_volume)
+	add_to_reagents(/decl/material/liquid/alcohol/beer, REAGENT_MAXIMUM_VOLUME(reagents))
 
 /obj/structure/reagent_dispensers/acid
 	name             = "sulfuric acid dispenser"
@@ -323,28 +278,13 @@
 	density          = FALSE
 
 /obj/structure/reagent_dispensers/acid/populate_reagents()
-	add_to_reagents(/decl/material/liquid/acid, reagents.maximum_volume)
+	add_to_reagents(/decl/material/liquid/acid, REAGENT_MAXIMUM_VOLUME(reagents))
 
 //Interactions
 /obj/structure/reagent_dispensers/get_alt_interactions(var/mob/user)
 	. = ..()
-	LAZYADD(., /decl/interaction_handler/set_transfer/reagent_dispenser)
 	if(can_toggle_open)
 		LAZYADD(., /decl/interaction_handler/toggle_open/reagent_dispenser)
-
-//Set amount dispensed
-/decl/interaction_handler/set_transfer/reagent_dispenser
-	expected_target_type = /obj/structure/reagent_dispensers
-
-/decl/interaction_handler/set_transfer/reagent_dispenser/is_possible(var/atom/target, var/mob/user)
-	. = ..()
-	if(.)
-		var/obj/structure/reagent_dispensers/R = target
-		return !!R.possible_transfer_amounts
-
-/decl/interaction_handler/set_transfer/reagent_dispenser/invoked(atom/target, mob/user, obj/item/prop)
-	var/obj/structure/reagent_dispensers/R = target
-	R.set_amount_dispensed()
 
 //Allows normal refilling, or toggle back to normal reagent dispenser operation
 /decl/interaction_handler/toggle_open/reagent_dispenser

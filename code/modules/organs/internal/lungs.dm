@@ -34,23 +34,32 @@
 	QDEL_NULL(inhaled)
 	. = ..()
 
-/obj/item/organ/internal/lungs/initialize_reagents(populate)
+/obj/item/organ/internal/lungs/Serialize()
+	. = ..()
+	SERIALIZE_REAGENTS(inhaled, /obj/item/organ/internal/lungs, "inhaled")
+
+/obj/item/organ/internal/lungs/Deserialize(list/instance_map)
+	. = ..()
+	DESERIALIZE_REAGENTS(inhaled, "inhaled")
+
+/obj/item/organ/internal/lungs/initialize_reagents()
+	FINALIZE_REAGENTS_SERDE(inhaled)
 	if(!inhaled)
-		inhaled = new/datum/reagents/metabolism(240, (owner || src), CHEM_INHALE)
-	if(!inhaled.my_atom)
-		inhaled.my_atom = src
+		inhaled = new/datum/reagents/metabolism(240, src, CHEM_INHALE)
+	var/owner_atom = owner || src
+	REAGENT_SET_ATOM(inhaled, owner_atom)
 	. = ..()
 
 /obj/item/organ/internal/lungs/do_install(mob/living/human/target, obj/item/organ/external/affected, in_place)
 	if(!(. = ..()))
 		return
-	inhaled.my_atom = owner
+	REAGENT_SET_ATOM(inhaled, owner)
 	inhaled.parent = owner
 
 /obj/item/organ/internal/lungs/do_uninstall(in_place, detach, ignore_children)
 	. = ..()
 	if(inhaled)
-		inhaled.my_atom = src
+		REAGENT_SET_ATOM(inhaled, src)
 		inhaled.parent = null
 
 /obj/item/organ/internal/lungs/proc/can_drown()
@@ -62,12 +71,6 @@
 /obj/item/organ/internal/lungs/set_species(species_uid)
 	. = ..()
 	sync_breath_types()
-
-// This call needs to be split out to make sure that all the ingested things are metabolised
-// before the process call is made on any of the other organs
-/obj/item/organ/internal/lungs/proc/metabolize()
-	if(is_usable())
-		inhaled.metabolize()
 
 /**
  *  Set these lungs' breath types based on the lungs' species
@@ -207,9 +210,9 @@
 	if(!failed_inhale) // Enough gas to tell we're being poisoned via chemical burns or whatever.
 		var/poison_total = 0
 		if(poison_types)
-			for(var/gname in breath.gas)
-				if(poison_types[gname])
-					poison_total += breath.gas[gname]
+			for(var/gas_type, gas_amount in breath.gas)
+				if(poison_types[gas_type])
+					poison_total += gas_amount
 		if(((poison_total/breath.total_moles)*breath_pressure) > safe_toxins_max)
 			SET_HUD_ALERT(owner, HUD_TOX, 1)
 
@@ -313,7 +316,7 @@
 		else
 			temp_adj /= (BODYTEMP_HEAT_DIVISOR * 5)	//don't raise temperature as much as if we were directly exposed
 
-		var/relative_density = breath.total_moles / (MOLES_CELLSTANDARD * breath.volume/CELL_VOLUME)
+		var/relative_density = breath.total_moles / (MOLES_CELLSTANDARD * breath.total_volume/CELL_VOLUME)
 		temp_adj *= relative_density
 
 		if (temp_adj > BODYTEMP_HEATING_MAX) temp_adj = BODYTEMP_HEATING_MAX
@@ -382,5 +385,5 @@
 	last_cough = world.time
 
 	// Coughing clears out 1-2 reagents from the lungs.
-	if(lung.inhaled.total_volume > 0 && loc)
+	if(REAGENT_TOTAL_VOLUME(lung.inhaled) > 0 && loc)
 		lung.inhaled.splash(loc, rand(1, 2))

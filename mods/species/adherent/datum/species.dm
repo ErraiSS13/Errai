@@ -25,7 +25,7 @@
 
 	blood_types = list(/decl/blood_type/coolant)
 
-	available_pronouns = list(/decl/pronouns)
+	available_pronouns = list(/decl/pronouns/pseudoplural)
 	available_bodytypes = list(
 		/decl/bodytype/crystalline/adherent,
 		/decl/bodytype/crystalline/adherent/emerald,
@@ -56,7 +56,7 @@
 
 	available_background_info = list(
 		/decl/background_category/citizenship = list(
-			/decl/background_detail/citizenship/other
+			/decl/background_detail/citizenship/synthetic
 		),
 		/decl/background_category/heritage = list(
 			/decl/background_detail/heritage/adherent

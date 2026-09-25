@@ -5,14 +5,13 @@
 	layer = PLATING_LAYER
 	permit_ao = TRUE
 	thermal_conductivity = 0.040
-	heat_capacity = 10000
 	explosion_resistance = 1
 	turf_flags = TURF_IS_HOLOMAP_PATH
 	initial_gas = GAS_STANDARD_AIRMIX
 	zone_membership_candidate = TRUE
 	open_turf_type = /turf/open/airless
 
-	// Reagent to use to fill the turf.
+	/// Reagent to use to refill trenches to capacity automatically.
 	var/fill_reagent_type
 	var/can_engrave = TRUE
 
@@ -33,7 +32,12 @@
 
 	. = ..(ml)
 
-	set_turf_materials(floor_material, skip_update = TRUE)
+	set_turf_materials(material, skip_update = TRUE)
+
+	if(istext(_flooring))
+		_flooring = resolve_decl_uid_list(cached_json_decode(_flooring))
+		if(!length(_flooring))
+			_flooring = null
 
 	if(!floortype && (ispath(_flooring) || islist(_flooring)))
 		floortype = _flooring
@@ -45,11 +49,10 @@
 
 	fill_to_zero_height() // try to refill turfs that act as fluid sources
 
-	if(floor_material || get_topmost_flooring())
+	if(material || get_topmost_flooring())
 		update_from_flooring(skip_update = ml)
 		if(ml) // We skipped the update above to avoid updating our neighbors, but we need to update ourselves.
 			lazy_update_icon()
-
 
 /turf/floor/ChangeTurf(turf/N, tell_universe, force_lighting_update, keep_air, update_open_turfs_above, keep_height)
 	if(is_processing)
@@ -64,9 +67,19 @@
 
 /turf/floor/proc/fill_to_zero_height()
 	var/my_height = get_physical_height()
-	if(fill_reagent_type && my_height < 0 && (!reagents || !QDELING(reagents)) && reagents?.total_volume < abs(my_height))
-		var/reagents_to_add = abs(my_height) - reagents?.total_volume
-		add_to_reagents(fill_reagent_type, reagents_to_add, phase = MAT_PHASE_LIQUID)
+	if(fill_reagent_type && my_height < 0 && (!reagents || !QDELING(reagents)) && REAGENT_TOTAL_VOLUME(reagents) < abs(my_height))
+		var/reagents_to_add = abs(my_height) - REAGENT_TOTAL_VOLUME(reagents)
+		var/contaminant_to_add = 0
+		if(contaminant_reagent_type)
+			contaminant_to_add = CHEMS_QUANTIZE(reagents_to_add * contaminant_proportion)
+		add_to_reagents(fill_reagent_type, reagents_to_add - contaminant_to_add, phase = MAT_PHASE_LIQUID, defer_update = !!contaminant_to_add)
+		if(contaminant_to_add)
+			add_to_reagents(contaminant_reagent_type, contaminant_to_add, phase = MAT_PHASE_LIQUID)
+
+/turf/floor/get_examine_strings(mob/user, distance, infix, suffix)
+	. = ..()
+	if(check_fluid_depth(FLUID_SHALLOW))
+		. += SPAN_NOTICE("It has a pool of [get_fluid_name()].")
 
 /turf/floor/can_climb_from_below(var/mob/climber)
 	return TRUE
@@ -114,10 +127,10 @@
 	else
 		physically_destroyed()
 
-/turf/floor/get_footstep_sound(var/mob/caller)
+/turf/floor/get_footstep_sound(var/mob/stepper)
 	var/decl/flooring/use_flooring = get_topmost_flooring()
 	if(istype(use_flooring))
-		return get_footstep_for_mob(use_flooring.footstep_type, caller)
+		return get_footstep_for_mob(use_flooring.footstep_type, stepper)
 	return ..()
 
 /turf/floor/get_movable_alpha_mask_state(atom/movable/mover)
@@ -186,3 +199,9 @@
 
 /turf/floor/can_show_coating_footprints(decl/material/contaminant = null)
 	return ..() && get_topmost_flooring()?.can_show_coating_footprints(src, contaminant)
+
+/turf/floor/proc/get_vehicle_transit_delay(obj/vehicle/vehicle)
+	var/decl/flooring/terrain = get_topmost_flooring()
+	if(!istype(vehicle) || QDELETED(vehicle) || !istype(terrain) || vehicle.vehicle_transit_type == vehicle::VEHICLE_GENERIC)
+		return vehicle::base_speed
+	return terrain.get_vehicle_transit_delay(vehicle)

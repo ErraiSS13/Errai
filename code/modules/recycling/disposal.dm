@@ -207,7 +207,7 @@ var/global/list/diversion_junctions = list()
 
 // human interact with machine
 /obj/machinery/disposal/physical_attack_hand(mob/user)
-	if(!user.check_dexterity(DEXTERITY_KEYBOARDS))
+	if(!user.check_dexterity(DEXTERITY_KEYBOARDS, fail_message = "You lack the dexterity to interact with \the [src]."))
 		flush = !flush
 		update_icon()
 		return TRUE
@@ -273,10 +273,7 @@ var/global/list/diversion_junctions = list()
 		return TOPIC_HANDLED
 
 	if(href_list["pump"])
-		if(text2num(href_list["pump"]))
-			mode = 1
-		else
-			mode = 0
+		mode = !!text2num(href_list["pump"])
 		update_icon()
 		. = TOPIC_REFRESH
 
@@ -364,7 +361,7 @@ var/global/list/diversion_junctions = list()
 
 	var/power_draw = -1
 	if(env && env.temperature > 0)
-		var/transfer_moles = (PUMP_MAX_FLOW_RATE/env.volume)*env.total_moles	//group_multiplier is divided out here
+		var/transfer_moles = (PUMP_MAX_FLOW_RATE/env.total_volume)*env.total_moles	//group_multiplier is divided out here
 		power_draw = pump_gas(src, env, air_contents, transfer_moles, active_power_usage)
 
 	if (power_draw > 0)
@@ -585,26 +582,26 @@ var/global/list/diversion_junctions = list()
 				return TRUE
 			else // This should be invalid?
 				return FALSE
-	else if(istype(used_item,/obj/item/weldingtool) && mode==1)
-		var/obj/item/weldingtool/welder = used_item
+	else if(istype(used_item,/obj/item/fuelled_tool/welding) && mode==1)
+		var/obj/item/fuelled_tool/welding/welder = used_item
 		if(welder.weld(0,user))
 			playsound(src.loc, 'sound/items/Welder2.ogg', 100, 1)
 			to_chat(user, "You start slicing the floorweld off the disposal outlet.")
 			if(!do_after(user, 2 SECONDS, src))
 				to_chat(user, "You must remain still to deconstruct \the [src].")
 				return TRUE
-			if(QDELETED(src) || !welder.isOn())
+			if(QDELETED(src) || !welder.tool_is_running())
 				return TRUE
 			to_chat(user, "You sliced the floorweld off the disposal outlet.")
 			var/obj/structure/disposalconstruct/machine/outlet/C = new (loc, src)
 			src.transfer_fingerprints_to(C)
-			C.anchored = TRUE
+			C.set_anchored(TRUE)
 			C.set_density(1)
 			C.update()
 			qdel(src)
 			return TRUE
 		else
-			to_chat(user, "You need more welding fuel to complete this task.")
+			to_chat(user, "You need more fuel to complete this task.")
 			return TRUE
 	else
 		return ..()

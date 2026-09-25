@@ -28,14 +28,14 @@
 	return null
 
 /obj/item/chems/spray/extinguisher/mech
-	volume = 4000 //Good is gooder
+	chem_volume = 4000 //Good is gooder
 	icon_state = "mech_exting"
 
 /obj/item/chems/spray/extinguisher/mech/get_hardpoint_maptext()
-	return "[reagents.total_volume]/[reagents.maximum_volume]"
+	return "[REAGENT_TOTAL_VOLUME(reagents)]/[REAGENT_MAXIMUM_VOLUME(reagents)]"
 
 /obj/item/chems/spray/extinguisher/mech/get_hardpoint_status_value()
-	return reagents.total_volume/reagents.maximum_volume
+	return REAGENT_TOTAL_VOLUME(reagents)/REAGENT_MAXIMUM_VOLUME(reagents)
 
 /obj/item/mech_equipment/mounted_system/extinguisher
 	icon_state = "mech_exting"
@@ -179,8 +179,7 @@
 	owner.update_icon()
 
 /obj/item/mech_equipment/atmos_shields/attack_self(mob/user)
-	. = ..()
-	if(.)
+	if(!(. = ..()))
 		if(active)
 			deactivate()
 		else

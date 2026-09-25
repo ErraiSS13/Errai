@@ -23,6 +23,9 @@
 		var/bad_msg = "--------------- [A.proper_name]([A.type])"
 
 		var/exemptions = get_exemptions(A)
+		if(exemptions & global.using_map.SKIP_ALL_TESTS)
+			continue
+
 		if(!A.apc && !(exemptions & global.using_map.NO_APC))
 			log_bad("[bad_msg] lacks an APC.")
 			area_good = 0
@@ -643,9 +646,10 @@ var/global/_unit_test_sort_junctions = list()
 /datum/unit_test/pipes_shall_not_leak/start_test()
 	var/failures = 0
 	for(var/obj/machinery/atmospherics/pipe/P in SSmachines.machinery)
-		if(P.leaking && !(locate(/obj/abstract/landmark/allowed_leak) in get_turf(P)))
+		var/turf/pipe_turf = get_turf(P)
+		if(P.leaking && !(locate(/obj/abstract/landmark/allowed_leak) in pipe_turf))
 			failures++
-			log_bad("Following pipe is leaking: [log_info_line(P)]")
+			log_bad("Following pipe is leaking: [log_info_line(P)], area is [get_area(pipe_turf)]")
 
 	if(failures)
 		fail("[failures] pipe\s leaking without allowed leak landmark!")
@@ -677,7 +681,7 @@ var/global/_unit_test_sort_junctions = list()
 				break
 		if(!found_cable)
 			failures++
-			log_bad("Unwired terminal : [log_info_line(term)]")
+			log_bad("Unwired terminal : [log_info_line(term)], area is [get_area(T)], possible sources are [english_list(T.contents)]")
 
 	if(failures)
 		fail("[failures] unwired power terminal\s.")
@@ -761,7 +765,7 @@ var/global/_unit_test_sort_junctions = list()
 				break
 
 		if(!connected)
-			log_bad("Disconnected wire: [dir2text(dir)] - [log_info_line(C)]")
+			log_bad("Disconnected wire: [dir2text(dir)] - [log_info_line(C)], area is [get_area(target_turf)]")
 			. = FALSE
 
 /datum/unit_test/networked_disposals_shall_deliver_tagged_packages
@@ -815,10 +819,19 @@ var/global/_unit_test_sort_junctions = list()
 	package.test = src
 	packages_awaiting_delivery[package] = start_tag
 
+/datum/unit_test/networked_disposals_shall_deliver_tagged_packages/fail(message)
+	. = ..()
+	if(length(packages_awaiting_delivery))
+		log_unit_test("[ascii_red]!!! FAILURE !!! [length(packages_awaiting_delivery)] package\s still processing.")
+		for(var/obj/structure/disposalholder/unit_test/package in packages_awaiting_delivery)
+			var/turf/package_turf = get_turf(package)
+			log_unit_test("[ascii_red] - [packages_awaiting_delivery[package]]: [package_turf?.x || "NULL"],[package_turf?.y || "NULL"],[package_turf?.z || "NULL"]")
+		packages_awaiting_delivery.Cut()
+
 /obj/structure/disposalholder/unit_test
 	is_spawnable_type = FALSE // NO
-	var/datum/unit_test/networked_disposals_shall_deliver_tagged_packages/test
 	speed = 100
+	var/datum/unit_test/networked_disposals_shall_deliver_tagged_packages/test
 
 /obj/structure/disposalholder/unit_test/merge()
 	return FALSE

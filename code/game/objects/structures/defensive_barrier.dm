@@ -7,7 +7,7 @@
 	throwpass =  TRUE
 	anchored =   TRUE
 	atom_flags = ATOM_FLAG_CLIMBABLE | ATOM_FLAG_CHECKS_BORDER
-	can_buckle = TRUE // TODO: Is it actually... intended that you can buckle stuff to this?
+	max_buckled_mobs = 1 // TODO: Is it actually... intended that you can buckle stuff to this?
 	material =   /decl/material/solid/metal/steel
 	material_alteration = MAT_FLAG_ALTERATION_DESC | MAT_FLAG_ALTERATION_NAME
 	max_health = 200
@@ -53,11 +53,11 @@
 
 	if(istype(mover, /obj/item/projectile))
 		var/obj/item/projectile/proj = mover
-		if(Adjacent(proj?.firer))
+		if(Adjacent(proj?.firer_ref?.resolve()))
 			return TRUE
 		if(mover.dir != global.reverse_dir[dir])
 			return TRUE
-		if(get_dist(proj.starting, loc) <= 1)//allows to fire from 1 tile away of barrier
+		if(get_dist(proj.starting_ref?.resolve(), loc) <= 1)//allows to fire from 1 tile away of barrier
 			return TRUE
 		return check_cover(mover, target)
 

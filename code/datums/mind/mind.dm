@@ -46,12 +46,8 @@
 
 	var/list/datum/objective/objectives = list()
 
-	var/has_been_rev = 0//Tracks if this mind has been a rev or not
-
-	var/rev_cooldown = 0
-
-	// the world.time since the mob has been brigged, or -1 if not at all
-	var/brigged_since = -1
+	/// The world.time value after which another conversion can be attempted.
+	var/conversion_cooldown = 0
 
 	//put this here for easier tracking ingame
 	var/datum/money_account/initial_account
@@ -112,7 +108,7 @@
 	out += "</table><hr>"
 	out += "<b>Objectives</b></br>"
 
-	if(objectives && objectives.len)
+	if(LAZYLEN(objectives))
 		var/num = 1
 		for(var/datum/objective/O in objectives)
 			out += "<b>Objective #[num]:</b> [O.explanation_text] "
@@ -142,8 +138,8 @@
 
 	if(href_list["add_goal"])
 
-		var/mob/calling_proc = locate(href_list["add_goal_caller"])
-		if(calling_proc && calling_proc == current) can_modify = TRUE
+		var/mob/goal_user = locate(href_list["add_goal_user"])
+		if(goal_user && goal_user == current) can_modify = TRUE
 
 		if(can_modify)
 			if(is_admin)
@@ -161,8 +157,8 @@
 	if(href_list["abandon_goal"])
 		var/datum/goal/goal = get_goal_from_href(href_list["abandon_goal"])
 
-		var/mob/calling_proc = locate(href_list["abandon_goal_caller"])
-		if(calling_proc && calling_proc == current) can_modify = TRUE
+		var/mob/goal_user = locate(href_list["abandon_goal_user"])
+		if(goal_user && goal_user == current) can_modify = TRUE
 
 		if(goal && can_modify)
 			if(usr == current)
@@ -176,8 +172,8 @@
 	if(href_list["reroll_goal"])
 		var/datum/goal/goal = get_goal_from_href(href_list["reroll_goal"])
 
-		var/mob/calling_proc = locate(href_list["reroll_goal_caller"])
-		if(calling_proc && calling_proc == current) can_modify = TRUE
+		var/mob/goal_user = locate(href_list["reroll_goal_user"])
+		if(goal_user && goal_user == current) can_modify = TRUE
 
 		if(goal && (goal in goals) && can_modify)
 			qdel(goal)
@@ -229,7 +225,7 @@
 			assigned_job = job
 			assigned_role = job.title
 			role_alt_title = new_role
-			if(current)
+			if(current?.skillset)
 				current.skillset.obtain_from_client(job, current.client)
 
 	else if (href_list["amb_edit"])
@@ -449,20 +445,6 @@
 	if(H)
 		qdel(H)
 
-
-// check whether this mind's mob has been brigged for the given duration
-// have to call this periodically for the duration to work properly
-/datum/mind/proc/is_brigged(duration)
-	var/area/A = get_area(current)
-	if(!isturf(current.loc) || !istype(A) || !(A.area_flags & AREA_FLAG_PRISON) || current.GetIdCard())
-		brigged_since = -1
-		return 0
-
-	if(brigged_since == -1)
-		brigged_since = world.time
-
-	return (duration <= world.time - brigged_since)
-
 /datum/mind/proc/reset()
 	assigned_role =         null
 	assigned_special_role = null
@@ -470,9 +452,7 @@
 	assigned_job =          null
 	initial_account =       null
 	objectives =            list()
-	has_been_rev =          0
-	rev_cooldown =          0
-	brigged_since =         -1
+	conversion_cooldown =   0
 
 //Initialisation procs
 /mob/living/proc/mind_initialize()

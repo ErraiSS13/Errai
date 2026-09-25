@@ -65,7 +65,7 @@
 /obj/screen/ability/button/handle_click(mob/user, params)
 	if(owning_handler.prepared_ability == ability)
 		owning_handler.cancel_prepared_ability()
-	else if(ability.use_ability(user, get_turf(user), owning_handler)) // tmp, needs better/multi-step target selection
+	else if(ability.use_ability(user, user, owning_handler)) // tmp, needs better/multi-step target selection
 		update_icon()
 		addtimer(CALLBACK(src, TYPE_PROC_REF(/atom, update_icon)), ability.get_cooldown_time(ability.get_metadata_for_user(user)) + 1)
 
@@ -88,6 +88,19 @@
 			icon_state = "[icon_state]-active"
 		if(ability.ability_icon && ability.ability_icon_state)
 			add_overlay(overlay_image(ability.ability_icon, ability.ability_icon_state, COLOR_WHITE, (RESET_COLOR | RESET_ALPHA | RESET_TRANSFORM)))
+
+/obj/screen/ability/button/MouseEntered(location, control, params)
+	if(ability?.desc)
+		openToolTip(user = usr, tip_src = src, params = params, title = ability.name, content = ability.desc)
+	..()
+
+/obj/screen/ability/button/MouseDown()
+	closeToolTip(usr)
+	..()
+
+/obj/screen/ability/button/MouseExited()
+	closeToolTip(usr)
+	..()
 
 /obj/screen/ability/category
 	name = "Toggle Ability Category"

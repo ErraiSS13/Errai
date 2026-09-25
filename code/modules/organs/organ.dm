@@ -13,15 +13,15 @@
 	// Strings.
 	/// Unique identifier.
 	var/organ_tag = "organ"
-	/// Identifier for use in organ collections, unused if unset. Would be nice to make this a list, but bodytypes rely on initial() with it.
-	var/organ_category
+	/// Identifiers for use in organ collections, unused if unset. Must be formatted as a JSON list string.
+	var/organ_categories
 	/// Organ holding this object.
 	var/parent_organ = BP_CHEST
 
 	// Status tracking.
 	/// Various status flags (such as robotic)
 	var/status = 0
-	/// A flag for telling what capabilities this organ has. ORGAN_PROP_PROSTHETIC, ORGAN_PROP_CRYSTAL, etc..
+	/// A flag for telling what capabilities this organ has. ORGAN_PROP_PROSTHETIC, ORGAN_PROP_CRYSTAL, etc.
 	var/organ_properties = 0
 	/// Cache var for vitality to current owner.
 	var/vital_to_owner
@@ -55,8 +55,8 @@
 	/// Whether or not we should scale the damage values of this organ to the owner species.
 	var/scale_max_damage_to_species_health
 
-	/// Set to true if this organ should return info to Stat(). See get_stat_info().
-	var/has_stat_info
+	/// Set to TRUE if this organ should return info to Stat(). See get_stat_info().
+	var/has_stat_info = FALSE
 
 /obj/item/organ/proc/reset_matter()
 	matter = null
@@ -67,6 +67,10 @@
 		owner = null
 	else
 		do_uninstall(TRUE, FALSE, FALSE, FALSE) //Don't ignore children here since we might own/contain them
+	if(has_stat_info)
+		var/mob/living/holder = loc
+		if(istype(holder))
+			LAZYREMOVE(holder.stat_organs, src)
 	species = null
 	bodytype = null
 	QDEL_NULL(organ_appearance)
@@ -88,11 +92,11 @@
 
 //Third argument may be a dna datum; if null will be set to holder's dna.
 /obj/item/organ/Initialize(mapload, material_key, datum/mob_snapshot/supplied_appearance)
+	chem_volume = 5 * (w_class-1)**2
 	. = ..(mapload, material_key)
 	if(. == INITIALIZE_HINT_QDEL)
 		return .
 	setup_organ(supplied_appearance)
-	initialize_reagents()
 
 /obj/item/organ/proc/setup_organ(datum/mob_snapshot/supplied_appearance)
 	//Null DNA setup
@@ -123,21 +127,13 @@
 	else
 		set_species(owner?.get_species() || global.using_map.default_species)
 
-//Called on initialization to add the neccessary reagents
-
-/obj/item/organ/initialize_reagents(populate = TRUE)
-	if(reagents)
-		return
-	create_reagents(5 * (w_class-1)**2)
-	. = ..()
-
 // todo: make this redundant with matter shenanigans
 /obj/item/organ/populate_reagents()
 	var/reagent_to_add = /decl/material/solid/organic/meat
 	if(bodytype)
 		reagent_to_add = bodytype.edible_reagent // can set this to null and skip the next block
 	if(reagent_to_add)
-		add_to_reagents(reagent_to_add, reagents.maximum_volume)
+		add_to_reagents(reagent_to_add, REAGENT_MAXIMUM_VOLUME(reagents))
 
 /obj/item/organ/proc/copy_from_mob_snapshot(var/datum/mob_snapshot/supplied_appearance)
 	if(supplied_appearance != organ_appearance) // Hacky. Is this ever used? Do any organs ever have DNA set before setup_as_organic?
@@ -244,7 +240,7 @@
 		return
 
 	if(!owner && reagents)
-		if(prob(40) && reagents.total_volume >= 0.1)
+		if(prob(40) && REAGENT_TOTAL_VOLUME(reagents) >= 0.1)
 			if(reagents.has_reagent(/decl/material/liquid/blood))
 				blood_splatter(get_turf(src), src, 1)
 			remove_any_reagents(0.1)
@@ -269,8 +265,9 @@
 /obj/item/organ/proc/handle_ailment(var/datum/ailment/ailment)
 	if(ailment.treated_by_reagent_type)
 		for(var/datum/reagents/source as anything in owner.get_metabolizing_reagent_holders())
-			for(var/decl/material/reagent as anything in source.reagent_volumes)
-				if(ailment.treated_by_medication(reagent.type, source.reagent_volumes[reagent]))
+			var/source_volumes = REAGENT_VOLUMES(source)
+			for(var/decl/material/reagent as anything in source_volumes)
+				if(ailment.treated_by_medication(reagent.type, source_volumes[reagent]))
 					ailment.was_treated_by_medication(source, reagent.type)
 					return
 	if(ailment.treated_by_chem_effect && owner.has_chemical_effect(ailment.treated_by_chem_effect, ailment.treated_by_chem_effect_strength))
@@ -431,8 +428,8 @@
 	var/obj/item/food/organ/yum = new(get_turf(src))
 	yum.SetName(name)
 	yum.appearance = src
-	if(reagents && reagents.total_volume)
-		reagents.trans_to(yum, reagents.total_volume)
+	if(reagents && REAGENT_TOTAL_VOLUME(reagents))
+		reagents.trans_to(yum, REAGENT_TOTAL_VOLUME(reagents))
 	transfer_fingerprints_to(yum)
 	if(user)
 		user.put_in_active_hand(yum)
@@ -620,9 +617,9 @@ var/global/list/ailment_reference_cache = list()
 
 	max_health = max_damage
 	if(current_health == ITEM_HEALTH_NO_DAMAGE)
-		current_health = max_health
+		current_health = get_max_health()
 	else
-		current_health = min(current_health, max_health)
+		current_health = min(current_health, get_max_health())
 
 	action_button_name = null
 	screen_loc = null
@@ -687,7 +684,7 @@ var/global/list/ailment_reference_cache = list()
 		place_butcher_product(GET_DECL(species.butchery_data))
 	return ..()
 
-/// Returns a list with two entries, first being the stat panel title, the second being the value. See has_stat_value bool above.
+/// Returns a list with two entries, first being the stat panel title, the second being the value. See has_stat_info bool above.
 /obj/item/organ/proc/get_stat_info()
 	return null
 
@@ -708,6 +705,6 @@ var/global/list/ailment_reference_cache = list()
 	appearance_bodytype = new_bodytype
 	return TRUE
 
-/obj/item/organ/proc/get_organ_appearance_bodytype()
+/obj/item/organ/proc/get_organ_appearance_bodytype() as /decl/bodytype
 	RETURN_TYPE(/decl/bodytype)
 	return appearance_bodytype || bodytype

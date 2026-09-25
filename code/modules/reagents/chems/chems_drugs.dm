@@ -50,14 +50,14 @@
 	uid = "chem_nicotine"
 
 /decl/material/liquid/nicotine/affect_blood(var/mob/living/M, var/removed, var/datum/reagents/holder)
-	var/volume = REAGENT_VOLUME(holder, src)
+	var/affect_volume = REAGENT_VOLUME(holder, src)
 	. = ..()
-	if(prob(volume*20))
+	if(prob(affect_volume*20))
 		M.add_chemical_effect(CE_PULSE, 1)
 
 	var/update_data = FALSE
 	var/list/data = REAGENT_DATA(holder, src)
-	if(volume <= 0.02 && CHEM_DOSE(M, src) >= 0.05 && world.time > LAZYACCESS(data, DATA_COOLDOWN_TIME) + 3 MINUTES)
+	if(affect_volume <= 0.02 && CHEM_DOSE(M, src) >= 0.05 && world.time > LAZYACCESS(data, DATA_COOLDOWN_TIME) + 3 MINUTES)
 		update_data = TRUE
 		to_chat(M, "<span class='warning'>You feel antsy, your concentration wavers...</span>")
 	else if(world.time > LAZYACCESS(data, DATA_COOLDOWN_TIME) + 3 MINUTES)
@@ -66,7 +66,7 @@
 
 	if(update_data)
 		LAZYSET(data, DATA_COOLDOWN_TIME, world.time)
-		LAZYSET(holder.reagent_data, type, data)
+		REAGENT_SET_DATA(holder, type, data)
 
 /decl/material/liquid/nicotine/affect_overdose(mob/living/victim, total_dose)
 	..()
@@ -256,7 +256,7 @@
 
 /decl/material/liquid/glowsap/gleam/on_leaving_metabolism(datum/reagents/metabolism/holder)
 	. = ..()
-	var/mob/M = holder?.my_atom
+	var/mob/M = REAGENT_GET_ATOM(holder)
 	if(istype(M))
 		M.remove_client_color(/datum/client_color/noir/thirdeye)
 

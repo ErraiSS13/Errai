@@ -121,7 +121,7 @@
 /obj/machinery/door/airlock/BorgCtrlClick(mob/living/silicon/robot/user) // Bolts doors. Forwards to AI code.
 	return AICtrlClick(user)
 
-/obj/machinery/power/apc/BorgCtrlClick(mob/living/silicon/robot/user) // turns off/on APCs. Forwards to AI code.
+/obj/machinery/apc/BorgCtrlClick(mob/living/silicon/robot/user) // turns off/on APCs. Forwards to AI code.
 	return AICtrlClick(user)
 
 /obj/machinery/turretid/BorgCtrlClick(mob/living/silicon/robot/user) //turret control on/off. Forwards to AI code.
@@ -151,7 +151,7 @@
 	clicks, you can do so here, but you will have to
 	change attack_robot() above to the proper function
 */
-/mob/living/silicon/robot/UnarmedAttack(atom/A)
+/mob/living/silicon/robot/ResolveUnarmedAttack(atom/A)
 	return A.attack_robot(src)
 
 /mob/living/silicon/robot/RangedAttack(atom/A, var/params)

@@ -25,6 +25,13 @@
 		hidden[cat_type] = TRUE
 	..()
 
+/datum/category_item/player_setup_item/background/details/apply_post_snapshot_preferences(mob/living/human/character, is_preview_copy = FALSE)
+	if(is_preview_copy)
+		return
+	for(var/token in pref.background_info)
+		character.set_background_value(token, pref.background_info[token], defer_language_update = TRUE)
+	character.update_languages()
+
 /datum/category_item/player_setup_item/background/details/sanitize_character()
 
 	if(!islist(pref.background_info))
@@ -60,7 +67,7 @@
 	if(istype(check))
 		pref.real_name = check.sanitize_background_name(pref.real_name, pref.species)
 		if(!pref.real_name)
-			pref.real_name = check.get_random_name(get_mannequin(pref.client?.ckey), pref.gender)
+			pref.real_name = check.get_random_cultural_name(get_mannequin(pref.client?.ckey), pref.gender, pref.species)
 
 // Load an associative list of background category type to a background type.
 /datum/category_item/player_setup_item/background/details/load_character(datum/pref_record_reader/R)
@@ -112,9 +119,11 @@
 		. += "<small>[background_strings["details"] || "No additional details."]</small>"
 		. += "</td><td>"
 		. += "[background_strings["body"] || "No description."]"
-		. += "</td><td width = '50px'>"
-		. += "<a href='byond://?src=\ref[src];toggle_verbose_[cat.uid]=1'>[hidden[cat.type] ? "Expand" : "Collapse"]</a>"
-		. += "</td></tr>"
+		. += "</td>"
+		// Only show the button to expand/hide if the text overflows the limit.
+		if(background.is_long())
+			. += "<td width = '50px'><a href='byond://?src=\ref[src];toggle_verbose_[cat.uid]=1'>[hidden[cat.type] ? "Expand" : "Collapse"]</a></td>"
+		. += "</tr>"
 		. += "</table><hr>"
 
 	. = jointext(.,null)

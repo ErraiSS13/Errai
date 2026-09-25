@@ -15,14 +15,18 @@
 	#include "../../mods/gamemodes/mixed.dm"
 
 	// Nebula modpacks.
+	#include "../../mods/content/brain_interface/_brain_interface.dme"
 	#include "../../mods/content/corporate/_corporate.dme"
 	#include "../../mods/content/dungeon_loot/_dungeon_loot.dme"
+	#include "../../mods/content/exploration/_exploration.dme"
 	#include "../../mods/content/government/_government.dme"
 	#include "../../mods/content/matchmaking/_matchmaking.dme"
 	#include "../../mods/content/modern_earth/_modern_earth.dme"
 	#include "../../mods/content/mouse_highlights/_mouse_highlight.dme"
 	#include "../../mods/content/pheromones/_pheromones.dme"
+	#include "../../mods/content/sealant_gun/_sealant_gun.dme"
 	#include "../../mods/content/supermatter/_supermatter.dme"
+	#include "../../mods/content/turbolift/_turbolift.dme"
 	#include "../../mods/content/xenobiology/_xenobiology.dme"
 //	#include "../../mods/content/standard_jobs/_standard_jobs.dme"
 

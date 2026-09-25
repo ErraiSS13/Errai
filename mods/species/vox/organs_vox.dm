@@ -97,8 +97,8 @@
 	if(is_usable())
 
 		// Handle some post-metabolism reagent processing for generally inedible foods.
-		if(ingested.total_volume > 0)
-			for(var/decl/material/reagent as anything in ingested.reagent_volumes)
+		if(REAGENT_TOTAL_VOLUME(ingested) > 0)
+			for(var/decl/material/reagent as anything in REAGENT_VOLUMES(ingested))
 				var/inedible_nutriment_amount = gains_nutriment_from_inedible_reagents[reagent.type]
 				if(inedible_nutriment_amount > 0)
 					owner.adjust_nutrition(inedible_nutriment_amount)
@@ -166,7 +166,7 @@
 	name = "cortical stack"
 	parent_organ = BP_HEAD
 	icon_state = "cortical-stack"
-	organ_tag = BP_STACK
+	organ_tag = BP_VOXSTACK
 	organ_properties = ORGAN_PROP_PROSTHETIC
 	origin_tech = @'{"biotech":4,"materials":4,"magnets":2,"programming":3}'
 	relative_size = 10

@@ -70,14 +70,18 @@
 // TODO: Should this be changed to use the actual ambient lights system...?
 /datum/universal_state/supermatter_cascade/OverlayAndAmbientSet()
 	spawn(0)
-		for(var/datum/lighting_corner/L in SSlighting.lighting_corners)
+		// TODO: dear god anything but this
+		for(var/datum/lighting_corner/L)
 			if(isAdminLevel(L.z))
 				L.update_lumcount(1,1,1)
 			else
 				L.update_lumcount(0.0, 0.4, 1)
 
+			CHECK_TICK
+
 		for(var/turf/space/T)
 			OnTurfChange(T)
+			CHECK_TICK
 
 /datum/universal_state/supermatter_cascade/proc/MiscSet()
 	for (var/obj/machinery/firealarm/alm in SSmachines.machinery)
@@ -85,7 +89,7 @@
 			alm.explosion_act(2)
 
 /datum/universal_state/supermatter_cascade/proc/APCSet()
-	for (var/obj/machinery/power/apc/APC in SSmachines.machinery)
+	for (var/obj/machinery/apc/APC in SSmachines.machinery)
 		if (!(APC.stat & BROKEN) && !APC.is_critical)
 			APC.chargemode = 0
 			var/obj/item/cell/cell = APC.get_cell()

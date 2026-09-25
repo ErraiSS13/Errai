@@ -242,7 +242,7 @@ var/global/list/_emotes_by_key
 	if(use_1p)
 		if(target)
 			use_1p = emote_replace_target_tokens(use_1p, target)
-		use_1p = "<span class='emote'>[capitalize(emote_replace_user_tokens(use_1p, user))]</span>"
+		use_1p = "<span class='emote'>[capitalize_proper_html(emote_replace_user_tokens(use_1p, user))]</span>"
 
 	var/use_3p = get_emote_message_3p(user, target, extra_params)
 	if(use_3p)

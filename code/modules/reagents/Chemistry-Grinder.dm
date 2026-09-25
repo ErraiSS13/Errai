@@ -17,7 +17,7 @@
 
 	var/list/bag_whitelist = list(
 		/obj/item/pill_bottle,
-		/obj/item/plants
+		/obj/item/plant_satchel
 		)
 	var/blacklisted_types = list()
 	var/item_size_limit = ITEM_SIZE_HUGE
@@ -74,7 +74,7 @@
 		if(used_item.storage)
 			var/failed = TRUE
 			for(var/obj/item/G in used_item)
-				if(!G.reagents || !G.reagents.total_volume)
+				if(!G.reagents || !REAGENT_TOTAL_VOLUME(G.reagents))
 					continue
 				failed = FALSE
 				used_item.storage.remove_from_storage(user, G, src)
@@ -100,12 +100,12 @@
 		return
 
 	if(istype(used_item,/obj/item/stack/material))
-		var/decl/material/material = used_item.get_material()
-		if(!material)
-			to_chat(user, SPAN_NOTICE("\The [material.solid_name] cannot be ground down to any usable reagents."))
+		var/decl/material/grind_material = used_item.get_material()
+		if(!grind_material)
+			to_chat(user, SPAN_NOTICE("\The [grind_material.solid_name] cannot be ground down to any usable reagents."))
 			return TRUE
 
-	else if(!used_item.reagents?.total_volume)
+	else if(!REAGENT_TOTAL_VOLUME(used_item.reagents))
 		to_chat(user, SPAN_NOTICE("\The [used_item] is not suitable for grinding."))
 		return TRUE
 
@@ -133,7 +133,7 @@
 
 	data["beakercontents"] = list()
 	if(beaker?.reagents)
-		for(var/decl/material/reagent as anything in beaker.reagents.reagent_volumes)
+		for(var/decl/material/reagent as anything in REAGENT_VOLUMES(beaker.reagents))
 			data["beakercontents"] += "<b>[capitalize(reagent.get_reagent_name(beaker.reagents))]</b> ([REAGENT_VOLUME(beaker.reagents, reagent)]u)"
 
 	ui = SSnano.try_update_ui(user, src, ui_key, ui, data, force_open)
@@ -182,7 +182,7 @@
 		return FALSE
 
 	// Sanity check.
-	if (!beaker || (beaker.reagents.total_volume >= beaker.reagents.maximum_volume))
+	if (!beaker || (REAGENT_TOTAL_VOLUME(beaker.reagents) >= REAGENT_MAXIMUM_VOLUME(beaker.reagents)))
 		return FALSE
 
 	attempt_skill_effect(user)
@@ -197,14 +197,14 @@
 	// Process.
 	for (var/obj/item/thing in holdingitems)
 
-		var/remaining_volume = beaker.reagents.maximum_volume - beaker.reagents.total_volume
+		var/remaining_volume = REAGENT_MAXIMUM_VOLUME(beaker.reagents) - REAGENT_TOTAL_VOLUME(beaker.reagents)
 		if(remaining_volume <= 0)
 			break
 
 		var/obj/item/stack/material/stack = thing
 		if(istype(stack))
-			var/decl/material/material = stack.get_material()
-			if(!material)
+			var/decl/material/grind_material = stack.get_material()
+			if(!grind_material)
 				break
 
 			var/amount_to_take = max(0,min(stack.amount, floor(remaining_volume / REAGENT_UNITS_PER_MATERIAL_SHEET)))
@@ -212,11 +212,11 @@
 				stack.use(amount_to_take)
 				if(QDELETED(stack))
 					holdingitems -= stack
-				beaker.add_to_reagents(material.type, (amount_to_take * REAGENT_UNITS_PER_MATERIAL_SHEET * skill_factor))
+				beaker.add_to_reagents(grind_material.type, (amount_to_take * REAGENT_UNITS_PER_MATERIAL_SHEET * skill_factor))
 				continue
 
 		else if(thing.reagents)
-			thing.reagents.trans_to(beaker, thing.reagents.total_volume, skill_factor)
+			thing.reagents.trans_to(beaker, REAGENT_TOTAL_VOLUME(thing.reagents), skill_factor)
 			holdingitems -= thing
 			qdel(thing)
 
@@ -265,7 +265,7 @@
 	obj_flags = null
 	grind_sound = 'sound/machines/juicer.ogg'
 	blacklisted_types = list(/obj/item/stack/material)
-	bag_whitelist = list(/obj/item/plants)
+	bag_whitelist = list(/obj/item/plant_satchel)
 	item_size_limit = ITEM_SIZE_SMALL
 	skill_to_check = SKILL_COOKING
 
@@ -274,4 +274,4 @@
 		return
 	visible_message(SPAN_NOTICE("\The [src] whirrs violently and spills its contents all over \the [user]!"))
 	if(beaker?.reagents)
-		beaker.reagents.splash(user, beaker.reagents.total_volume)
+		beaker.reagents.splash(user, REAGENT_TOTAL_VOLUME(beaker.reagents))

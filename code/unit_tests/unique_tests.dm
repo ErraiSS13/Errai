@@ -100,7 +100,7 @@
 
 	for(var/lt in decls_repository.get_decl_paths_of_subtype(/decl/language))
 		var/decl/language/l = lt
-		var/language_key = initial(l.key)
+		var/language_key = lowertext(initial(l.language_key))
 		if(!language_key)
 			continue
 
@@ -181,9 +181,9 @@
 			continue
 		group_by(decls_by_uid, decl_instance.uid, decl_type)
 
-	var/number_of_issues = number_of_issues(decls_by_uid, "Language UIDs")
+	var/number_of_issues = number_of_issues(decls_by_uid, "/decl UIDs")
 	if(number_of_issues)
-		fail("[number_of_issues] issue\s with decl UIDs found.")
+		fail("[number_of_issues] issue\s with /decl UIDs found.")
 	else
 		pass("All decl UIDs are unique.")
 	return TRUE
@@ -239,7 +239,7 @@
 	var/list/failures = list()
 
 	var/list/seen_holopad_ids = list()
-	for(var/obj/machinery/hologram/holopad/holopad in global.holopads)
+	for(var/obj/machinery/holopad/holopad in global.holopads)
 		var/area/area = get_area(holopad)
 		var/holopad_loc = "x[holopad.x],y[holopad.y],z[holopad.z] - [area?.proper_name || "Unknown"]"
 		if(istext(holopad.holopad_id))

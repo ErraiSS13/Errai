@@ -7,7 +7,7 @@
 		return tool_toggle_anchors(user, wrench)
 	return FALSE
 
-/obj/structure/proc/handle_default_welder_attackby(var/mob/user, var/obj/item/weldingtool/welder)
+/obj/structure/proc/handle_default_welder_attackby(var/mob/user, var/obj/item/welder)
 	if((tool_interaction_flags & TOOL_INTERACTION_DECONSTRUCT) && can_dismantle(user))
 		return welder_dismantle(user, welder)
 	return FALSE
@@ -61,11 +61,19 @@
 
 /obj/structure/attackby(obj/item/used_item, mob/user)
 
+	// We do this here to avoid putting the vessel straight into storage.
+	// This is usually handled by afterattack on /chems.
+	if(storage && !isnull(get_possible_reagent_transfer_amounts()) && ATOM_IS_OPEN_CONTAINER(used_item) && user.check_intent(I_FLAG_HELP))
+		if(used_item.standard_dispenser_refill(user, src))
+			return TRUE
+		if(used_item.standard_pour_into(user, src))
+			return TRUE
+
 	if(used_item.user_can_attack_with(user, silent = TRUE))
 		var/force = used_item.expend_attack_force(user)
 		if(force && user.check_intent(I_FLAG_HARM))
 			attack_animation(user)
-			visible_message(SPAN_DANGER("\The [src] has been [pick(used_item.attack_verb)] with \the [used_item] by \the [user]!"))
+			visible_message(SPAN_DANGER("\The [src] has been [used_item.pick_attack_verb()] with \the [used_item] by \the [user]!"))
 			take_damage(force, used_item.atom_damage_type)
 			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 			add_fingerprint(user)
@@ -107,7 +115,7 @@
 		return FALSE
 	if(damage >= 10)
 		visible_message(SPAN_DANGER("\The [user] [attack_verb] into [src]!"))
-		take_damage(damage)
+		take_damage(damage, BRUTE)
 	else
 		visible_message(SPAN_NOTICE("\The [user] bonks \the [src] harmlessly."))
 	return TRUE
@@ -174,11 +182,11 @@
 	dismantle_structure(user)
 	return TRUE
 
-/obj/structure/proc/welder_dismantle(mob/user, obj/item/weldingtool/welder)
+/obj/structure/proc/welder_dismantle(mob/user, obj/item/fuelled_tool/welding/welder)
 	if(material && !material.removed_by_welder)
 		to_chat(user, SPAN_WARNING("\The [src] is too delicate to be dismantled with \the [welder]; try a crowbar."))
 		return TRUE
-	if(!welder.isOn())
+	if(!welder.tool_is_running())
 		to_chat(user, SPAN_WARNING("Try lighting \the [welder] first."))
 		return TRUE
 	if(welder.get_fuel() < 5)
@@ -199,7 +207,22 @@
 	if(!do_after(user, 4 SECONDS, src) || QDELETED(src))
 		return TRUE
 	playsound(src.loc, anchor_sound, 100, 1)
-	anchored = !anchored
+	set_anchored(!anchored)
 	visible_message(SPAN_NOTICE("\The [user] has [anchored ? "secured" : "unsecured"] \the [src] with \the [tool]."))
 	update_icon()
 	return TRUE
+
+// Not using can_shred() on this because vox typically like to interact peacefully
+// with closets and such, while drakes (who get can_damage_structures) do not.
+/obj/structure/attack_hand(mob/user)
+	if((. = ..()))
+		return
+	if(user.check_intent(I_FLAG_HARM))
+		var/decl/natural_attack/attack = user.get_unarmed_attack(src)
+		if(istype(attack) && attack.can_damage_structures)
+			user.do_attack_animation(src)
+			user.setClickCooldown(attack.apply_cooldown)
+			visible_message(SPAN_DANGER("\The [user] [pick(attack.attack_verb)] \the [src]!"))
+			take_damage(attack.damage)
+			return TRUE
+	return FALSE

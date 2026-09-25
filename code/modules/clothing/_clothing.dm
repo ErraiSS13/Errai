@@ -4,7 +4,7 @@
 	origin_tech = @'{"materials":1,"engineering":1}'
 	material = /decl/material/solid/organic/cloth
 	paint_verb = "dyed"
-	replaced_in_loadout = TRUE
+	replaced_in_loadout = LOADOUT_CONFLICT_DELETE
 	w_class = ITEM_SIZE_SMALL
 	icon_state = ICON_STATE_WORLD
 	_base_attack_force = 3
@@ -34,13 +34,12 @@
 	var/ironed_state = WRINKLES_DEFAULT
 	var/move_trail = /obj/effect/decal/cleanable/blood/tracks/footprints // if this item covers the feet, the footprints it should leave
 	var/volume_multiplier = 1
+	var/markings_flags
 	var/markings_state_modifier	// simple colored overlay that would be applied to the icon
 	var/markings_color	// for things like colored parts of labcoats or shoes
+	var/markings_are_emissive = FALSE
 	var/should_display_id = TRUE
 	var/fallback_slot
-	// Used to track our icon, or custom icon, for resetting when accessories are added/removed
-	var/base_clothing_icon
-	var/base_clothing_state
 
 /obj/item/clothing/get_equipment_tint()
 	return tint
@@ -105,8 +104,8 @@
 			to_chat(user, SPAN_WARNING("You should remove the accessories attached to \the [src] first."))
 			return TRUE
 		if(!isturf(loc) && !(src in user.get_held_items()))
-			var/it = gender == PLURAL ? "them" : "it"
-			to_chat(user, SPAN_WARNING("You must either be holding \the [src], or [it] must be on the ground, before you can shred [it]."))
+			var/decl/pronouns/pronouns = get_pronouns()
+			to_chat(user, SPAN_WARNING("You must either be holding \the [src], or [pronouns.he] must be on the ground, before you can shred [pronouns.him]."))
 			return TRUE
 		playsound(loc, 'sound/weapons/cablecuff.ogg', 30, 1)
 		user.visible_message(SPAN_DANGER("\The [user] begins ripping apart \the [src] with \the [used_item]."))
@@ -188,7 +187,10 @@
 		if(markings_state_modifier && markings_color)
 			var/new_state = JOINTEXT(list(overlay.icon_state, markings_state_modifier))
 			if(check_state_in_icon(new_state, overlay.icon))
-				overlay.overlays += mutable_appearance(overlay.icon, new_state, markings_color)
+				if(markings_are_emissive)
+					overlay.overlays += emissive_overlay(overlay.icon, new_state, color = markings_color, flags = markings_flags)
+				else
+					overlay.overlays += mutable_appearance(overlay.icon, new_state, markings_color, markings_flags)
 
 		// Apply a bloodied effect if the mob has been besmirched.
 		// Don't do this for inhands as the overlay is generally not slot based.
@@ -221,25 +223,22 @@
 	if(should_use_combined_accessory_appearance())
 		var/image/overlay_image = get_mob_overlay(ismob(loc) ? loc : null, get_fallback_slot())
 		if(overlay_image?.icon) // Null or invisible overlay, we don't want to make our clothing invisible just because it has an accessory.
-			overlay_image.plane = plane
-			overlay_image.layer = layer
-			overlay_image.color = color
-			overlay_image.alpha = alpha
-			overlay_image.name  = name
-			appearance = overlay_image
+			icon = overlay_image.icon
+			icon_state = overlay_image.icon_state
+			underlays = overlay_image.underlays.Copy()
+			// we need to use the managed overlays system or else they will end up overwritten
+			set_overlays(overlay_image.overlays.Copy())
 			set_dir(SOUTH)
 			update_clothing_icon()
 			return
 
-	if(!base_clothing_icon)
-		base_clothing_icon = initial(icon)
-	set_icon(base_clothing_icon)
-	if(!base_clothing_state)
-		base_clothing_state = initial(icon_state)
-	set_icon_state(base_clothing_state)
-	icon_state = JOINTEXT(list(get_world_inventory_state(), get_clothing_state_modifier()))
+	set_icon(initial(icon)) // this is not going to work correctly for custom icons
+	set_icon_state(JOINTEXT(list(get_world_inventory_state(), get_clothing_state_modifier())))
 	if(markings_state_modifier && markings_color)
-		add_overlay(mutable_appearance(icon, "[icon_state][markings_state_modifier]", markings_color))
+		if(markings_are_emissive)
+			add_overlay(emissive_overlay(icon, "[icon_state][markings_state_modifier]", color = markings_color, flags = markings_flags))
+		else
+			add_overlay(mutable_appearance(icon, "[icon_state][markings_state_modifier]", markings_color, markings_flags))
 	update_clothing_icon()
 
 // Used by washing machines to temporarily make clothes smell
@@ -277,7 +276,8 @@
 	else
 		. = (bodytype_equip_flags & root_bodytype.bodytype_flag)
 	if(!. && !disable_warning)
-		to_chat(user, SPAN_WARNING("\The [src] [gender == PLURAL ? "do" : "does"] not fit you."))
+		var/decl/pronouns/pronouns = get_pronouns()
+		to_chat(user, SPAN_WARNING("\The [src] [pronouns.does] not fit you."))
 
 /obj/item/clothing/equipped(var/mob/user)
 	update_icon()
@@ -294,7 +294,8 @@
 
 	var/last_icon = icon
 	var/species_icon = LAZYACCESS(sprite_sheets, target_bodytype)
-	if(species_icon && (check_state_in_icon(ICON_STATE_INV, species_icon) || check_state_in_icon(ICON_STATE_WORLD, species_icon)))
+	// If we use the single icon system we need a world or icon state, otherwise we don't.
+	if(species_icon && check_state_in_icon(ICON_STATE_WORLD, species_icon))
 		icon = species_icon
 
 	if(!skip_rename)
@@ -459,6 +460,15 @@
 	if(get_vitals_sensor())
 		LAZYADD(., /decl/interaction_handler/clothing_set_sensors)
 
+/obj/item/clothing/proc/set_markings_color(new_color, skip_update)
+	if(markings_color != new_color)
+		markings_color = new_color
+		if(!skip_update)
+			update_icon()
+			update_clothing_icon()
+		return TRUE
+	return FALSE
+
 /decl/interaction_handler/clothing_set_sensors
 	name = "Set Sensors Level"
 	expected_target_type = /obj/item/clothing
@@ -471,4 +481,3 @@
 /decl/interaction_handler/clothing_set_sensors/invoked(atom/target, mob/user, obj/item/prop)
 	var/obj/item/clothing/clothing = target
 	clothing.set_sensors(user)
-

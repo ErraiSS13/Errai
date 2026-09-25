@@ -1,4 +1,5 @@
 /decl/modpack
+	abstract_type = /decl/modpack
 	/// A string name for the modpack. Used for looking up other modpacks in init.
 	var/name
 	/// A string desc for the modpack. Can be used for modpack verb list as description.
@@ -73,6 +74,14 @@
 
 /// This runs on-roundstart after roundstart characters have been created.
 /decl/modpack/proc/on_roundstart()
+	return
+
+/// This runs before `global.using_map.finalize_map_generation()` in SSmapping initialize.
+/decl/modpack/proc/on_mapping_pre_finalize()
+	return
+
+/// This runs in SSmisc_late Initialize.
+/decl/modpack/proc/on_misc_late_init()
 	return
 
 /decl/modpack/proc/get_membership_perks()

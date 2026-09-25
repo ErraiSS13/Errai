@@ -74,8 +74,8 @@
 
 	if((equip_preview_mob & EQUIP_PREVIEW_JOB) && previewJob)
 		mannequin.job = previewJob.title
-		var/datum/mil_branch/branch = mil_branches.get_branch(branches[previewJob.title])
-		var/datum/mil_rank/rank = mil_branches.get_rank(branches[previewJob.title], ranks[previewJob.title])
+		var/datum/mil_branch/branch = global.using_map.get_branch(branches[previewJob.title])
+		var/datum/mil_rank/rank = global.using_map.get_rank(branches[previewJob.title], ranks[previewJob.title])
 		previewJob.equip_preview(mannequin, player_alt_titles[previewJob.title], branch, rank)
 		update_icon = TRUE
 
@@ -109,17 +109,18 @@
 		mannequin.update_icon()
 		mannequin.compile_overlays()
 
-/datum/preferences/proc/update_preview_icon()
+/datum/preferences/proc/update_preview_icon(redress_mob = TRUE)
 	var/mob/living/human/dummy/mannequin/mannequin = get_mannequin(client?.ckey)
 	if(mannequin)
-		mannequin.delete_inventory(TRUE)
-		dress_preview_mob(mannequin)
+		if(redress_mob)
+			mannequin.delete_inventory(TRUE)
+			dress_preview_mob(mannequin)
 		update_character_previews(mannequin)
 
 /datum/preferences/proc/get_random_name()
 	var/decl/background_detail/background = get_background_datum_by_flag(BACKGROUND_FLAG_NAMING)
 	if(istype(background))
-		return background.get_random_name(client?.mob, gender)
+		return background.get_random_cultural_name(client?.mob, gender, species)
 	return random_name(gender, species)
 
 /datum/preferences/proc/get_background_datum_by_flag(background_flag)

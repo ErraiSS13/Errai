@@ -56,7 +56,7 @@
 	if(get_turf(target) == src.loc)
 		UnarmedAttack(target, TRUE)
 
-/mob/living/bot/cleanbot/UnarmedAttack(var/obj/effect/decal/cleanable/decal, var/proximity)
+/mob/living/bot/cleanbot/ResolveUnarmedAttack(var/obj/effect/decal/cleanable/decal)
 	if(!istype(decal))
 		return TRUE
 
@@ -140,7 +140,7 @@
 	target_types += /obj/effect/decal/cleanable/mucus
 	target_types += /obj/effect/decal/cleanable/dirt
 	target_types += /obj/effect/decal/cleanable/filth
-	target_types += /obj/effect/decal/cleanable/spiderling_remains
+	target_types += /obj/effect/decal/cleanable/spider_remains
 
 	if(blood)
 		target_types += /obj/effect/decal/cleanable/blood

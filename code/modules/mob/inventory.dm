@@ -61,6 +61,14 @@
 		else
 			prop.dropInto(loc)
 		return TRUE
+	if(slot == slot_in_wallet_str)
+		remove_from_mob(prop)
+		var/obj/item/wallet = get_equipped_item(slot_wear_id_str)
+		if(wallet)
+			prop.forceMove(wallet)
+		else
+			prop.dropInto(loc)
+		return TRUE
 
 	// Attempt to equip accessories if the slot is already blocked.
 	if(!delete_old_item && get_equipped_item(slot))
@@ -126,9 +134,15 @@
 /mob/proc/equip_to_storage(obj/item/newitem)
 	// Try put it in their backpack
 	var/obj/item/back = get_equipped_item(slot_back_str)
-	if(back?.storage?.can_be_inserted(newitem, null, 1))
+	if(back?.storage?.can_be_inserted(newitem, null, TRUE))
 		back.storage.handle_item_insertion(src, newitem)
 		return back
+
+	// Or in their wallet
+	var/obj/item/wallet = get_equipped_item(slot_wear_id_str)
+	if(wallet?.storage?.can_be_inserted(newitem, null, TRUE))
+		wallet.storage.handle_item_insertion(src, newitem)
+		return wallet
 
 	// Try to place it in any item that can store stuff, on the mob.
 	for(var/obj/item/thing in contents)
@@ -373,6 +387,11 @@
 
 /mob/proc/drop_held_items(drop_loc = loc)
 	for(var/thing in get_held_items())
+		try_unequip(thing, drop_loc)
+
+/mob/proc/drop_equipped_items(drop_loc = loc, include_carried = FALSE)
+	SHOULD_CALL_PARENT(TRUE)
+	for(var/thing in get_equipped_items(include_carried))
 		try_unequip(thing, drop_loc)
 
 //Returns the item equipped to the specified slot, if any.

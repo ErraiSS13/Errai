@@ -27,6 +27,7 @@
 	material_alteration = MAT_FLAG_ALTERATION_COLOR | MAT_FLAG_ALTERATION_NAME | MAT_FLAG_ALTERATION_DESC
 	abstract_type = /obj/structure/fire_source
 	throwpass = TRUE
+	chem_volume = 100
 
 	// Counter for world.time, used to reduce lighting spam.
 	var/next_light_spam_guard = 0
@@ -57,7 +58,6 @@
 	var/light_color_low =  "#ff0000"
 
 	var/list/affected_exterior_turfs
-	var/next_fuel_consumption = 0
 	var/last_fuel_burn_temperature = T20C
 	// TODO: Replace this and the fuel var with just tracking currently-burning matter?
 	// Or use atom fires when those are implemented?
@@ -76,7 +76,6 @@
 /obj/structure/fire_source/Initialize()
 	. = ..()
 	update_icon()
-	create_reagents(100)
 	steam = new(name)
 	steam.attach(get_turf(src))
 	steam.set_up(3, 0, get_turf(src))
@@ -127,8 +126,8 @@
 
 /obj/structure/fire_source/fluid_act(datum/reagents/fluids)
 	. = ..()
-	if(!QDELETED(src) && fluids?.total_volume && reagents)
-		var/transfer = min(reagents.maximum_volume - reagents.total_volume, max(max(1, round(fluids.total_volume * 0.25))))
+	if(!QDELETED(src) && REAGENT_TOTAL_VOLUME(fluids) && reagents)
+		var/transfer = min(REAGENT_MAXIMUM_VOLUME(reagents) - REAGENT_TOTAL_VOLUME(reagents), max(max(1, round(REAGENT_TOTAL_VOLUME(fluids) * 0.25))))
 		if(transfer > 0)
 			fluids.trans_to_obj(src, transfer)
 
@@ -152,8 +151,8 @@
 
 /obj/structure/fire_source/proc/check_atmos()
 	var/datum/gas_mixture/GM = loc?.return_air()
-	for(var/g in GM?.gas)
-		var/decl/material/oxidizer = GET_DECL(g)
+	for(var/gas_type in GM?.gas)
+		var/decl/material/oxidizer = GET_DECL(gas_type)
 		if(oxidizer.gas_flags & XGM_GAS_OXIDIZER)
 			return TRUE
 
@@ -251,7 +250,9 @@
 
 /obj/structure/fire_source/proc/burn_material(var/decl/material/mat, var/amount)
 	var/effective_burn_temperature = get_effective_burn_temperature()
-	. = mat.get_burn_products(amount, effective_burn_temperature)
+	var/datum/gas_mixture/environment = return_air() // todo: separate local and burn chamber gas mixes?
+	var/ambient_pressure = environment ? environment.return_pressure() : ONE_ATMOSPHERE
+	. = mat.get_burn_products(amount, effective_burn_temperature, ambient_pressure)
 	if(.)
 		if(mat.ignition_point && effective_burn_temperature >= mat.ignition_point)
 			if(mat.accelerant_value > FUEL_VALUE_NONE)
@@ -265,7 +266,7 @@
 			// This means that 100u (under two soup bowls full of water), will suppress a fire with 20 fuel.
 			fuel -= amount * (mat.accelerant_value / FUEL_VALUE_SUPPRESSANT) * 2
 		fuel = max(fuel, 0)
-		loc.take_waste_burn_products(., effective_burn_temperature)
+		loc.take_waste_burn_products(., effective_burn_temperature, ambient_pressure)
 
 // Dump waste gas from burned fuel.
 /obj/structure/fire_source/proc/dump_waste_products(var/atom/target, var/list/waste)
@@ -362,21 +363,23 @@
 /obj/structure/fire_source/on_reagent_change()
 	if(!(. = ..()))
 		return
-	if(reagents?.total_volume)
+	if(REAGENT_TOTAL_VOLUME(reagents))
 		var/do_steam = FALSE
+		var/datum/gas_mixture/our_air = return_air()
+		var/ambient_pressure = our_air ? our_air.return_pressure() : ONE_ATMOSPHERE
 		var/list/waste = list()
 
-		for(var/decl/material/reagent as anything in reagents?.reagent_volumes)
+		for(var/decl/material/reagent as anything in REAGENT_VOLUMES(reagents))
 
-			if(reagent.accelerant_value <= FUEL_VALUE_SUPPRESSANT && !isnull(reagent.boiling_point) && reagent.boiling_point < get_effective_burn_temperature())
+			if(reagent.accelerant_value <= FUEL_VALUE_SUPPRESSANT && reagent.phase_at_temperature(get_effective_burn_temperature(), ambient_pressure) == MAT_PHASE_GAS)
 				do_steam = TRUE
 
-			var/volume = NONUNIT_CEILING(REAGENT_VOLUME(reagents, reagent) / REAGENT_UNITS_PER_GAS_MOLE, 0.1)
-			var/list/waste_products = burn_material(reagent, volume)
+			var/result_amount = NONUNIT_CEILING(REAGENT_VOLUME(reagents, reagent) / REAGENT_UNITS_PER_GAS_MOLE, 0.1)
+			var/list/waste_products = burn_material(reagent, result_amount)
 			if(!isnull(waste_products))
 				for(var/product in waste_products)
 					waste[product] += waste_products[product]
-				reagents.remove_reagent(reagent.type, volume)
+				reagents.remove_reagent(reagent.type, result_amount)
 
 		dump_waste_products(loc, waste)
 
@@ -531,6 +534,10 @@
 /obj/structure/fire_source/firepit
 	obj_flags = OBJ_FLAG_HOLLOW
 	has_draught = FALSE
+
+/obj/structure/fire_source/firepit/fuelled/Initialize()
+	new /obj/item/stack/material/log/mapped/wood/fifteen(src)
+	. = ..()
 
 /obj/structure/fire_source/stove
 	name = "stove"

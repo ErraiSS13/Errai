@@ -64,6 +64,18 @@
 	/// (FLOAT) world.time of last on_reagent_update call, used to prevent recursion due to reagents updating reagents
 	VAR_PRIVATE/_reagent_update_started = 0
 
+	/// (STRING) A color applied over the top of any material color. Implemented on /obj/item, /obj/structure and /turf.
+	var/paint_color
+
+	/// (DATUM) Reference to material decl. If set to a /decl/material path, will init the item with that material.
+	/// Implemented on /mob/living/exosuit, /turf/wall, /obj/item and /obj/structure
+	var/decl/material/material
+	/// (DATUM) Similar to above, but largely used by /turf/wall, /obj/structure and /obj/item/stack/material
+	var/decl/material/reinf_material
+
+	/// (BOOLEAN) Set to TRUE to prioritise this atom when using the interact hotkey.
+	var/interaction_priority
+
 /atom/proc/get_max_health()
 	return max_health
 
@@ -155,7 +167,7 @@
 
 /atom/proc/on_reagent_change()
 	SHOULD_CALL_PARENT(TRUE)
-	if(storage && reagents?.total_volume)
+	if(storage && REAGENT_TOTAL_VOLUME(reagents))
 		for(var/obj/item/thing in get_stored_inventory())
 			thing.fluid_act(reagents)
 	return TRUE
@@ -323,7 +335,7 @@
 	if(LAZYLEN(alt_interactions))
 		var/list/interaction_strings = list()
 		for(var/interaction_type as anything in alt_interactions)
-			var/decl/interaction_handler/interaction = GET_DECL(interaction_type)
+			var/decl/interaction_handler/interaction = RESOLVE_TO_DECL(interaction_type)
 			if(interaction.examine_desc && (interaction.always_show_on_examine || interaction.is_possible(src, user, user?.get_active_held_item())))
 				interaction_strings += emote_replace_target_tokens(interaction.examine_desc, src)
 		if(length(interaction_strings))
@@ -435,13 +447,14 @@
  * Obj adds matter contents. Other overrides may add extra handling for things like material storage.
  * Most useful for calculating worth or deconstructing something along with its contents.
  */
-/atom/proc/get_contained_matter()
-	if(length(reagents?.reagent_volumes))
+/atom/proc/get_contained_matter(include_reagents = TRUE)
+	var/list/reagent_volumes = REAGENT_VOLUMES(reagents)
+	if(include_reagents && length(reagent_volumes))
 		LAZYINITLIST(.)
-		for(var/decl/material/reagent as anything in reagents.reagent_volumes)
-			.[reagent] += floor(REAGENT_VOLUME(reagents, reagent) / REAGENT_UNITS_PER_MATERIAL_UNIT)
+		for(var/decl/material/reagent as anything in reagent_volumes)
+			.[reagent.type] += floor(REAGENT_VOLUME(reagents, reagent) / REAGENT_UNITS_PER_MATERIAL_UNIT)
 	for(var/atom/contained_obj as anything in get_contained_external_atoms()) // machines handle component parts separately
-		. = MERGE_ASSOCS_WITH_NUM_VALUES(., contained_obj.get_contained_matter())
+		. = MERGE_ASSOCS_WITH_NUM_VALUES(., contained_obj.get_contained_matter(include_reagents))
 
 /// Return a list of all simulated atoms inside this one.
 /atom/proc/get_contained_external_atoms()
@@ -495,7 +508,7 @@
 */
 /atom/proc/try_detonate_reagents(var/severity = 3)
 	if(reagents)
-		for(var/decl/material/reagent as anything in reagents.reagent_volumes)
+		for(var/decl/material/reagent as anything in REAGENT_VOLUMES(reagents))
 			reagent.explosion_act(src, severity)
 
 /**
@@ -632,7 +645,7 @@
 	- `range?`: The number of tiles away the message will be visible from. Default: world.view
 	- `check_ghosts?`: Set to `TRUE` if ghosts should see the message if their preferences allow
 */
-/atom/proc/visible_message(var/message, var/self_message, var/blind_message, var/range = world.view, var/check_ghosts = null)
+/atom/proc/visible_message(message, self_message, blind_message, range = world.view, check_ghosts = null, narrate = FALSE, atom/source = null)
 	var/turf/T = get_turf(src)
 	var/list/mobs = list()
 	var/list/objs = list()
@@ -640,14 +653,14 @@
 
 	for(var/o in objs)
 		var/obj/O = o
-		O.show_message(message, VISIBLE_MESSAGE, blind_message, AUDIBLE_MESSAGE)
+		O.show_message(message, VISIBLE_MESSAGE, blind_message, AUDIBLE_MESSAGE, source = source)
 
 	for(var/m in mobs)
 		var/mob/M = m
 		if(M.see_invisible >= invisibility)
-			M.show_message(message, VISIBLE_MESSAGE, blind_message, AUDIBLE_MESSAGE)
+			M.show_message(message, VISIBLE_MESSAGE, blind_message, AUDIBLE_MESSAGE, source = source)
 		else if(blind_message)
-			M.show_message(blind_message, AUDIBLE_MESSAGE)
+			M.show_message(blind_message, AUDIBLE_MESSAGE, source = source)
 
 /**
 	Show a message to all mobs and objects in earshot of this atom
@@ -660,7 +673,7 @@
 	- `check_ghosts?`: TRUE if ghosts should hear the message if their preferences allow
 	- `radio_message?`: The string to send over radios
 */
-/atom/proc/audible_message(var/message, var/deaf_message, var/hearing_distance = world.view, var/check_ghosts = null, var/radio_message)
+/atom/proc/audible_message(message, self_message, deaf_message, hearing_distance = world.view, check_ghosts = null, narrate = FALSE, radio_message = null, atom/source = null)
 	var/turf/T = get_turf(src)
 	var/list/mobs = list()
 	var/list/objs = list()
@@ -668,10 +681,10 @@
 
 	for(var/m in mobs)
 		var/mob/M = m
-		M.show_message(message,2,deaf_message,1)
+		M.show_message(message, AUDIBLE_MESSAGE, deaf_message, VISIBLE_MESSAGE, source = source)
 	for(var/o in objs)
 		var/obj/O = o
-		O.show_message(message,2,deaf_message,1)
+		O.show_message(message, AUDIBLE_MESSAGE, deaf_message, VISIBLE_MESSAGE, source = source)
 
 /**
 	Attempt to drop this atom onto the destination.
@@ -682,7 +695,7 @@
 	- Return: The result of the forceMove() at the end.
 */
 /atom/movable/proc/dropInto(var/atom/destination)
-	while(istype(destination))
+	while(!QDELETED(src) && istype(destination))
 		var/atom/drop_destination = destination.onDropInto(src)
 		if(!istype(drop_destination) || drop_destination == destination)
 			return forceMove(destination)
@@ -732,17 +745,19 @@
 	- `post_climb_check?`: If we should check if the user can continue climbing
 	- Return: `TRUE` if they can climb, otherwise `FALSE`
 */
-/atom/proc/can_climb(var/mob/living/user, post_climb_check=0)
+/atom/proc/can_climb(mob/living/user, post_climb_check = FALSE, silent = FALSE)
 	if (!(atom_flags & ATOM_FLAG_CLIMBABLE) || !user.can_touch(src) || (!post_climb_check && climbers && (user in climbers)))
 		return FALSE
 
 	if (!user.Adjacent(src))
-		to_chat(user, "<span class='danger'>You can't climb there, the way is blocked.</span>")
+		if(!silent)
+			to_chat(user, SPAN_WARNING("You can't climb there, the way is blocked."))
 		return FALSE
 
 	var/obj/occupied = turf_is_crowded(user)
 	if(occupied)
-		to_chat(user, "<span class='danger'>There's \a [occupied] in the way.</span>")
+		if(!silent)
+			to_chat(user, SPAN_WARNING("There's \a [occupied] in the way."))
 		return FALSE
 	return TRUE
 
@@ -835,7 +850,7 @@
 
 /* Set the atom colour. This is a stub effectively due to the broad use of direct setting. */
 // TODO: implement this everywhere that it should be used instead of direct setting.
-/atom/proc/set_color(var/new_color)
+/atom/proc/set_color(new_color, skip_update)
 	if(isnull(new_color))
 		return reset_color()
 	if(color != new_color)
@@ -1017,13 +1032,13 @@
 	return istype(turf) ? turf.is_outside() : OUTSIDE_UNCERTAIN
 
 /atom/proc/can_be_poured_into(atom/source)
-	return (reagents?.maximum_volume > 0) && ATOM_IS_OPEN_CONTAINER(src)
+	return (REAGENT_MAXIMUM_VOLUME(reagents) > 0) && ATOM_IS_OPEN_CONTAINER(src)
 
 /// This is whether it's physically possible to pour from this atom to the target atom, based on context like user intent and src being open, etc.
 /// This should not check things like whether there is actually anything in src to pour.
 /// It should also not check anything controlled by the target atom, because can_be_poured_into() already exists.
 /atom/proc/can_be_poured_from(mob/user, atom/target)
-	return (reagents?.maximum_volume > 0) && ATOM_IS_OPEN_CONTAINER(src)
+	return (REAGENT_MAXIMUM_VOLUME(reagents) > 0) && ATOM_IS_OPEN_CONTAINER(src)
 
 /atom/proc/take_vaporized_reagent(reagent, amount)
 	return
@@ -1031,8 +1046,11 @@
 /atom/proc/is_watertight()
 	return !ATOM_IS_OPEN_CONTAINER(src)
 
+/atom/proc/reaction_can_overflow(decl/chemical_reaction/reaction)
+	return ATOM_IS_OPEN_CONTAINER(src)
+
 /atom/proc/can_drink_from(mob/user)
-	return ATOM_IS_OPEN_CONTAINER(src) && reagents?.total_volume && user.check_has_mouth()
+	return ATOM_IS_OPEN_CONTAINER(src) && REAGENT_TOTAL_VOLUME(reagents) && user.check_has_mouth()
 
 /atom/proc/adjust_required_attack_dexterity(mob/user, required_dexterity)
 	if(storage) // TODO: possibly check can_be_inserted() to avoid being able to shoot mirrors as a drake.
@@ -1052,3 +1070,29 @@
 	if(blood_color)
 		return FONT_COLORED(blood_color, "stained")
 	return null
+
+// Used to mark a turf as containing objects that are dangerous to step onto.
+/atom/proc/register_dangerous_to_step()
+	var/turf/T = get_turf(src)
+	if(T)
+		T.register_dangerous_object(src)
+
+/atom/proc/unregister_dangerous_to_step()
+	var/turf/T = get_turf(src)
+	if(T)
+		T.unregister_dangerous_object(src)
+
+// Test for if stepping on a tile containing this obj is safe to do, used for things like landmines and cliffs.
+/atom/proc/is_safe_to_step(atom/movable/mover)
+	return TRUE
+
+//Message, type of message (1 or 2), alternative message, alt message type (1 or 2)
+/atom/proc/show_message(msg, type, alt, alt_type, atom/source)
+	return
+
+/atom/proc/see_signlang(message, verb = "gestures", decl/language/language, mob/speaker, prefix)
+	return
+
+// Helper for when destroyed by a chainsaw (for the purposes of overriding)
+/atom/proc/handle_chainsawed(mob/user, obj/item/chainsaw)
+	physically_destroyed()

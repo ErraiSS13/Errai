@@ -13,6 +13,7 @@
 	icon = 'icons/obj/structures/butchery.dmi'
 	icon_state = "spike"
 	material = /decl/material/solid/metal/steel
+	color = /decl/material/solid/metal/steel::color
 	material_alteration = MAT_FLAG_ALTERATION_COLOR | MAT_FLAG_ALTERATION_NAME
 	matter = list(
 		DEFAULT_FURNITURE_MATERIAL = MATTER_AMOUNT_PRIMARY
@@ -176,7 +177,7 @@
 		clear_occupant()
 	else if(occupant_state == CARCASS_EMPTY)
 		for(var/obj/item/embedded in occupant.embedded)
-			occupant.remove_implant(occupant.embedded, TRUE) // surgical removal to prevent pointless damage pre-deletion
+			occupant.remove_implant(embedded, TRUE) // surgical removal to prevent pointless damage pre-deletion
 		for(var/obj/item/thing in occupant)
 			occupant.drop_from_inventory(thing)
 		qdel(occupant)

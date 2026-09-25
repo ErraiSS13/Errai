@@ -16,8 +16,8 @@
 	var/t = "<span class='notice'>Coordinates: [T.x],[T.y],[T.z]</span>\n"
 	t += "<span class='warning'>Temperature: [env.temperature]</span>\n"
 	t += "<span class='warning'>Pressure: [env.return_pressure()]kPa</span>\n"
-	for(var/g in env.gas)
-		t += "<span class='notice'>[g]: [env.gas[g]] / [env.gas[g] * R_IDEAL_GAS_EQUATION * env.temperature / env.volume]kPa</span>\n"
+	for(var/gas_type, gas_amount in env.gas)
+		t += "<span class='notice'>[gas_type]: [gas_amount] / [gas_amount * R_IDEAL_GAS_EQUATION * env.temperature / env.total_volume]kPa</span>\n"
 
 	usr.show_message(t, 1)
 	SSstatistics.add_field_details("admin_verb","ASL") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
@@ -188,7 +188,7 @@
 		if(!(A.type in areas_all))
 			areas_all.Add(A.type)
 
-	for(var/obj/machinery/power/apc/APC in SSmachines.machinery)
+	for(var/obj/machinery/apc/APC in SSmachines.machinery)
 		var/area/A = get_area(APC)
 		if(!(A.type in areas_with_APC))
 			areas_with_APC.Add(A.type)
@@ -313,8 +313,7 @@
 	for(var/obj/machinery/rad_collector/Rad in SSmachines.machinery)
 		if(Rad.anchored)
 			if(!Rad.loaded_tank)
-				Rad.loaded_tank = new /obj/item/tank/hydrogen(Rad)
-				Rad.loaded_tank.air_contents.gas[/decl/material/gas/hydrogen] = 70
+				Rad.loaded_tank = new /obj/item/tank/hydrogen/collector(Rad)
 				Rad.drainratio = 0
 			if(!Rad.active)
 				Rad.toggle_power()
@@ -425,10 +424,9 @@
 	set name = "Spawn Material Stack"
 	if(!check_rights(R_DEBUG)) return
 
-	var/decl/material/material = input("Select material to spawn") as null|anything in decls_repository.get_decls_of_subtype_unassociated(/decl/material)
-	if(!istype(material))
-		return
-	material.create_object(get_turf(mob), 50)
+	var/decl/material/spawn_material = input("Select material to spawn") as null|anything in decls_repository.get_decls_of_subtype_unassociated(/decl/material)
+	if(istype(spawn_material))
+		spawn_material.create_object(get_turf(mob), 50)
 
 /client/proc/force_ghost_trap_trigger()
 	set category = "Debug"
@@ -454,12 +452,7 @@
 	if (!theme)
 		theme = /datum/exoplanet_theme
 
-	var/daycycle = alert("Should the planet have a day-night cycle?","Day Night Cycle", "Yes", "No")
-
-	if (daycycle == "Yes")
-		daycycle = TRUE
-	else
-		daycycle = FALSE
+	var/daycycle = alert("Should the planet have a day-night cycle?","Day Night Cycle", "Yes", "No") == "Yes"
 
 	var/last_chance = alert("Spawn exoplanet?", "Final Confirmation", "Yes", "Cancel")
 

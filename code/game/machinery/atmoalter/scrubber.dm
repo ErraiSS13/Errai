@@ -10,7 +10,7 @@
 	movable_flags = MOVABLE_FLAG_WHEELED
 	var/volume_rate = 800
 
-	volume = 750
+	gas_volume = 750
 
 	power_rating = 7500 //7500 W ~ 10 HP
 	power_losses = 150
@@ -24,7 +24,7 @@
 	. = ..()
 	if(!scrubbing_gas)
 		scrubbing_gas = list()
-		for(var/g in decls_repository.get_decl_paths_of_subtype(/decl/material/gas))
+		for(var/g in get_filterable_material_types())
 			if(g != /decl/material/gas/oxygen && g != /decl/material/gas/nitrogen)
 				scrubbing_gas += g
 
@@ -67,7 +67,7 @@
 		else
 			environment = loc.return_air()
 
-		var/transfer_moles = min(1, volume_rate/environment.volume)*environment.total_moles
+		var/transfer_moles = min(1, volume_rate/environment.total_volume)*environment.total_moles
 
 		power_draw = scrub_gas(src, scrubbing_gas, environment, air_contents, transfer_moles, power_rating)
 
@@ -151,7 +151,7 @@
 	name = "huge air scrubber"
 	icon_state = "scrubber:0"
 	anchored = TRUE
-	volume = 50000
+	gas_volume = 50000
 	volume_rate = 5000
 	base_type = /obj/machinery/portable_atmospherics/powered/scrubber/huge
 
@@ -187,7 +187,7 @@
 			to_chat(user, "<span class='warning'>Turn \the [src] off first!</span>")
 			return TRUE
 
-		anchored = !anchored
+		set_anchored(!anchored)
 		playsound(src.loc, 'sound/items/Ratchet.ogg', 50, 1)
 		to_chat(user, "<span class='notice'>You [anchored ? "wrench" : "unwrench"] \the [src].</span>")
 

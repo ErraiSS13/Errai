@@ -82,7 +82,7 @@ var/global/list/ai_verbs_default = list(
 
 	//NEWMALF VARIABLES
 	var/malfunctioning = 0						// Master var that determines if AI is malfunctioning.
-	var/obj/machinery/power/apc/hack = null		// APC that is currently being hacked.
+	var/obj/machinery/apc/hack = null		// APC that is currently being hacked.
 	var/list/hacked_apcs = null					// List of all hacked APCs
 	var/uncardable = 0							// Whether the AI can be carded when malfunctioning.
 	var/hacked_apcs_hidden = 0					// Whether the hacked APCs belonging to this AI are hidden, reduces CPU generation from APCs.
@@ -103,7 +103,7 @@ var/global/list/ai_verbs_default = list(
 	src.verbs -= ai_verbs_default
 	src.verbs += /mob/living/verb/ghost
 
-/mob/living/silicon/ai/Initialize(mapload, var/datum/ai_laws/L, var/obj/item/organ/internal/brain_interface/B, var/safety = 0)
+/mob/living/silicon/ai/Initialize(mapload, var/datum/ai_laws/L, var/mob/living/brain/brainmob, var/safety = 0)
 	announcement = new()
 	announcement.title = "A.I. Announcement"
 	announcement.announcement_type = "A.I. Announcement"
@@ -143,7 +143,6 @@ var/global/list/ai_verbs_default = list(
 	add_language(/decl/language/sign, 0)
 
 	if(!safety)//Only used by AIize() to successfully spawn an AI.
-		var/mob/living/brainmob = B?.get_brainmob()
 		if(!brainmob) // If there is no player/brain inside.
 			empty_playable_ai_cores += new/obj/structure/aicore/deactivated(loc)//New empty terminal.
 			. = INITIALIZE_HINT_QDEL
@@ -359,7 +358,7 @@ var/global/list/custom_ai_icons_by_ckey_and_name = list()
 
 	//Carn: holopad requests
 	if (href_list["jumptoholopad"])
-		var/obj/machinery/hologram/holopad/H = locate(href_list["jumptoholopad"])
+		var/obj/machinery/holopad/H = locate(href_list["jumptoholopad"])
 		if(stat == CONSCIOUS)
 			if(H)
 				H.attack_ai(src) //may as well recycle

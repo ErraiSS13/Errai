@@ -73,7 +73,7 @@
 
 /decl/intent/help
 	name             = "help"
-	desc             = "<b>HELP INTENT</b>: you will attempt to assist, or in general void harming, whatever you interact with."
+	desc             = "<b>HELP INTENT</b>: you will attempt to assist, or in general avoid harming, whatever you interact with."
 	uid              = "intent_help"
 	intent_flags     = I_FLAG_HELP
 	icon_state       = "intent_help"
@@ -115,9 +115,15 @@
 		_a_intent = new_intent
 		if(istype(hud_used))
 			hud_used.refresh_element(HUD_INTENT)
+		if(ismob(loc))
+			var/mob/holder = loc
+			holder.carried_mob_intent_changed(src, _a_intent)
 		return TRUE
 
 	return FALSE
+
+/mob/proc/carried_mob_intent_changed(mob/user, decl/intent/new_intent)
+	return
 
 /mob/proc/get_intent()
 	RETURN_TYPE(/decl/intent)

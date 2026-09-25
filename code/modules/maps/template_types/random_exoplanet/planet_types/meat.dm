@@ -40,9 +40,9 @@
 	if(prob(75))
 		S.get_trait(TRAIT_STINGS, 1)
 
-	LAZYSET(S.chems, /decl/material/solid/organic/meat, list(10,30))
-	LAZYSET(S.chems, /decl/material/liquid/blood, list(5,10))
-	LAZYSET(S.chems, /decl/material/liquid/acid/stomach, list(5,10))
+	S.set_chemical_amount(/decl/material/solid/organic/meat, list(10,30))
+	S.set_chemical_amount(/decl/material/liquid/blood, list(5,10))
+	S.set_chemical_amount(/decl/material/liquid/acid/stomach, list(5,10))
 
 	S.set_trait(TRAIT_PARASITE,1)
 
@@ -132,7 +132,7 @@
 	icon              = 'icons/turf/flooring/flesh.dmi'
 	icon_state        = "meat"
 	_base_flooring    = /decl/flooring/meat
-	floor_material    = /decl/material/solid/organic/meat
+	material          = /decl/material/solid/organic/meat
 
 /turf/floor/meat/acid
 	name              = "juices"

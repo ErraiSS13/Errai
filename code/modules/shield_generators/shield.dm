@@ -226,7 +226,7 @@
 		user.visible_message("<span class='danger'>\The [user] tries to attack \the [src] with \the [weapon], but it passes through!</span>")
 		return TRUE
 	var/force = weapon.expend_attack_force(user)
-	user.visible_message("<span class='danger'>\The [user] [pick(weapon.attack_verb)] \the [src] with \the [weapon]!</span>")
+	user.visible_message("<span class='danger'>\The [user] [weapon.pick_attack_verb()] \the [src] with \the [weapon]!</span>")
 	switch(weapon.atom_damage_type)
 		if(BURN)
 			take_damage(force, SHIELD_DAMTYPE_HEAT)
@@ -297,10 +297,6 @@
 
 // Beams
 /obj/item/projectile/beam/can_pass_shield(var/obj/machinery/shield_generator/gen)
-	return !gen.check_flag(MODEFLAG_PHOTONIC)
-
-// Beams
-/obj/item/projectile/ship_munition/energy/can_pass_shield(var/obj/machinery/shield_generator/gen)
 	return !gen.check_flag(MODEFLAG_PHOTONIC)
 
 // Shield on-impact logic here. This is called only if the object is actually blocked by the field (can_pass_shield applies first)

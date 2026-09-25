@@ -6,14 +6,21 @@
 	has_base_range     = 3
 	footstep_type      = /decl/footsteps/grass
 	icon_edge_layer    = FLOOR_EDGE_GRASS
-	color              = "#5e7a3b"
+	color              = null // color from material
 	turf_flags         = TURF_FLAG_BACKGROUND | TURF_IS_HOLOMAP_PATH | TURF_FLAG_ABSORB_LIQUID
 	can_engrave        = FALSE
 	damage_temperature = T0C+80
 	flooring_flags     = TURF_REMOVE_SHOVEL
 	force_material     = /decl/material/solid/organic/plantmatter/grass
 	growth_value       = 1.2 // Shouldn't really matter since you can't plant on grass, it turns to dirt first.
+	uid                = "floor_grass"
+	can_conceal_hazards = TRUE
+
 	var/harvestable    = FALSE
+	var/show_contaminants = TRUE
+
+/decl/flooring/grass/can_show_coating_footprints(turf/target, decl/material/contaminant)
+	return show_contaminants && ..()
 
 /decl/flooring/grass/fire_act(turf/floor/target, datum/gas_mixture/air, exposed_temperature, exposed_volume)
 	if(target.get_topmost_flooring() == src && (exposed_temperature > T0C + 200 && prob(5)) || exposed_temperature > T0C + 1000)
@@ -33,6 +40,8 @@
 	has_base_range     = null
 	icon_edge_layer    = FLOOR_EDGE_GRASS_WILD
 	harvestable        = TRUE
+	uid                = "floor_grass_wild"
+	show_contaminants  = FALSE
 
 /decl/flooring/grass/wild/get_movable_alpha_mask_state(atom/movable/mover)
 	. = ..() || "mask_grass"
@@ -46,9 +55,17 @@
 		return TRUE
 	return ..()
 
+/decl/flooring/grass/get_vehicle_transit_delay(obj/vehicle/vehicle)
+	return 1
+
 /decl/flooring/grass/fake
 	desc            = "Do they smoke grass out in space, Bowie? Or do they smoke AstroTurf?"
 	icon            = 'icons/turf/flooring/fakegrass.dmi'
 	has_base_range  = 3
+	color           = "#5e7a3b"
 	build_type      = /obj/item/stack/tile/grass
 	force_material  = /decl/material/solid/organic/plastic
+	uid             = "floor_grass_fake"
+
+/decl/flooring/grass/fake/get_vehicle_transit_delay(obj/vehicle/vehicle)
+	return vehicle::base_speed

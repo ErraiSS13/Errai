@@ -84,8 +84,9 @@
 /obj/item/gun/launcher/bow/proc/relax_tension(mob/user)
 	tension = 0
 	update_icon()
-	if(autofire_enabled)
-		clear_autofire()
+	// Cancel any drag fire.
+	if(autofire_enabled && user.get_active_held_item() == src)
+		user.on_mouse_up()
 	else if(user)
 		show_string_relax_message(user)
 
@@ -93,6 +94,15 @@
 	if(string)
 		to_chat(user, SPAN_WARNING("\The [src] is already strung."))
 		return TRUE
+	// check to make sure it fits
+	var/datum/storage/loc_storage = loc.storage
+	if(loc_storage)
+		if(strung_w_class > loc_storage.max_w_class)
+			to_chat(user, SPAN_WARNING("\The [src] can't fit in \the [loc] when strung, take it out first!"))
+			return TRUE
+		if((loc_storage.storage_space_used() - w_class + strung_w_class) > loc_storage.max_storage_space)
+			to_chat(user, SPAN_WARNING("\The [loc] is too full to fit \the [src] when strung, make some room!"))
+			return TRUE
 	if(user.try_unequip(new_string, src))
 		set_string(new_string)
 		if(user)

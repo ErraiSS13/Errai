@@ -21,8 +21,8 @@
 		var/mat_amt = matter[mat]
 		if(!highest_mat || matter[highest_mat] < mat_amt)
 			highest_mat = mat
-		var/decl/material/material_decl = GET_DECL(mat)
-		mat_names += material_decl.solid_name
+		var/decl/material/scrap_material = GET_DECL(mat)
+		mat_names += scrap_material.solid_name
 		total_matter += mat_amt
 
 	// Safety check, although this should be prevented for player side interactions
@@ -135,7 +135,7 @@
 		return
 	if((REALTIMEOFDAY - time_created) < 5 SECONDS)
 		return
-	if(!QDELETED(src) && fluids?.total_liquid_volume >= FLUID_SLURRY)
+	if(!QDELETED(src) && REAGENT_TOTAL_LIQUID_VOLUME(fluids) >= FLUID_SLURRY)
 		var/free_space = REAGENTS_FREE_SPACE(fluids)
 		for(var/matter_type in matter)
 			if(free_space <= MINIMUM_CHEMICAL_VOLUME)

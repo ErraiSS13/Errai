@@ -5,6 +5,7 @@
 	icon_state = ICON_STATE_WORLD
 	w_class = ITEM_SIZE_NORMAL
 	material = /decl/material/solid/organic/wood/oak
+	color = /decl/material/solid/organic/wood/oak::color
 	attack_verb = list("poked", "jabbed")
 	material_alteration = MAT_FLAG_ALTERATION_ALL
 	lock_picking_level = 3
@@ -26,7 +27,7 @@
 	if(!sharp && (istype(used_item, /obj/item/stack/material/bolt) || istype(used_item, /obj/item/stack/material/bundle)))
 
 		var/choice = input(user, "Do you want to make a torch, or a splint?", "Stick Crafting") as null|anything in list("Torch", "Splint")
-		if(!choice || QDELETED(user) || user.get_active_held_item() != used_item || QDELETED(used_item) || !QDELETED(src) || (loc != user && !Adjacent(user)) || sharp)
+		if(!choice || QDELETED(user) || user.get_active_held_item() != used_item || QDELETED(used_item) || QDELETED(src) || (loc != user && !Adjacent(user)) || sharp)
 			return TRUE
 
 		var/obj/item/stack/material/cloth = used_item
@@ -53,7 +54,11 @@
 		var/was_held = (loc == user)
 		cloth.use(cloth_cost)
 		if(!was_held || user.try_unequip(src))
-			var/obj/item/thing = new product_type(get_turf(src), material?.type, used_item.material?.type)
+			var/obj/item/thing
+			if(ispath(product_type, /obj/item/stack))
+				thing = new product_type(get_turf(src), 1, material?.type, used_item.material?.type)
+			else
+				thing = new product_type(get_turf(src), material?.type, used_item.material?.type)
 			if(was_held)
 				user.put_in_hands(thing)
 			to_chat(user, SPAN_NOTICE("You fashion \the [src] into \a [thing]."))
@@ -74,3 +79,7 @@
 		user.do_attack_animation(target)
 		return TRUE
 	return ..()
+
+/obj/item/stick/walnut
+	material = /decl/material/solid/organic/wood/walnut
+	color = /decl/material/solid/organic/wood/walnut::color

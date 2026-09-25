@@ -5,6 +5,7 @@
 	pass_flags = PASS_FLAG_TABLE
 	abstract_type = /obj/item
 	temperature_sensitive = TRUE
+	interaction_priority = TRUE
 
 	/// Set to prefix name with this string ('woven' for 'woven basket' etc)
 	var/name_prefix
@@ -23,7 +24,7 @@
 	var/no_attack_log = FALSE
 	var/obj/item/master = null
 	var/origin_tech                    //Used by R&D to determine what research bonuses it grants.
-	var/list/attack_verb = list("hit") //Used in attackby() to say how something was attacked "[x] has been [z.attack_verb] by [y] with [z]"
+	VAR_PROTECTED/list/attack_verb = "hit" //Used in attackby() to say how something was attacked "[x] has been [z.attack_verb] by [y] with [z]"
 	var/lock_picking_level = 0 //used to determine whether something can pick a lock, and how well.
 	var/attack_cooldown = DEFAULT_WEAPON_COOLDOWN
 	var/melee_accuracy_bonus = 0
@@ -90,8 +91,6 @@
 	/// Assoc list of bodytype category to icon for producing onmob overlays when this item is held or worn.
 	var/list/sprite_sheets
 
-	// Material handling for material weapons (not used by default, unless material is supplied or set)
-	var/decl/material/material                      // Reference to material decl. If set to a string corresponding to a material ID, will init the item with that material.
 	///Will apply the flagged modifications to the object
 	var/material_alteration = MAT_FLAG_ALTERATION_NONE
 	var/anomaly_shielding					   // 0..1 value of how well it shields against xenoarch anomalies
@@ -103,16 +102,16 @@
 	///Sound uses when dropping the item, or when its thrown.
 	var/drop_sound = 'sound/foley/drop1.ogg'
 
+	var/coating_volume = 10
 	var/datum/reagents/coating // reagent container for coating things like blood/oil, used for overlays and tracks
 
 	var/tmp/has_inventory_icon	// do not set manually
 	var/tmp/use_single_icon
 	var/center_of_mass = @'{"x":16,"y":16}' //can be null for no exact placement behaviour
 
-	/// Used when this item is replaced by a loadout item. If TRUE, loadout places src in wearer's storage. If FALSE, src is deleted.
-	var/replaced_in_loadout = TRUE
+	/// Controls what method is used to resolve conflicts between equipped items and mob loadout.
+	var/replaced_in_loadout = LOADOUT_CONFLICT_DELETE
 
-	var/paint_color
 	var/paint_verb
 
 	/// What dexterity is required to attack with this item?
@@ -158,13 +157,14 @@
 		return material.color
 	return initial(color)
 
-/obj/item/set_color(new_color)
+/obj/item/set_color(new_color, skip_update)
 	if(new_color == COLOR_WHITE)
 		new_color = null
 	if(paint_color != new_color)
 		paint_color = new_color
 		. = TRUE
-		refresh_color()
+		if(!skip_update)
+			refresh_color()
 
 /obj/item/refresh_color()
 	if(paint_color)
@@ -417,7 +417,7 @@
 	if(drying_wetness > 0 && drying_wetness != initial(drying_wetness))
 		desc_comp += "\The [src] is [get_dryness_text()]."
 
-	if(coating?.total_volume)
+	if(REAGENT_TOTAL_VOLUME(coating))
 		desc_comp += "It is covered in [coating.get_coated_name()]." // It is covered in dilute oily slimy bloody mud.
 
 	if(check_rights(R_DEBUG, 0, user))
@@ -599,7 +599,7 @@
 	return FALSE
 
 /obj/item/proc/user_can_attack_with(mob/user, atom/target, silent = FALSE)
-	return user.check_dexterity(get_required_attack_dexterity(user, target), silent = silent)
+	return user.check_dexterity(get_required_attack_dexterity(user, target), silent = silent, fail_message = "You lack the dexterity to attack with \the [src].")
 
 /obj/item/attackby(obj/item/used_item, mob/user)
 	// if can_wield is false we still need to call parent for storage objects to work properly
@@ -626,7 +626,7 @@
 
 	return ..()
 
-/obj/item/proc/talk_into(mob/living/M, message, message_mode, var/verb = "says", var/decl/language/speaking = null)
+/obj/item/proc/talk_into(mob/living/speaker, datum/speech/phrases, verb = "says")
 	return
 
 // apparently called whenever an item is removed from a slot, container, or anything else.
@@ -714,10 +714,6 @@
 	RAISE_EVENT(/decl/observ/mob_equipped, user, src, slot)
 	RAISE_EVENT(/decl/observ/item_equipped, src, user, slot)
 
-// As above but for items being equipped to an active module on a robot.
-/obj/item/proc/equipped_robot(var/mob/user)
-	return
-
 //the mob M is attempting to equip this item into the slot passed through as 'slot'. Return 1 if it can do this and 0 if it can't.
 //Set disable_warning to 1 if you wish it to not give you outputs.
 //Set ignore_equipped to 1 if you wish to ignore covering checks etc. when this item is already equipped.
@@ -729,6 +725,9 @@
 	if(slot == slot_in_backpack_str)
 		var/obj/item/back = user.get_equipped_item(slot_back_str)
 		return back?.storage?.can_be_inserted(src, user, TRUE)
+	if(slot == slot_in_wallet_str)
+		var/obj/item/wallet = user.get_equipped_item(slot_wear_id_str)
+		return wallet?.storage?.can_be_inserted(src, user, TRUE)
 
 	var/datum/inventory_slot/inv_slot = user.get_inventory_slot_datum(slot)
 	if(!inv_slot)
@@ -1007,8 +1006,7 @@ modules/mob/living/human/life.dm if you die, you will be zoomed out.
 
 /obj/item/clothing/inherit_custom_item_data(var/datum/custom_item/citem)
 	. = ..()
-	base_clothing_icon  = icon
-	base_clothing_state = icon_state
+	reconsider_single_icon()
 
 /obj/item/proc/is_special_cutting_tool(var/high_power)
 	return FALSE
@@ -1046,7 +1044,7 @@ modules/mob/living/human/life.dm if you die, you will be zoomed out.
 
 /obj/item/proc/add_coating(reagent_type, amount, data)
 	if(!coating)
-		coating = new /datum/reagents(10, src)
+		coating = new /datum/reagents(coating_volume, src)
 	if(ispath(reagent_type))
 		coating.add_reagent(reagent_type, amount, data)
 	else if(istype(reagent_type, /datum/reagents))
@@ -1061,14 +1059,14 @@ modules/mob/living/human/life.dm if you die, you will be zoomed out.
 	if(!coating)
 		return
 	coating.remove_any(amount)
-	if(coating.total_volume <= MINIMUM_CHEMICAL_VOLUME)
+	if(REAGENT_TOTAL_VOLUME(coating) <= MINIMUM_CHEMICAL_VOLUME)
 		clean(FALSE)
 
 /obj/item/proc/transfer_coating_to(atom/target, amount = 1, multiplier = 1, copy = 0, defer_update = FALSE, transferred_phases = (MAT_PHASE_LIQUID | MAT_PHASE_SOLID))
 	if(!coating)
 		return
 	coating.trans_to(target, amount, multiplier)
-	if(coating.total_volume <= MINIMUM_CHEMICAL_VOLUME)
+	if(REAGENT_TOTAL_VOLUME(coating) <= MINIMUM_CHEMICAL_VOLUME)
 		clean(FALSE)
 
 /obj/item/clean(clean_forensics=TRUE)
@@ -1171,9 +1169,12 @@ modules/mob/living/human/life.dm if you die, you will be zoomed out.
 /obj/item/proc/handle_loadout_equip_replacement(obj/item/old_item)
 	return
 
-/// Used to handle equipped icons overwritten by custom loadout. If TRUE, loadout places src in wearer's storage. If FALSE, src is deleted by loadout.
+/// Used to handle equipped items overwritten by custom loadout.
+/// Returns one of LOADOUT_CONFLICT_DELETE, LOADOUT_CONFLICT_STORAGE, or LOADOUT_CONFLICT_KEEP.
 /obj/item/proc/loadout_should_keep(obj/item/new_item, mob/wearer)
-	return type != new_item.type && !replaced_in_loadout
+	if(type == new_item.type) // for exact type collisions, just delete by default
+		return LOADOUT_CONFLICT_DELETE
+	return replaced_in_loadout
 
 /obj/item/dropped(mob/user, slot)
 	. = ..()
@@ -1203,19 +1204,6 @@ modules/mob/living/human/life.dm if you die, you will be zoomed out.
 
 /obj/item/proc/has_textile_fibers()
 	return FALSE
-
-// Returns a value used as a multiplier in the fishing delay calc. Higher represents a stronger reduction in fishing time.
-#define BAIT_VALUE_CONSTANT 0.1
-/obj/item/proc/get_bait_value()
-	. = 0
-	for(var/mat in matter)
-		var/decl/material/bait_mat = GET_DECL(mat)
-		if(bait_mat.fishing_bait_value)
-			. += MATERIAL_UNITS_TO_REAGENTS_UNITS(matter[mat]) * bait_mat.fishing_bait_value * BAIT_VALUE_CONSTANT
-	for(var/decl/material/reagent as anything in reagents?.reagent_volumes)
-		if(reagent.fishing_bait_value)
-			. += reagents.reagent_volumes[reagent] * reagent.fishing_bait_value * BAIT_VALUE_CONSTANT
-#undef BAIT_VALUE_CONSTANT
 
 /obj/item/proc/get_storage_cost()
 	//If you want to prevent stuff above a certain w_class from being stored, use max_w_class
@@ -1278,7 +1266,7 @@ modules/mob/living/human/life.dm if you die, you will be zoomed out.
 /// @returns:
 /// - reagent_overlay as /image|null - the overlay image representing the reagents in this object
 /obj/item/proc/get_reagents_overlay(state_prefix)
-	if(reagents?.total_volume <= 0)
+	if(REAGENT_TOTAL_VOLUME(reagents) <= 0)
 		return
 	var/decl/material/primary_reagent = reagents.get_primary_reagent_decl()
 	if(!primary_reagent)
@@ -1293,7 +1281,7 @@ modules/mob/living/human/life.dm if you die, you will be zoomed out.
 	if(!reagents_state || !check_state_in_icon(reagents_state, icon))
 		return
 	var/image/reagent_overlay = overlay_image(icon, reagents_state, reagents.get_color(), RESET_COLOR | RESET_ALPHA)
-	for(var/decl/material/reagent as anything in reagents.reagent_volumes)
+	for(var/decl/material/reagent as anything in REAGENT_VOLUMES(reagents))
 		if(!reagent.reagent_overlay)
 			continue
 		var/modified_reagent_overlay = state_prefix ? "[state_prefix]_[reagent.reagent_overlay]" : reagent.reagent_overlay
@@ -1305,7 +1293,7 @@ modules/mob/living/human/life.dm if you die, you will be zoomed out.
 /obj/item/on_reagent_change()
 	. = ..()
 	// You can't put liquids in clay/sand/dirt vessels, sorry.
-	if(reagents?.total_liquid_volume > 0 && material && material.hardness <= MAT_VALUE_MALLEABLE && !QDELETED(src))
+	if(REAGENT_TOTAL_LIQUID_VOLUME(reagents) > 0 && material && material.hardness <= MAT_VALUE_MALLEABLE && !QDELETED(src))
 		visible_message(SPAN_DANGER("\The [src] falls apart!"))
 		squash_item()
 		if(!QDELETED(src))
@@ -1315,7 +1303,7 @@ modules/mob/living/human/life.dm if you die, you will be zoomed out.
 	return null
 
 /obj/item/get_examine_prefix()
-	if(coating?.total_volume)
+	if(REAGENT_TOTAL_VOLUME(coating))
 		var/coating_string = coating.get_coated_adjectives() // component coloring is handled in here
 		if(get_config_value(/decl/config/enum/colored_coating_names) == CONFIG_COATING_COLOR_MIXTURE)
 			coating_string = FONT_COLORED(coating.get_color(), coating_string)
@@ -1352,3 +1340,31 @@ modules/mob/living/human/life.dm if you die, you will be zoomed out.
 	material = null
 	if(!skip_qdel)
 		qdel(src)
+
+/obj/item/proc/pick_attack_verb()
+	return DEFAULTPICK(attack_verb, attack_verb) || "attacked" // if it's not a list, return itself or just "attacked"
+
+/obj/item/equipped(mob/user, slot)
+	if(user?.get_active_held_item() == src)
+		user.on_mouse_up()
+	. = ..()
+
+/obj/item/dropped(mob/user)
+	if(user?.get_active_held_item() == src)
+		user.on_mouse_up()
+	. = ..()
+
+// Called on initial mouse down event from wielding mob. Return TRUE to begin processing every 1ds.
+/obj/item/proc/wielder_mouse_drag_down(mob/user, object, location, control, params)
+	return FALSE
+
+// Called every 1ds while mouse is down with an item that returned TRUE to wielder_mouse_drag_down(). Return FALSE to end processing.
+/obj/item/proc/wielder_mouse_drag_held(mob/user, atom/target)
+	return FALSE
+
+// Called on mouse up event from wielding mob.
+/obj/item/proc/wielder_mouse_drag_up(mob/user, atom/target)
+	return FALSE
+
+/obj/item/proc/get_effective_obj()
+	return src

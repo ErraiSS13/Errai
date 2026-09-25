@@ -387,7 +387,7 @@ SUBSYSTEM_DEF(jobs)
 		if(player.client.prefs.alternate_option == BE_ASSISTANT)
 			var/datum/job/ass = global.using_map.default_job_type
 			if((global.using_map.flags & MAP_HAS_BRANCH) && player.client.prefs.branches[initial(ass.title)])
-				var/datum/mil_branch/branch = mil_branches.get_branch(player.client.prefs.branches[initial(ass.title)])
+				var/datum/mil_branch/branch = global.using_map.get_branch(player.client.prefs.branches[initial(ass.title)])
 				ass = branch.assistant_job
 			assign_role(player, initial(ass.title), mode = mode)
 	//For ones returning to lobby
@@ -425,7 +425,7 @@ SUBSYSTEM_DEF(jobs)
 		for(var/required in allowed_skills)
 			if(!wearer.skill_check(required, allowed_skills[required]))
 				return FALSE
-	if(whitelisted && (!(wearer.get_species()?.name in whitelisted)))
+	if(whitelisted && (!(wearer.get_species()?.uid in whitelisted)))
 		return FALSE
 	return TRUE
 
@@ -442,7 +442,7 @@ SUBSYSTEM_DEF(jobs)
 			if(!istype(gear))
 				continue
 			if(!gear.is_permitted(H, job))
-				to_chat(H, SPAN_WARNING("Your current species, job, branch, skills or whitelist status does not permit you to spawn with [thing]!"))
+				to_chat(H, SPAN_WARNING("Your current species, job, branch, skills or whitelist status does not permit you to spawn with [gear.name]!"))
 				continue
 			if(!gear.slot || !gear.spawn_on_mob(H, H.client.prefs.Gear()[gear.uid]))
 				spawn_in_storage.Add(gear)
@@ -475,9 +475,9 @@ SUBSYSTEM_DEF(jobs)
 	if(job)
 		if(H.client)
 			if(global.using_map.flags & MAP_HAS_BRANCH)
-				H.char_branch = mil_branches.get_branch(H.client.prefs.branches[job_title])
+				H.char_branch = global.using_map.get_branch(H.client.prefs.branches[job_title])
 			if(global.using_map.flags & MAP_HAS_RANK)
-				H.char_rank = mil_branches.get_rank(H.client.prefs.branches[job_title], H.client.prefs.ranks[job_title])
+				H.char_rank = global.using_map.get_rank(H.client.prefs.branches[job_title], H.client.prefs.ranks[job_title])
 
 		// Transfers the skill settings for the job to the mob
 		H.skillset.obtain_from_client(job, H.client)
@@ -489,14 +489,14 @@ SUBSYSTEM_DEF(jobs)
 		spawn_in_storage = equip_custom_loadout(H, job)
 	else
 		to_chat(H, "Your job is [job_title] and the game just can't handle it! Please report this bug to an administrator.")
+		return
 
 	H.job = job_title
 
 	if(!joined_late || job.latejoin_at_spawnpoints)
-		var/obj/S = job.get_roundstart_spawnpoint()
-
-		if(istype(S, /obj/abstract/landmark/start) && isturf(S.loc))
-			H.forceMove(S.loc)
+		var/turf/spawn_point = job.get_roundstart_spawn_turf(job.get_alt_title_for(H.client))
+		if(istype(spawn_point))
+			H.forceMove(spawn_point)
 		else
 			var/decl/spawnpoint/spawnpoint = job.get_spawnpoint(H.client)
 			H.forceMove(DEFAULTPICK(spawnpoint.get_spawn_turfs(H), get_random_spawn_turf(SPAWN_FLAG_JOBS_CAN_SPAWN)))
@@ -556,7 +556,7 @@ SUBSYSTEM_DEF(jobs)
 	if(job.req_admin_notify)
 		to_chat(H, "<b>You are playing a job that is important for Game Progression. If you have to disconnect, please notify the admins via adminhelp.</b>")
 
-	if(H.needs_wheelchair())
+	if(H.cannot_stand())
 		equip_wheelchair(H)
 
 	BITSET(H.hud_updateflag, ID_HUD)
@@ -565,7 +565,7 @@ SUBSYSTEM_DEF(jobs)
 
 	job.post_equip_job_title(H, alt_title || job_title)
 
-	H.client.show_location_blurb(30)
+	H.client?.show_location_blurb(30)
 
 	return H
 
@@ -573,12 +573,12 @@ SUBSYSTEM_DEF(jobs)
 	return positions_by_department[dept] || list()
 
 /datum/controller/subsystem/jobs/proc/spawn_empty_ai()
-	for(var/obj/abstract/landmark/start/S in global.all_landmarks)
-		if(S.name != "AI")
+	for(var/obj/abstract/landmark/start/start_point in global.all_landmarks)
+		if(start_point.name != "AI")
 			continue
-		if(locate(/mob/living) in S.loc)
+		if(locate(/mob/living) in start_point.loc)
 			continue
-		empty_playable_ai_cores += new /obj/structure/aicore/deactivated(get_turf(S))
+		empty_playable_ai_cores += new /obj/structure/aicore/deactivated(get_turf(start_point))
 	return 1
 
 /client/proc/show_location_blurb(duration)

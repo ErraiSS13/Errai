@@ -20,7 +20,7 @@
 		/obj/item/chems/spray/extinguisher/mini,
 		/obj/item/stack/tape_roll/barricade_tape/medical,
 		/obj/item/inflatable_dispenser/robot,
-		/obj/item/weldingtool/mini,
+		/obj/item/fuelled_tool/welding/mini,
 		/obj/item/screwdriver,
 		/obj/item/wrench,
 		/obj/item/crowbar,
@@ -70,8 +70,8 @@
 
 /obj/item/robot_module/flying/emergency/respawn_consumable(var/mob/living/silicon/robot/robot, var/amount)
 	var/obj/item/chems/spray/PS = emag
-	if(PS && PS.reagents.total_volume < PS.volume)
-		var/adding = min(PS.volume-PS.reagents.total_volume, 2*amount)
+	if(PS && REAGENT_TOTAL_VOLUME(PS.reagents) < REAGENT_MAXIMUM_VOLUME(PS.reagents))
+		var/adding = min(REAGENT_MAXIMUM_VOLUME(PS.reagents)-REAGENT_TOTAL_VOLUME(PS.reagents), 2*amount)
 		if(adding > 0)
 			PS.add_to_reagents(/decl/material/liquid/acid/polyacid, adding)
 	..()

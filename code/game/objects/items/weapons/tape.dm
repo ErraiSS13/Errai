@@ -11,7 +11,6 @@
 	max_amount        = 32
 	w_class           = ITEM_SIZE_SMALL
 	material          = /decl/material/solid/organic/plastic
-	current_health    = 10
 	max_health        = 10
 	matter_multiplier = 0.25
 
@@ -180,7 +179,7 @@
 	return 0.2
 
 /obj/item/duct_tape/attack_hand(var/mob/user)
-	if(user.check_dexterity(DEXTERITY_HOLD_ITEM))
+	if(user.check_dexterity(DEXTERITY_HOLD_ITEM, fail_message = "You lack the dexterity to dislodge the tape."))
 		anchored = FALSE // Unattach it from whereever it's on, if anything.
 	return ..()
 

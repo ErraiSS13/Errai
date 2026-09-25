@@ -60,7 +60,6 @@
 /obj/structure/catwalk/can_climb_from_below(var/mob/climber)
 	return TRUE
 
-
 /obj/structure/catwalk/proc/redraw_nearby_catwalks()
 	for(var/direction in global.alldirs)
 		var/obj/structure/catwalk/L = locate() in get_step(src, direction)
@@ -223,7 +222,7 @@
 		catwalk.update_icon()
 	activated = 1
 	for(var/turf/T in orange(src, 1))
-		for(var/obj/effect/wallframe_spawn/other in T)
+		for(var/obj/effect/catwalk_plated/other in T)
 			if(!other.activated) other.activate()
 
 /obj/effect/catwalk_plated/dark

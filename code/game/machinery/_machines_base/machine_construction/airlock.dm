@@ -8,6 +8,10 @@
 	// Prevent access locks on doors from interfering with our interactions.
 	for(var/obj/item/stock_parts/access_lock/lock in machine.get_all_components_of_type(/obj/item/stock_parts/access_lock))
 		lock.locked = FALSE
+	// And ensure the door's closed
+	var/obj/machinery/door/the_door = machine
+	if(istype(the_door)) // just in case
+		the_door.operating = FALSE // A lot of doors refuse to change states if operating.
 	// Test hacking state
 	if(!machine.attackby(screwdriver, user))
 		return "Machine [log_info_line(machine)] did not respond to attackby with screwdriver."
@@ -19,7 +23,7 @@
 	if(machine.construct_state != src)
 		return "Machine [log_info_line(machine)] had a construct_state of type [machine.construct_state.type] after screwdriver interaction (expected [type])."
 	// Now test the down state
-	var/obj/item/wrench/wrench = new
+	var/static/obj/item/wrench/wrench = new
 	if(!machine.attackby(wrench, user))
 		return "Machine [log_info_line(machine)] did not respond to attackby with wrench."
 	if(machine.construct_state.type != down_state)

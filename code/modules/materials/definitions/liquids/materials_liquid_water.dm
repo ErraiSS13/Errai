@@ -34,7 +34,8 @@
 	coated_adjective = "wet"
 
 /decl/material/liquid/water/build_coated_name(datum/reagents/coating, list/accumulator)
-	if(length(coating.reagent_volumes) > 1)
+	var/coating_volumes = REAGENT_VOLUMES(coating)
+	if(length(coating_volumes) > 1)
 		accumulator.Insert(1, "dilute") // dilute always comes first! also this is intentionally not colored in component color mode
 		return // don't insert 'wet'
 	..()
@@ -50,7 +51,7 @@
 /decl/material/liquid/water/get_reagent_name(datum/reagents/holder, phase = MAT_PHASE_LIQUID)
 	. = ..()
 	// length == 1 implies primary reagent, so checking both is redundant
-	if(phase == MAT_PHASE_LIQUID && length(holder?.reagent_volumes) == 1)
+	if(phase == MAT_PHASE_LIQUID && length(REAGENT_VOLUMES(holder)) == 1)
 		return "fresh [.]"
 	return
 
@@ -58,7 +59,7 @@
 	..()
 	if(ishuman(M))
 		var/list/data = REAGENT_DATA(holder, src)
-		if(data?["holy"])
+		if(data?[DATA_WATER_HOLINESS])
 			affect_holy(M, removed, holder)
 
 /decl/material/liquid/water/proc/affect_holy(mob/living/M, removed, datum/reagents/holder)
@@ -89,15 +90,15 @@
 		touching_turf.assume_air(lowertemp)
 		qdel(hotspot)
 
-	var/volume = REAGENT_VOLUME(holder, src)
+	var/affect_volume = REAGENT_VOLUME(holder, src)
 	if (environment && environment.temperature > min_temperature) // Abstracted as steam or something
-		var/removed_heat = clamp(volume * WATER_LATENT_HEAT, 0, -environment.get_thermal_energy_change(min_temperature))
+		var/removed_heat = clamp(affect_volume * WATER_LATENT_HEAT, 0, -environment.get_thermal_energy_change(min_temperature))
 		environment.add_thermal_energy(-removed_heat)
 		if (prob(5) && environment && environment.temperature > T100C)
 			touching_turf.visible_message(SPAN_NOTICE("The water sizzles as it lands on \the [touching_turf]!"))
 
 	var/list/data = REAGENT_DATA(holder, src)
-	if(LAZYACCESS(data, "holy"))
+	if(LAZYACCESS(data, DATA_WATER_HOLINESS))
 		touching_turf.turf_flags |= TURF_FLAG_HOLY
 
 /decl/material/liquid/water/touch_obj(var/obj/O, var/amount, var/datum/reagents/holder)

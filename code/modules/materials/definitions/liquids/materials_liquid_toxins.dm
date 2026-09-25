@@ -92,6 +92,15 @@
 		SET_STATUS_MAX(M, STAT_CONFUSE, 3)
 	..()
 
+/decl/material/liquid/expired_medicine
+	name = "expired medicine"
+	uid = "liquid_expired_medicine"
+	lore_text = "Some form of liquid medicine that is well beyond its shelf date. Administering it now would cause illness."
+	taste_description = "bitterness"
+	toxicity = 5
+	exoplanet_rarity_plant = MAT_RARITY_NOWHERE
+	exoplanet_rarity_gas   = MAT_RARITY_NOWHERE
+
 /decl/material/liquid/cyanide //Fast and Lethal
 	name = "cyanide"
 	uid = "liquid_cyanide"
@@ -168,7 +177,7 @@
 	M.add_chemical_effect(CE_NOPULSE, 1)
 
 /decl/material/liquid/zombiepowder/on_leaving_metabolism(datum/reagents/metabolism/holder)
-	var/mob/M = holder?.my_atom
+	var/mob/M = REAGENT_GET_ATOM(holder)
 	if(istype(M))
 		M.status_flags &= ~FAKEDEATH
 	. = ..()
@@ -227,6 +236,7 @@
 	taste_mult = 1.2
 	metabolism = REM * 0.25
 	exoplanet_rarity_gas = MAT_RARITY_NOWHERE
+	opacity = 1.0
 
 /decl/material/liquid/hair_remover
 	name = "hair remover"
@@ -308,3 +318,11 @@
 	color = "#484848"
 	value = 0.5
 	narcosis = 5
+
+/decl/material/solid/organic/mold
+	name = "mold"
+	uid = "solid_mold"
+	lore_text = "A mold is a fungus that causes biodegradation of natural materials. This variant contains mycotoxins, and is dangerous to humans."
+	taste_description = "mold"
+	toxicity = 5
+	color = "#635656"

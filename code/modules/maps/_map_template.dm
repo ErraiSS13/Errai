@@ -26,8 +26,12 @@
 	var/list/template_categories
 	///The initial type of level_data to instantiate new z-level with initially. (Is replaced by whatever is in the map file.) If null, will use default.
 	var/level_data_type
+	/// Whether or not this should show up for admin map spawning.
+	var/is_spawnable = TRUE
 	/// Various tags used for selecting templates for placement on a map.
 	var/template_tags = 0
+	/// If set to a string, will be skipped in unit testing (and print the string)
+	var/unit_test_skip_reason
 
 /datum/map_template/New(var/created_ad_hoc)
 	if(created_ad_hoc != SSmapping.type)

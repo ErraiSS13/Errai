@@ -150,45 +150,15 @@
 #define BP_EYES     "eyes"
 #define BP_HEART    "heart"
 #define BP_LUNGS    "lungs"
-#define BP_TRACH	"tracheae"
 #define BP_BRAIN    "brain"
 #define BP_LIVER    "liver"
 #define BP_KIDNEYS  "kidneys"
 #define BP_STOMACH  "stomach"
-#define BP_PLASMA   "plasma vessel"
 #define BP_APPENDIX "appendix"
 #define BP_CELL     "cell"
-#define BP_HIVE     "hive node"
-#define BP_NUTRIENT "nutrient vessel"
-#define BP_ACID     "acid gland"
-#define BP_EGG      "egg sac"
-#define BP_RESIN    "resin spinner"
-#define BP_STRATA   "neural strata"
-#define BP_RESPONSE "response node"
-#define BP_GBLADDER "gas bladder"
-#define BP_POLYP    "polyp segment"
-#define BP_ANCHOR   "anchoring ligament"
-#define BP_ACETONE  "acetone reactor"
 
 // Robo Organs.
 #define BP_VOICE             "vocal synthesiser"
-#define BP_STACK             "stack"
-#define BP_OPTICS            "optics"
-
-//Augmetations
-#define BP_AUGMENT_R_ARM        "right arm augment"
-#define BP_AUGMENT_L_ARM        "left arm augment"
-#define BP_AUGMENT_R_HAND       "right hand augment"
-#define BP_AUGMENT_L_HAND       "left hand augment"
-#define BP_AUGMENT_R_LEG        "right leg augment"
-#define BP_AUGMENT_L_LEG        "left leg augment"
-#define BP_AUGMENT_CHEST_ARMOUR "chest armor augment"
-#define BP_AUGMENT_CHEST_ACTIVE "active chest augment"
-#define BP_AUGMENT_HEAD         "head augment"
-
-//Augment flags
-#define AUGMENTATION_MECHANIC 1
-#define AUGMENTATION_ORGANIC  2
 
 // Prosthetic helpers.
 #define BP_IS_PROSTHETIC(org) (!QDELETED(org) && (org.organ_properties & ORGAN_PROP_PROSTHETIC))
@@ -248,6 +218,7 @@
 
 // Misc general data.
 #define DATA_COOLDOWN_TIME    /decl/reagent_data_field/cooldown_time
+#define DATA_WATER_HOLINESS   /decl/reagent_data_field/holy
 
 //Used by show_message() and emotes
 #define VISIBLE_MESSAGE 1
@@ -346,7 +317,11 @@ var/global/list/dexterity_levels = list(
 #define MOB_ICON_HAS_GIB_STATE       BITFLAG(5)
 #define MOB_ICON_HAS_DUST_STATE      BITFLAG(6)
 #define MOB_ICON_HAS_PARALYZED_STATE BITFLAG(7)
+
+// Additional pronoun sets.
 #define NEUTER_ANIMATE "animate singular neutral"
+#define SECOND_PERSON_SINGULAR "second person singular"
+#define PSEUDOPLURAL "pseudoplural"
 
 // Equipment Overlays Indices //
 #define HO_CONDITION_LAYER  1
@@ -406,6 +381,7 @@ var/global/list/dexterity_levels = list(
 // Sprite accessory metadata types for shorter reference.
 #define SAM_COLOR       /decl/sprite_accessory_metadata/color
 #define SAM_COLOR_INNER /decl/sprite_accessory_metadata/color/alt
+#define SAM_COLOR_EXTRA /decl/sprite_accessory_metadata/color/extra
 #define SAM_GRADIENT    /decl/sprite_accessory_metadata/gradient
 
 // Helpers for setting mob appearance. They are extremely ugly, hence the helpers.

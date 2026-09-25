@@ -29,10 +29,6 @@
 		to_chat(joining, SPAN_WARNING("You are banned from playing offstation roles."))
 		return FALSE
 
-	if(job.is_semi_antagonist && jobban_isbanned(joining, /decl/special_role/provocateur))
-		to_chat(joining, SPAN_WARNING("You are banned from playing semi-antagonist roles."))
-		return FALSE
-
 	if(job.is_restricted(joining.client.prefs, joining))
 		return FALSE
 
@@ -68,9 +64,9 @@
 		var/mob/living/human/user_human
 		if(ishuman(character))
 			user_human = character
-			if(job.branch && mil_branches)
-				user_human.char_branch = mil_branches.get_branch(job.branch)
-				user_human.char_rank =   mil_branches.get_rank(job.branch, job.rank)
+			if(job.branch && (global.using_map.flags & MAP_HAS_BRANCH))
+				user_human.char_branch = global.using_map.get_branch(job.branch)
+				user_human.char_rank =   global.using_map.get_rank(job.branch, job.rank)
 
 			// We need to make sure to use the abstract instance here; it's not the same as the one we were passed.
 			character.skillset.obtain_from_client(SSjobs.get_by_path(job.type), character.client)
@@ -112,7 +108,8 @@
 		global.universe.OnPlayerLatejoin(character)
 		log_and_message_admins("has joined the round as offsite role [character.mind.assigned_role].", character)
 		RAISE_EVENT(/decl/observ/submap_join, src, character, job)
-		if(character.cannot_stand()) equip_wheelchair(character)
+		if(character.cannot_stand())
+			equip_wheelchair(character)
 		job.post_equip_job_title(character, job.title)
 		qdel(joining)
 

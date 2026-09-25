@@ -108,16 +108,6 @@
 		S.add_ion_law(law)
 		S.show_laws()
 
-	for(var/z in affecting_z)
-		var/obj/machinery/network/message_server/MS = get_message_server_for_z(z)
-		if(MS)
-			MS.spamfilter.Cut()
-			var/i
-			for (i = 1, i <= MS.spamfilter_limit, i++)
-				MS.spamfilter += pick("kitty","HONK","rev","malf","liberty","freedom","drugs", "[global.using_map.station_short]", \
-					"admin","ponies","heresy","meow","Pun Pun","monkey","Ian","moron","pizza","message","spam",\
-					"director", "Hello", "Hi!"," ","nuke","crate","dwarf","xeno")
-
 /datum/event/ionstorm/tick()
 	if(botEmagChance)
 		for(var/mob/living/bot/bot in global.living_mob_list_)
@@ -149,16 +139,16 @@
 
 /datum/event/ionstorm/proc/get_random_language(var/mob/living/silicon/S)
 	var/list/languages = S.speech_synthesizer_langs.Copy()
-	for(var/decl/language/L in languages)
-		if(L.type == S.default_language)
-			languages -= L
+	for(var/decl/language/language in languages)
+		if(language.type == S.default_language)
+			languages -= language
 		// Also removing any languages that won't work well over radio.
 		// A synth is unlikely to have any besides Binary, but we're playing it safe
-		else if(L.flags & (LANG_FLAG_HIVEMIND|LANG_FLAG_NONVERBAL|LANG_FLAG_SIGNLANG))
-			languages -= L
+		else if(language.language_flags & (LANG_FLAG_HIVEMIND|LANG_FLAG_NONVERBAL|LANG_FLAG_SIGNLANG))
+			languages -= language
 
 	if(length(languages))
-		var/decl/language/L = pick(languages)
-		return L.name
+		var/decl/language/language = pick(languages)
+		return language.name
 	else // Highly unlikely but it is a failsafe fallback.
 		return "gibberish"

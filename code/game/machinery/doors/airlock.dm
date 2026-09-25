@@ -15,14 +15,12 @@
 	icon_state = "preview"
 	power_channel = ENVIRON
 	interact_offline = FALSE
-
 	explosion_resistance = 10
-
 	base_type = /obj/machinery/door/airlock
 	frame_type = /obj/structure/door_assembly
-
 	icon_state_open   = "open"
 	icon_state_closed = "closed"
+	material = /decl/material/solid/metal/steel
 
 	var/aiControlDisabled = 0 //If 1, AI control is disabled until the AI hacks back in and disables the lock. If 2, the AI has bypassed the lock. If -1, the control is enabled but the AI had bypassed it earlier, so if it is disabled again the AI would have no trouble getting back in.
 	var/hackProof = 0 // if 1, this door can't be hacked by the AI
@@ -42,7 +40,7 @@
 	var/aiDisabledIdScanner = 0
 	var/aiHacking = 0
 	autoclose = 1
-	var/mineral = null
+
 	var/justzap = 0
 	var/safe = 1
 	var/speaker = 1
@@ -75,29 +73,21 @@
 	var/stripe_color = null
 	var/symbol_color = null
 	var/window_color = null
-	var/window_material = /decl/material/solid/glass
 
-	var/fill_file = 'icons/obj/doors/station/fill_steel.dmi'
-	var/color_file = 'icons/obj/doors/station/color.dmi'
-	var/color_fill_file = 'icons/obj/doors/station/fill_color.dmi'
-	var/stripe_file = 'icons/obj/doors/station/stripe.dmi'
-	var/stripe_fill_file = 'icons/obj/doors/station/fill_stripe.dmi'
-	var/glass_file = 'icons/obj/doors/station/fill_glass.dmi'
-	var/bolts_file = 'icons/obj/doors/station/lights_bolts.dmi'
-	var/deny_file = 'icons/obj/doors/station/lights_deny.dmi'
-	var/lights_file = 'icons/obj/doors/station/lights_green.dmi'
-	var/panel_file = 'icons/obj/doors/station/panel.dmi'
+	var/fill_file           = 'icons/obj/doors/station/fill_steel.dmi'
+	var/color_file          = 'icons/obj/doors/station/color.dmi'
+	var/color_fill_file     = 'icons/obj/doors/station/fill_color.dmi'
+	var/stripe_file         = 'icons/obj/doors/station/stripe.dmi'
+	var/stripe_fill_file    = 'icons/obj/doors/station/fill_stripe.dmi'
+	var/glass_file          = 'icons/obj/doors/station/fill_glass.dmi'
+	var/bolts_file          = 'icons/obj/doors/station/lights_bolts.dmi'
+	var/deny_file           = 'icons/obj/doors/station/lights_deny.dmi'
+	var/lights_file         = 'icons/obj/doors/station/lights_green.dmi'
+	var/panel_file          = 'icons/obj/doors/station/panel.dmi'
 	var/sparks_damaged_file = 'icons/obj/doors/station/sparks_damaged.dmi'
-	var/sparks_broken_file = 'icons/obj/doors/station/sparks_broken.dmi'
-	var/welded_file = 'icons/obj/doors/station/welded.dmi'
-	var/emag_file = 'icons/obj/doors/station/emag.dmi'
-
-/obj/machinery/door/airlock/get_material()
-	RETURN_TYPE(/decl/material)
-	return GET_DECL(mineral ? mineral : /decl/material/solid/metal/steel)
-
-/obj/machinery/door/airlock/proc/get_window_material()
-	return GET_DECL(window_material)
+	var/sparks_broken_file  = 'icons/obj/doors/station/sparks_broken.dmi'
+	var/welded_file         = 'icons/obj/doors/station/welded.dmi'
+	var/emag_file           = 'icons/obj/doors/station/emag.dmi'
 
 /obj/machinery/door/airlock/Process()
 	if(main_power_lost_until > 0 && world.time >= main_power_lost_until)
@@ -185,11 +175,11 @@ About the new airlock wires panel:
 	return src.isWireCut(AIRLOCK_WIRE_BACKUP_POWER1) || src.isWireCut(AIRLOCK_WIRE_BACKUP_POWER2)
 
 /obj/machinery/door/airlock/proc/loseMainPower()
-	main_power_lost_until = mainPowerCablesCut() ? -1 : world.time + SecondsToTicks(60)
+	main_power_lost_until = mainPowerCablesCut() ? -1 : world.time + (1 MINUTE)
 
 	// If backup power is permanently disabled then activate in 10 seconds if possible, otherwise it's already enabled or a timer is already running
 	if(backup_power_lost_until == -1 && !backupPowerCablesCut())
-		backup_power_lost_until = world.time + SecondsToTicks(10)
+		backup_power_lost_until = world.time + (10 SECONDS)
 
 	// Disable electricity if required
 	if(electrified_until && isAllPowerLoss())
@@ -198,7 +188,7 @@ About the new airlock wires panel:
 	update_icon()
 
 /obj/machinery/door/airlock/proc/loseBackupPower()
-	backup_power_lost_until = backupPowerCablesCut() ? -1 : world.time + SecondsToTicks(60)
+	backup_power_lost_until = backupPowerCablesCut() ? -1 : world.time + (1 MINUTE)
 
 	// Disable electricity if required
 	if(electrified_until && isAllPowerLoss())
@@ -241,7 +231,7 @@ About the new airlock wires panel:
 		else
 			shockedby += text("\[[time_stamp()]\] - EMP)")
 		message = "The door is now electrified [duration == -1 ? "permanently" : "for [duration] second\s"]."
-		src.electrified_until = duration == -1 ? -1 : world.time + SecondsToTicks(duration)
+		src.electrified_until = duration == -1 ? -1 : world.time + (duration SECONDS)
 		. = 1
 
 	if(feedback && message)
@@ -324,15 +314,15 @@ About the new airlock wires panel:
 
 	set_light(0)
 
-	if(door_color && !(door_color == "none"))
+	if(door_color)
 		var/ikey = "[airlock_type]-[door_color]-color"
 		color_overlay = airlock_icon_cache["[ikey]"]
 		if(!color_overlay)
 			color_overlay = new(color_file)
 			color_overlay.Blend(door_color, ICON_MULTIPLY)
 			airlock_icon_cache["[ikey]"] = color_overlay
-	if(glass)
-		if (window_color && window_color != "none")
+	if(reinf_material)
+		if (window_color)
 			var/ikey = "[airlock_type]-[window_color]-windowcolor"
 			filling_overlay = airlock_icon_cache["[ikey]"]
 			if (!filling_overlay)
@@ -342,7 +332,7 @@ About the new airlock wires panel:
 		else
 			filling_overlay = glass_file
 	else
-		if(door_color && !(door_color == "none"))
+		if(door_color)
 			var/ikey = "[airlock_type]-[door_color]-fillcolor"
 			filling_overlay = airlock_icon_cache["[ikey]"]
 			if(!filling_overlay)
@@ -428,12 +418,12 @@ About the new airlock wires panel:
 			set_airlock_overlays(AIRLOCK_OPENING)
 			flick("opening", src)//[stat ? "_stat":]
 			animating_state = AIRLOCK_OPEN
-			update_icon()
+			addtimer(CALLBACK(src, TYPE_PROC_REF(/atom, update_icon), AIRLOCK_OPEN), 1 SECOND) // wait to update icon so the light doesn't go out too soon
 		if("closing")
 			set_airlock_overlays(AIRLOCK_CLOSING)
 			flick("closing", src)
 			animating_state = AIRLOCK_CLOSED
-			update_icon()
+			addtimer(CALLBACK(src, TYPE_PROC_REF(/atom, update_icon), AIRLOCK_CLOSED), 1 SECOND) // wait to update icon so the light doesn't go out too soon
 		if("deny")
 			set_airlock_overlays(AIRLOCK_DENY)
 			if(density && arePowerSystemsOn())
@@ -441,7 +431,7 @@ About the new airlock wires panel:
 				if(speaker)
 					playsound(loc, open_failure_access_denied, 50, 0)
 			animating_state = AIRLOCK_CLOSED
-			update_icon()
+			addtimer(CALLBACK(src, TYPE_PROC_REF(/atom, update_icon), AIRLOCK_CLOSED), 1 SECOND) // wait to update icon so the light doesn't go out too soon
 		if("emag")
 			set_airlock_overlays(AIRLOCK_EMAG)
 			if(density && arePowerSystemsOn())
@@ -643,7 +633,7 @@ About the new airlock wires panel:
 	var/cut_sound
 
 	if(IS_WELDER(item))
-		var/obj/item/weldingtool/welder = item
+		var/obj/item/fuelled_tool/welding/welder = item
 		if(!welder.weld(0,user))
 			return FALSE
 		cut_verb = "cutting"
@@ -752,7 +742,7 @@ About the new airlock wires panel:
 		return
 
 	if(!repairing && IS_WELDER(used_item) && !operating && density)
-		var/obj/item/weldingtool/welder = used_item
+		var/obj/item/fuelled_tool/welding/welder = used_item
 		if(!welder.weld(0,user))
 			to_chat(user, SPAN_NOTICE("Your [welder.name] doesn't have enough fuel."))
 			return TRUE
@@ -866,9 +856,8 @@ About the new airlock wires panel:
 	var/obj/structure/door_assembly/da = ..() // Note that we're deleted here already. Don't do unsafe stuff.
 	. = da
 
-	if(mineral)
-		da.glass_material = mineral
-		da.glass = 1
+	if(da.can_install_glass)
+		da.reinf_material = reinf_material
 
 	da.paintable = paintable
 	da.door_color = door_color
@@ -878,7 +867,7 @@ About the new airlock wires panel:
 	if(moved)
 		spark_at(da, amount=5, cardinal_only = TRUE)
 	else
-		da.anchored = TRUE
+		da.set_anchored(TRUE)
 	da.state = 1
 	da.created_name = name
 	da.update_icon()
@@ -950,8 +939,8 @@ About the new airlock wires panel:
 				if(AM.blocks_airlock())
 					if(world.time > next_beep_at)
 						playsound(src.loc, close_failure_blocked, 30, 0, -3)
-						next_beep_at = world.time + SecondsToTicks(10)
-					close_door_at = world.time + 6
+						next_beep_at = world.time + (10 SECONDS)
+					close_door_at = world.time + (0.6 SECONDS)
 					return FALSE
 
 	for(var/turf/turf in locs)
@@ -1026,6 +1015,10 @@ About the new airlock wires panel:
 	return ..(M)
 
 /obj/machinery/door/airlock/Initialize(var/mapload, var/d, var/populate_parts = TRUE, obj/structure/door_assembly/assembly = null)
+
+	material = RESOLVE_TO_DECL(material)
+	reinf_material = RESOLVE_TO_DECL(reinf_material)
+
 	. = ..()
 
 	//wires
@@ -1048,27 +1041,22 @@ About the new airlock wires panel:
 	else if(!begins_closed)
 		queue_icon_update()
 
-	if (glass)
+	if(reinf_material)
 		paintable |= PAINT_WINDOW_PAINTABLE
-		if (!window_color)
-			var/decl/material/window = get_window_material()
-			window_color = window.color
+		paint_window(reinf_material.color)
 
 /obj/machinery/door/airlock/inherit_from_assembly(obj/structure/door_assembly/assembly)
 	//if assembly is given, create the new door from the assembly
 	if (..(assembly))
-		var/decl/material/mat = GET_DECL(assembly.glass_material)
-
-		if(assembly.glass == 1) // supposed to use material in this case
-			mineral = assembly.glass_material
-			if(mat.opacity <= 0.7)
-				glass = TRUE
+		if(assembly.reinf_material && assembly.can_install_glass)
+			material = assembly.reinf_material
+			if(assembly.reinf_material.opacity <= 0.7)
 				set_opacity(0)
 				hitsound = 'sound/effects/Glasshit.ogg'
 				max_health = 300
 				explosion_resistance = 5
 			else
-				door_color = mat.color
+				door_color = assembly.reinf_material.color
 		else
 			door_color = assembly.door_color
 
@@ -1076,7 +1064,7 @@ About the new airlock wires panel:
 		if(assembly.created_name)
 			SetName(assembly.created_name)
 		else
-			SetName("[mineral ? "[mat.solid_name || mat.name] airlock" : assembly.base_name]")
+			SetName("[material ? "[material.solid_name || material.name] airlock" : assembly.base_name]")
 
 		paintable = assembly.paintable
 		stripe_color = assembly.stripe_color
@@ -1094,7 +1082,7 @@ About the new airlock wires panel:
 		spawn(0)
 			open()
 	if(prob(40/severity))
-		var/duration = SecondsToTicks(30 / severity)
+		var/duration = (30 SECONDS) / severity
 		if(electrified_until > -1 && (duration + world.time) > electrified_until)
 			electrify(duration)
 	..()
@@ -1149,9 +1137,8 @@ About the new airlock wires panel:
 /obj/machinery/door/airlock/proc/paint_window(new_color)
 	if (new_color)
 		window_color = new_color
-	else if (window_material)
-		var/decl/material/window = get_window_material()
-		window_color = window.color
+	else if (reinf_material)
+		window_color = reinf_material.color
 	else
 		window_color = GLASS_COLOR
 	queue_icon_update()

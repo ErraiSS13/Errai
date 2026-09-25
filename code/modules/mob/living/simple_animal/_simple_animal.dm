@@ -1,4 +1,3 @@
-
 /mob/living/simple_animal
 	name = "animal"
 	max_health = 20
@@ -10,7 +9,7 @@
 	mob_push_flags = MONKEY|SLIME|SIMPLE_ANIMAL
 
 	icon_state = ICON_STATE_WORLD
-	buckle_pixel_shift = @'{"x":0,"y":0,"z":8}'
+	_buckle_pixel_shift = @'{"x":0,"y":0,"z":8}'
 
 	hud_used = /datum/hud/animal
 
@@ -71,9 +70,6 @@
 	var/bleed_colour = COLOR_BLOOD_HUMAN
 	var/can_bleed = TRUE
 
-	// contained in a cage
-	var/in_stasis = 0
-
 	//for simple animals with abilities, mostly megafauna
 	var/ability_cooldown
 
@@ -81,7 +77,6 @@
 	var/return_damage_min
 	var/return_damage_max
 
-	var/performing_delayed_life_action = FALSE
 	var/glowing_eyes = FALSE
 	var/mob_icon_state_flags = 0
 
@@ -115,6 +110,19 @@
 /mob/living/simple_animal/Initialize()
 	. = ..()
 
+	// Disable our automatic codex generation since we have a scannable one.
+	if(scannable_result)
+		atom_codex_ref = FALSE
+
+	// Deserialize any JSON payload for our overlays.
+	if(istext(draw_visible_overlays))
+		draw_visible_overlays = cached_json_decode(draw_visible_overlays)
+		if(!islist(draw_visible_overlays))
+			draw_visible_overlays = null
+	if(isnull(draw_visible_overlays))
+		var/list/defaults = get_default_animal_colours()
+		draw_visible_overlays = defaults?.Copy() // do not mutate static list
+
 	if(length(ability_handlers))
 		for(var/handler in ability_handlers)
 			add_ability_handler(handler)
@@ -128,6 +136,9 @@
 		minbodytemp = 0
 
 	check_mob_icon_states(TRUE)
+	if(length(draw_visible_overlays))
+		update_icon()
+
 	if(isnull(base_animal_type))
 		base_animal_type = type
 	if(LAZYLEN(natural_armor))
@@ -214,6 +225,10 @@ var/global/list/simplemob_icon_bitflag_cache = list()
 	else if(current_posture?.prone && (mob_icon_state_flags & MOB_ICON_HAS_REST_STATE))
 		icon_state += "-resting"
 	..()
+	if(can_use_cloak)
+		var/cloak_alpha = (stat == CONSCIOUS && is_cloaked()) ? cloaked_alpha : initial(alpha)
+		if(alpha != cloak_alpha)
+			animate(src, alpha = cloak_alpha, time = cloak_anim_time, flags = ANIMATION_PARALLEL)
 
 /mob/living/simple_animal/get_eye_colour()
 	return eye_color || ..()
@@ -400,14 +415,10 @@ var/global/list/simplemob_icon_bitflag_cache = list()
 			damage = 30
 	apply_damage(damage, BRUTE, damage_flags = DAM_EXPLODE)
 
-/mob/living/simple_animal/say(var/message)
-	var/verb = "says"
+/mob/living/simple_animal/say(datum/speech/phrases, verb = "says", whispering)
 	if(speak_emote.len)
 		verb = pick(speak_emote)
-
-	message = sanitize(message)
-
-	..(message, null, verb)
+	..()
 
 /mob/living/simple_animal/is_burnable()
 	return heat_damage_per_tick
@@ -489,12 +500,11 @@ var/global/list/simplemob_icon_bitflag_cache = list()
 	if(!level_data.exterior_atmosphere)
 		return
 
-	for(var/gas in level_data.exterior_atmosphere.gas)
-		var/gas_amt = level_data.exterior_atmosphere.gas[gas]
+	for(var/gas_type, gas_amt in level_data.exterior_atmosphere.gas)
 		if(min_gas)
-			min_gas[gas] = round(gas_amt * 0.5)
+			min_gas[gas_type] = round(gas_amt * 0.5)
 		if(max_gas)
-			min_gas[gas] = round(gas_amt * 1.5)
+			min_gas[gas_type] = round(gas_amt * 1.5)
 
 // Simple filler bodytype so animals get offsets for their inventory slots.
 /decl/bodytype/animal
@@ -508,6 +518,12 @@ var/global/list/simplemob_icon_bitflag_cache = list()
 	name = "quadruped animal"
 	bodytype_flag = 0
 	bodytype_category = "quadrupedal animal body"
+	// Simple animal bodies don't have limbs or organs, currently. If that changes, remove or modify these overrides.
+	// These overrides prevent unnecessary processing.
+	has_limbs = list()
+	has_organ = list()
+	// Simple animals go through a different breathing process (handle_environment) than mobs that use organs do.
+	breathing_organ = null
 
 /mob/living/simple_animal/get_base_telegraphed_melee_accuracy()
 	return telegraphed_melee_accuracy
@@ -552,7 +568,7 @@ var/global/list/simplemob_icon_bitflag_cache = list()
 	if(istype(ai))
 		ai.resume()
 
-/mob/living/simple_animal/has_ranged_attack()
+/mob/living/simple_animal/has_ranged_attack(atom/target)
 	return !!projectiletype && get_ranged_attack_distance() > 0
 
 /mob/living/simple_animal/proc/shoot_wrapper(target, location, user)
@@ -562,7 +578,7 @@ var/global/list/simplemob_icon_bitflag_cache = list()
 /mob/living/simple_animal/proc/shoot_at(var/atom/target, var/atom/start)
 	if(!start)
 		start = get_turf(src)
-	if(!can_act() || !istype(target) || !istype(start) || target == start || !has_ranged_attack())
+	if(!can_act() || !istype(target) || !istype(start) || target == start || !has_ranged_attack(target))
 		return FALSE
 	var/obj/item/projectile/A = new projectiletype(get_turf(start))
 	if(!A)
@@ -575,7 +591,7 @@ var/global/list/simplemob_icon_bitflag_cache = list()
 	return ranged_range
 
 /mob/living/simple_animal/handle_ranged_attack(atom/target)
-	if(!has_ranged_attack() || !istype(target))
+	if(!istype(target) || !has_ranged_attack())
 		return
 	visible_message(SPAN_DANGER("\The [src] [fire_desc] at \the [target]!"))
 	if(burst_projectile)
@@ -590,7 +606,7 @@ var/global/list/simplemob_icon_bitflag_cache = list()
 	return TRUE
 
 /mob/living/simple_animal/get_attack_telegraph_delay()
-	return attack_delay
+	return is_cloaked() ? 0 : attack_delay
 
 /mob/living/simple_animal/set_stat(var/new_stat)
 	if((. = ..()))
@@ -598,3 +614,17 @@ var/global/list/simplemob_icon_bitflag_cache = list()
 
 /mob/living/simple_animal/is_space_movement_permitted(allow_movement = FALSE)
 	return skip_spacemove ? SPACE_MOVE_PERMITTED : ..()
+
+/mob/living/simple_animal/proc/get_default_animal_colour(marking_type)
+	var/list/colors = get_default_animal_colours()
+	return LAZYACCESS(colors, marking_type) // Return null if unset, rather than forcing COLOR_BLACK or such.
+
+/mob/living/simple_animal/proc/get_default_animal_colours()
+	return
+
+/mob/living/simple_animal/get_specific_codex_entry()
+	if(scannable_result && !istype(atom_codex_ref))
+		var/datum/codex_entry/codex = locate(scannable_result) in SScodex.all_entries
+		if(istype(codex))
+			atom_codex_ref = codex
+	. = ..()

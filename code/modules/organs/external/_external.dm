@@ -11,7 +11,6 @@
 	scale_max_damage_to_species_health = TRUE
 	abstract_type = /obj/item/organ/external
 
-	var/_slowdown = 0
 	var/tmp/_icon_cache_key
 	// Strings
 	var/broken_description             // fracture string if any.
@@ -49,7 +48,6 @@
 	var/list/children                  // Sub-limbs.
 	var/list/internal_organs           // Internal organs of this body part
 	var/list/implants                  // Currently implanted objects.
-	var/base_miss_chance = 20          // Chance of missing.
 	var/genetic_degradation = 0        // Amount of current genetic damage.
 
 	//Forensics stuff
@@ -152,6 +150,8 @@
 
 /obj/item/organ/external/copy_from_mob_snapshot(datum/mob_snapshot/supplied_appearance)
 	_icon_cache_key = null
+	skin_colour = supplied_appearance.skin_color //match skin colors
+	skin_tone = supplied_appearance.skin_tone
 	if(organ_tag in supplied_appearance?.sprite_accessories)
 		var/list/sprite_cats = supplied_appearance.sprite_accessories[organ_tag]
 		for(var/category in sprite_cats)
@@ -528,19 +528,21 @@
 		if(!in_place)
 			parent.update_wounds()
 
+/// Drops all clothing covered by this body part.
 /obj/item/organ/external/proc/drop_equipped_clothing()
 	if(!owner)
 		return
+	// TODO: Determine if this is even necessary; slots that require organ tags will vanish when the organ is lost
 	if((body_part & SLOT_FOOT_LEFT) || (body_part & SLOT_FOOT_RIGHT))
-		owner.drop_from_inventory(owner.get_equipped_item(slot_shoes_str))
+		owner.drop_from_slot(slot_shoes_str)
 	if((body_part & SLOT_HAND_LEFT) || (body_part & SLOT_HAND_RIGHT))
-		owner.drop_from_inventory(owner.get_equipped_item(slot_gloves_str))
+		owner.drop_from_slot(slot_gloves_str)
 	if(body_part & SLOT_HEAD)
-		owner.drop_from_inventory(owner.get_equipped_item(slot_head_str))
-		owner.drop_from_inventory(owner.get_equipped_item(slot_glasses_str))
-		owner.drop_from_inventory(owner.get_equipped_item(slot_l_ear_str))
-		owner.drop_from_inventory(owner.get_equipped_item(slot_r_ear_str))
-		owner.drop_from_inventory(owner.get_equipped_item(slot_wear_mask_str))
+		owner.drop_from_slot(slot_head_str)
+		owner.drop_from_slot(slot_glasses_str)
+		owner.drop_from_slot(slot_l_ear_str)
+		owner.drop_from_slot(slot_r_ear_str)
+		owner.drop_from_slot(slot_wear_mask_str)
 
 //Helper proc used by various tools for repairing robot limbs
 /obj/item/organ/external/proc/robo_repair(var/repair_amount, var/damage_type, var/damage_desc, obj/item/tool, mob/living/user)
@@ -724,13 +726,17 @@ This function completely restores a damaged organ to perfect condition.
 /obj/item/organ/external/is_broken()
 	return ((status & ORGAN_CUT_AWAY) || ((status & ORGAN_BROKEN) && !splinted))
 
+// Overridable for modpacks.
+/obj/item/organ/external/proc/check_status_flags_for_process()
+	return (status & (ORGAN_CUT_AWAY|ORGAN_BLEEDING|ORGAN_BROKEN|ORGAN_MUTATED|ORGAN_DISLOCATED|ORGAN_DEAD))
+
 //Determines if we even need to process this organ.
 /obj/item/organ/external/proc/need_process()
 
 	if(length(ailments))
 		return TRUE
 
-	if(status & (ORGAN_CUT_AWAY|ORGAN_BLEEDING|ORGAN_BROKEN|ORGAN_MUTATED|ORGAN_DISLOCATED|ORGAN_DEAD))
+	if(check_status_flags_for_process())
 		return TRUE
 
 	if((brute_dam || burn_dam) && !BP_IS_PROSTHETIC(src)) //Robot limbs don't autoheal and thus don't need to process when damaged

@@ -23,11 +23,13 @@
 	ai                 = /datum/mob_controller/passive/deer
 	eye_color          = "#1a1a1a"
 
-	draw_visible_overlays = list(
+/mob/living/simple_animal/passive/deer/get_default_animal_colours()
+	var/static/list/default_colors = list(
 		"base"     = "#b39161",
 		"markings" = "#3a3329",
 		"socks"    = "#ddd5c9"
 	)
+	return default_colors
 
 /mob/living/simple_animal/passive/deer/get_bodytype()
 	return GET_DECL(/decl/bodytype/quadruped/animal/deer)
@@ -94,10 +96,10 @@
 	desc = "A fleet-footed forest animal known for a love of vtubers."
 
 /mob/living/simple_animal/passive/deer/sparkle/Initialize()
-	draw_visible_overlays = list(
+	draw_visible_overlays ||= list(
 		"base"     = get_random_colour(),
 		"markings" = get_random_colour(TRUE),
 		"socks"    = get_random_colour()
 	)
-	eye_color      = get_random_colour(TRUE)
+	eye_color ||= get_random_colour(TRUE)
 	. = ..()

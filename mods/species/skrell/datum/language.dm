@@ -8,8 +8,8 @@ var/global/list/last_name_skrell =   file2list("mods/species/skrell/names/last_n
 	ask_verb = "trills"
 	exclaim_verb = "croaks"
 	colour = "selenian"
-	key = "k"
-	flags = LANG_FLAG_WHITELISTED
+	language_key = "skrell"
+	language_flags = LANG_FLAG_WHITELISTED
 	syllables = list("qr","qrr","xuq","qil","quum","xuqm","vol","xrim","zaoo","qu-uu","qix","qoo","zix","'","!")
 	shorthand = "SK"
 	partial_understanding = list(
@@ -23,13 +23,13 @@ var/global/list/last_name_skrell =   file2list("mods/species/skrell/names/last_n
 	ask_verb = "trills"
 	exclaim_verb = "chirps"
 	colour = "selenian"
-	key = "h"
-	flags = LANG_FLAG_WHITELISTED
+	language_key = "uekatish"
+	language_flags = LANG_FLAG_WHITELISTED
 	syllables = list("qra","xa","vilz*","s!zaao","qu!*m","girx","vol","xrim","za-r*oo","qu-xx","qix","qa'taz","zix","tuep","!","*")
 	shorthand = "UK"
 	partial_understanding = list(
 		/decl/language/skrell = 90
 	)
 
-/decl/language/skrell/get_random_name(var/gender)
+/decl/language/skrell/get_random_language_name(gender, name_count=2, syllable_count=4, syllable_divisor=2)
 	return capitalize(pick(global.first_name_skrell)) + capitalize(pick(global.last_name_skrell))

@@ -35,6 +35,9 @@
 						to_chat(user, SPAN_NOTICE("You unearth \a [thing]!"))
 			LAZYADD(., loot)
 
+	for(var/obj/item/stack/stack in .)
+		stack.add_to_stacks()
+
 	clear_diggable_resources()
 
 // Procs for digging pits.
@@ -54,8 +57,8 @@
 	return get_plant_growth_rate() > 0 && can_be_dug(tool_hardness, using_tool) && !(locate(/obj/machinery/portable_atmospherics/hydroponics/soil) in src)
 
 /turf/proc/try_dig_farm(mob/user, obj/item/tool, using_tool = TOOL_HOE)
-	var/decl/material/material = get_material()
-	if(!material?.tillable)
+	var/decl/material/turf_material = get_material()
+	if(!turf_material?.tillable)
 		return
 	if((!user && !tool) || tool.do_tool_interaction(using_tool, user, src, 5 SECONDS, set_cooldown = TRUE, check_skill = SKILL_BOTANY))
 		return dig_farm(user, tool?.material?.hardness, using_tool)
@@ -66,7 +69,7 @@
 
 // Proc for digging trenches.
 /turf/proc/can_dig_trench(tool_hardness = MAT_VALUE_MALLEABLE, using_tool = TOOL_SHOVEL)
-	return can_be_dug(tool_hardness, using_tool) && get_physical_height() > -(FLUID_DEEP)
+	return can_be_dug(tool_hardness, using_tool) && (HasBelow(z) || get_physical_height() > -(FLUID_DEEP))
 
 /turf/proc/try_dig_trench(mob/user, obj/item/tool, using_tool = TOOL_SHOVEL)
 	if((!user && !tool) || tool.do_tool_interaction(using_tool, user, src, 2.5 SECONDS, check_skill = SKILL_HAULING, set_cooldown = TRUE))

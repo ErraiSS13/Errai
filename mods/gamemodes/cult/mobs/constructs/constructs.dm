@@ -130,16 +130,18 @@
 
 /mob/living/simple_animal/construct/armoured/bullet_act(var/obj/item/projectile/P)
 	if(istype(P, /obj/item/projectile/energy) || istype(P, /obj/item/projectile/beam))
-		var/reflectchance = 80 - round(P.damage/3)
+		var/damage = P.get_projectile_damage(src)
+		var/reflectchance = 80 - round(damage/3)
 		if(prob(reflectchance))
-			take_damage(P.damage * 0.5)
+			take_damage(damage * 0.5)
 			visible_message("<span class='danger'>The [P.name] gets reflected by [src]'s shell!</span>", \
 							"<span class='danger'>The [P.name] gets reflected by [src]'s shell!</span>")
 
 			// Find a turf near or on the original location to bounce to
-			if(P.starting)
-				var/new_x = P.starting.x + pick(0, 0, -1, 1, -2, 2, -2, 2, -2, 2, -3, 3, -3, 3)
-				var/new_y = P.starting.y + pick(0, 0, -1, 1, -2, 2, -2, 2, -2, 2, -3, 3, -3, 3)
+			var/turf/starting = P.starting_ref?.resolve()
+			if(istype(starting))
+				var/new_x = starting.x + pick(0, 0, -1, 1, -2, 2, -2, 2, -2, 2, -3, 3, -3, 3)
+				var/new_y = starting.y + pick(0, 0, -1, 1, -2, 2, -2, 2, -2, 2, -3, 3, -3, 3)
 				var/turf/curloc = get_turf(src)
 
 				// redirect the projectile
@@ -147,7 +149,7 @@
 
 			return -1 // complete projectile permutation
 
-	return (..(P))
+	return ..(P)
 
 /mob/living/simple_animal/construct/armoured/mind_initialize()
 	..()
@@ -208,7 +210,7 @@
 
 /obj/item/natural_weapon/cult_builder
 	name = "heavy arms"
-	attack_verb = list("rammed")
+	attack_verb = "rammed"
 
 
 /mob/living/simple_animal/construct/builder/mind_initialize()

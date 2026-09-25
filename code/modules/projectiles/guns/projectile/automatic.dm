@@ -37,6 +37,10 @@
 	if(ammo_magazine)
 		add_overlay("[get_world_inventory_state()]mag-[round(ammo_magazine.get_stored_ammo_count(),5)]")
 
+/obj/item/gun/projectile/automatic/smg/uzi
+	desc = "A cheap mass-produced SMG. This one looks especially run-down. Uses pistol rounds."
+	jam_chance = 20
+
 /obj/item/gun/projectile/automatic/assault_rifle
 	name = "assault rifle"
 	desc = "The Z8 Bulldog is an older model bullpup carbine. Makes you feel like a space marine when you hold it."
@@ -149,9 +153,9 @@
 	burst = 3
 	burst_accuracy = list(0,-1,-1)
 	dispersion = list(0.0, 0.6, 1.0)
+	autofire_enabled = TRUE
 
 	fire_delay = 0
-	autofire_enabled = 1
 
 	mag_insert_sound = 'sound/weapons/guns/interaction/batrifle_magin.ogg'
 	mag_remove_sound = 'sound/weapons/guns/interaction/batrifle_magout.ogg'
@@ -168,7 +172,7 @@
 /obj/item/gun/projectile/automatic/machine/special_check(mob/user)
 	if(!isliving(user))
 		return FALSE
-	if(!user.check_dexterity(DEXTERITY_WEAPONS))
+	if(!user.check_dexterity(DEXTERITY_WEAPONS, fail_message = "You lack the dexterity to use \the [src]."))
 		return FALSE
 
 	var/mob/living/M = user
@@ -177,8 +181,8 @@
 		return FALSE
 	return TRUE
 
-/obj/item/gun/projectile/automatic/machine/set_autofire(atom/fire_at, mob/fire_by, autoturn)
-	if(!special_check(fire_by))
+/obj/item/gun/projectile/automatic/machine/wielder_mouse_drag_down(mob/user, object, location, control, params)
+	if(!special_check(user))
 		return FALSE
 	. = ..()
 	if(. && !spin_up_time)
@@ -186,7 +190,7 @@
 			sound_token = play_looping_sound(src, "machine_gun", 'sound/mecha/hydraulic.ogg', volume = 30)
 		spin_up_time = world.time
 
-/obj/item/gun/projectile/automatic/machine/clear_autofire()
+/obj/item/gun/projectile/automatic/machine/wielder_mouse_drag_up(mob/user, atom/target)
 	. = ..()
 	spin_up_time = null
 	QDEL_NULL(sound_token)

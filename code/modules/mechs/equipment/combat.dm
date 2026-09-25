@@ -79,8 +79,7 @@
 	. = ..()
 
 /obj/item/mech_equipment/shields/attack_self(var/mob/user)
-	. = ..()
-	if(.)
+	if(!(. = ..()))
 		toggle()
 
 /obj/item/mech_equipment/shields/proc/stop_damage(var/damage)
@@ -246,8 +245,7 @@
 				do_attack_effect(T, "smash")
 
 /obj/item/mech_equipment/ballistic_shield/attack_self(mob/user)
-	. = ..()
-	if (.) //FORM A SHIELD WALL!
+	if (!(. = ..())) //FORM A SHIELD WALL!
 		if (last_max_block + 2 SECONDS < world.time)
 			owner.visible_message(SPAN_WARNING("\The [owner] raises \the [src], locking it in place!"), blind_message = SPAN_WARNING("You hear the whir of motors and scratching metal!"))
 			playsound(src ,'sound/effects/bamf.ogg',35,1)
@@ -278,7 +276,7 @@
 	var/attack_dir = 0
 	if (istype(source, /obj/item/projectile))
 		var/obj/item/projectile/P = source
-		attack_dir = get_dir(get_turf(src), P.starting)
+		attack_dir = get_dir(get_turf(src), P.starting_ref?.resolve())
 	else if (attacker)
 		attack_dir = get_dir(get_turf(src), get_turf(attacker))
 	else if (source)
@@ -320,8 +318,7 @@
 			O.handle_flashed(flash_time, do_stun = FALSE)
 
 /obj/item/mech_equipment/flash/attack_self(mob/user)
-	. = ..()
-	if(.)
+	if(!(. = ..()))
 		if(world.time < next_use)
 			to_chat(user, SPAN_WARNING("\The [src] is recharging!"))
 			return

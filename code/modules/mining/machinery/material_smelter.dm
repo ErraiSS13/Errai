@@ -5,6 +5,8 @@
 	icon_state = "furnace"
 	use_ui_template = "material_processing_smeltery.tmpl"
 	atom_flags = ATOM_FLAG_CLIMBABLE | ATOM_FLAG_OPEN_CONTAINER
+	chem_volume = INFINITY
+
 	var/show_all_materials = FALSE
 	var/list/casting
 	var/static/list/always_show_materials = list(
@@ -21,7 +23,6 @@
 /obj/machinery/material_processing/smeltery/Initialize()
 	show_materials = always_show_materials.Copy()
 	. = ..()
-	create_reagents(INFINITY)
 	queue_temperature_atoms(src)
 
 // Update displayed materials
@@ -30,7 +31,7 @@
 	if(!(. = ..()) || !reagents)
 		return
 
-	for(var/decl/material/reagent as anything in reagents.reagent_volumes)
+	for(var/decl/material/reagent as anything in REAGENT_VOLUMES(reagents))
 		show_materials |= reagent.type
 
 /obj/machinery/material_processing/smeltery/ProcessAtomTemperature()
@@ -69,8 +70,8 @@
 					eating.dropInto(output_turf)
 				continue
 			eaten++
-			if(eating.reagents?.total_volume)
-				eating.reagents.trans_to_obj(src, floor(eating.reagents.total_volume * 0.75)) // liquid reagents, lossy
+			if(REAGENT_TOTAL_VOLUME(eating.reagents))
+				eating.reagents.trans_to_obj(src, floor(REAGENT_TOTAL_VOLUME(eating.reagents) * 0.75)) // liquid reagents, lossy
 			for(var/mtype in eating.matter)
 				add_to_reagents(mtype, floor(eating.matter[mtype] * REAGENT_UNITS_PER_MATERIAL_UNIT))
 			qdel(eating)

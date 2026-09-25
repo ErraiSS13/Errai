@@ -691,7 +691,7 @@
 /obj/structure/disposalpipe/segment{
 	dir = 4
 	},
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/monofloor,
 /area/ship/errai/service/bar)
 "aIw" = (
@@ -865,10 +865,11 @@
 /turf/wall/r_wall,
 /area/ship/errai/medical/surgery_hallway)
 "aPy" = (
-/obj/structure/sign/warning/pods/east{
+/obj/effect/floor_decal/corner_techfloor_gray,
+/obj/structure/sign/directions/pods{
+	dir = 4;
 	pixel_y = 32
 	},
-/obj/effect/floor_decal/corner_techfloor_gray,
 /turf/floor/tiled/dark,
 /area/ship/errai/hallway/deck_two_aft_starboard_hallway)
 "aPH" = (
@@ -1908,7 +1909,7 @@
 /obj/machinery/light{
 	dir = 4
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -2037,7 +2038,7 @@
 /turf/wall/r_wall/hull,
 /area/ship/errai/medical/restroom)
 "bUm" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -22
@@ -2472,11 +2473,11 @@
 /turf/floor/laminate/walnut,
 /area/ship/errai/commons/dormitory)
 "cno" = (
-/obj/machinery/power/sensor{
+/obj/machinery/power_sensor{
 	id_tag = "Deck Two Subgrid";
 	name = "Powernet Sensor - Deck Two Subgrid"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -2530,7 +2531,7 @@
 /obj/structure/cable/green{
 	icon_state = "0-2"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 22
@@ -2763,16 +2764,15 @@
 	dir = 8
 	},
 /obj/structure/cable{
-	icon_state = "0-2";
-	pixel_y = 1
-	},
-/obj/structure/cable{
 	icon_state = "2-8"
 	},
 /obj/effect/floor_decal/industrial/danger{
 	dir = 8
 	},
 /obj/structure/disposalpipe/segment,
+/obj/structure/cable{
+	icon_state = "0-2"
+	},
 /turf/floor/plating,
 /area/ship/errai/maintenance/substation/medical)
 "cwG" = (
@@ -3100,7 +3100,7 @@
 /turf/floor/plating,
 /area/ship/errai/security/prison_riot_control)
 "cIQ" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 22
@@ -3137,7 +3137,7 @@
 /turf/floor/tiled,
 /area/ship/errai/hallway/deck_two_aft_hallway)
 "cJP" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -3697,7 +3697,7 @@
 /obj/item/box/candles/red,
 /obj/item/box/candles/white,
 /obj/structure/closet,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -3785,13 +3785,13 @@
 /obj/structure/cable/green{
 	icon_state = "2-8"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
 	},
 /obj/effect/floor_decal/industrial/danger/full,
-/obj/machinery/power/sensor{
+/obj/machinery/power_sensor{
 	id_tag = "Security Subgrid";
 	name = "Powernet Sensor - Security Subgrid"
 	},
@@ -3866,7 +3866,7 @@
 /turf/floor/tiled/dark/monotile,
 /area/ship/errai/security/brig)
 "dqg" = (
-/obj/machinery/power/breakerbox/activated{
+/obj/machinery/breakerbox/activated{
 	RCon_tag = "Research Substation Bypass"
 	},
 /turf/floor/plating,
@@ -4072,7 +4072,7 @@
 /turf/floor/tiled/steel_grid,
 /area/ship/errai/hallway/deck_two_fore_hallway)
 "dvk" = (
-/obj/machinery/power/breakerbox/activated{
+/obj/machinery/breakerbox/activated{
 	RCon_tag = "Civilian Substation Bypass"
 	},
 /turf/floor/plating,
@@ -4556,7 +4556,7 @@
 /turf/floor/tiled/steel_grid,
 /area/ship/errai/hallway/deck_two_aft_hallway)
 "dOt" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/effect/floor_decal/steeldecal/steel_decals3{
 	dir = 8
 	},
@@ -5178,7 +5178,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
 	dir = 9
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -5563,7 +5563,7 @@
 /area/ship/errai/research/xeno_studies)
 "exb" = (
 /obj/machinery/space_heater,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 22
@@ -5574,7 +5574,7 @@
 /turf/floor/plating,
 /area/ship/errai/maintenance/research_starboard)
 "exu" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/structure/cable/orange{
 	icon_state = "1-4"
 	},
@@ -6492,14 +6492,14 @@
 /obj/structure/cable/green{
 	icon_state = "1-4"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
 /obj/structure/cable/green{
 	icon_state = "0-4"
 	},
-/obj/machinery/power/sensor{
+/obj/machinery/power_sensor{
 	id_tag = "Research Subgrid";
 	name = "Powernet Sensor - Research Subgrid"
 	},
@@ -6635,7 +6635,7 @@
 /turf/floor/tiled/techmaint,
 /area/ship/errai/maintenance/incinerator)
 "fvH" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -22
@@ -6766,7 +6766,7 @@
 /turf/floor/tiled/white,
 /area/ship/errai/research/corridor)
 "fzy" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/effect/floor_decal/steeldecal/steel_decals3{
 	dir = 8
 	},
@@ -7342,7 +7342,7 @@
 /turf/floor/tiled/old_tile/dark,
 /area/ship/errai/security/interrogation)
 "fVT" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/effect/floor_decal/steeldecal/steel_decals3{
 	dir = 9;
 	color = "#aed18b"
@@ -7402,7 +7402,7 @@
 /turf/floor/tiled/white/monotile,
 /area/ship/errai/medical/surgery_hallway)
 "fXb" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -7699,12 +7699,12 @@
 	dir = 9
 	},
 /obj/structure/cable/green,
-/obj/machinery/power/sensor{
+/obj/machinery/power_sensor{
 	id_tag = "Medbay Subgrid";
 	name = "Powernet Sensor - Medbay Subgrid"
 	},
 /obj/effect/floor_decal/industrial/danger/full,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -7806,7 +7806,7 @@
 /obj/item/roller,
 /obj/item/roller,
 /obj/effect/floor_decal/industrial/hatch/yellow,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -22
@@ -8139,7 +8139,7 @@
 	},
 /obj/machinery/atmospherics/pipe/manifold4w/hidden/supply,
 /obj/machinery/atmospherics/pipe/manifold4w/hidden/scrubbers,
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/effect/floor_decal/steeldecal/steel_decals3{
 	dir = 10
 	},
@@ -8312,7 +8312,7 @@
 /turf/floor/tiled/white,
 /area/ship/errai/research/research_and_development)
 "gOv" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 22
@@ -8687,7 +8687,7 @@
 /turf/wall/r_wall,
 /area/ship/errai/research/gas_storage)
 "hdD" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/effect/floor_decal/steeldecal/steel_decals3{
 	dir = 5
 	},
@@ -8754,7 +8754,7 @@
 	dir = 1;
 	pixel_y = -32
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -9089,7 +9089,7 @@
 /turf/floor/tiled/dark,
 /area/ship/errai/security/forensics)
 "hzC" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -9139,7 +9139,7 @@
 /obj/structure/table/steel,
 /obj/item/stack/cable_coil,
 /obj/item/robotanalyzer,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -9494,7 +9494,8 @@
 /obj/effect/floor_decal/industrial/warning{
 	dir = 8
 	},
-/obj/structure/sign/warning/pods/west{
+/obj/structure/sign/directions/pods{
+	dir = 8;
 	pixel_y = 32
 	},
 /turf/floor/tiled/techfloor/grid,
@@ -10155,11 +10156,11 @@
 /turf/floor/tiled/white/monotile,
 /area/ship/errai/research/gas_mixing)
 "ita" = (
-/obj/machinery/power/breakerbox/activated{
-	RCon_tag = "Medical Substation Bypass"
-	},
 /obj/machinery/light/small{
 	dir = 8
+	},
+/obj/machinery/breakerbox/activated{
+	RCon_tag = "Medical Substation Bypass"
 	},
 /turf/floor/plating,
 /area/ship/errai/maintenance/substation/medical)
@@ -10425,7 +10426,7 @@
 /turf/floor/tiled,
 /area/ship/errai/security/reception)
 "iDA" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/effect/floor_decal/steeldecal/steel_decals3{
 	dir = 10
@@ -10614,7 +10615,7 @@
 /obj/structure/cable/orange{
 	icon_state = "4-8"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 22
@@ -11011,7 +11012,7 @@
 /obj/effect/floor_decal/corner/yellow/border{
 	dir = 10
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -22
@@ -11439,7 +11440,7 @@
 /area/ship/errai/hallway/deck_two_fore_port_hallway)
 "jnx" = (
 /obj/machinery/mech_recharger,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -11741,7 +11742,7 @@
 /obj/effect/floor_decal/industrial/warning{
 	dir = 4
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 22
@@ -11858,7 +11859,7 @@
 /obj/structure/cable{
 	icon_state = "0-4"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 22
@@ -11867,7 +11868,7 @@
 /area/ship/errai/maintenance/atmospherics)
 "jLP" = (
 /obj/structure/closet/secure_closet/medical3,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -22
@@ -12118,7 +12119,7 @@
 /obj/structure/cable/green{
 	icon_state = "1-2"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 22
@@ -12172,7 +12173,7 @@
 /obj/structure/disposalpipe/segment{
 	dir = 4
 	},
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/monofloor{
 	dir = 4
 	},
@@ -12463,7 +12464,7 @@
 /obj/machinery/light{
 	dir = 4
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -12523,7 +12524,7 @@
 /turf/floor/plating,
 /area/ship/errai/maintenance/service)
 "koB" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -22
@@ -12740,7 +12741,7 @@
 "kxb" = (
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/structure/cable/green{
 	icon_state = "1-2"
 	},
@@ -12844,7 +12845,7 @@
 /obj/structure/cable/green{
 	icon_state = "1-8"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 22
@@ -12853,7 +12854,7 @@
 	icon_state = "0-2"
 	},
 /obj/effect/floor_decal/industrial/danger/full,
-/obj/machinery/power/sensor{
+/obj/machinery/power_sensor{
 	id_tag = "Civilian Subgrid";
 	name = "Powernet Sensor - Civilian Subgrid"
 	},
@@ -13000,7 +13001,7 @@
 /obj/structure/cable/orange{
 	icon_state = "0-8"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -13032,7 +13033,7 @@
 /turf/floor/tiled,
 /area/ship/errai/hallway/deck_two_aft_hallway)
 "kFI" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -13409,7 +13410,7 @@
 /turf/floor/plating,
 /area/ship/errai/engineering/atmospherics/deck_two)
 "kUq" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/effect/floor_decal/steeldecal/steel_decals3{
 	dir = 9
 	},
@@ -13485,7 +13486,7 @@
 /area/ship/errai/maintenance/incinerator)
 "lbC" = (
 /obj/structure/cable/green,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -22
 	},
@@ -13767,7 +13768,7 @@
 	dir = 4;
 	pixel_x = 21
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -14084,7 +14085,7 @@
 /turf/wall/r_wall,
 /area/ship/errai/medical/morgue)
 "luc" = (
-/obj/machinery/atmospherics/unary/heater{
+/obj/machinery/atmospherics/unary/temperature/heater{
 	icon_state = "heater"
 	},
 /obj/machinery/alarm{
@@ -14094,7 +14095,7 @@
 /turf/floor/tiled/white/monotile,
 /area/ship/errai/research/xeno_studies)
 "luB" = (
-/obj/machinery/atmospherics/unary/freezer{
+/obj/machinery/atmospherics/unary/temperature/freezer{
 	icon_state = "freezer"
 	},
 /obj/machinery/light{
@@ -14327,7 +14328,7 @@
 	dir = 8
 	},
 /obj/machinery/camera/network/medbay,
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/effect/floor_decal/steeldecal/steel_decals3{
 	dir = 10
 	},
@@ -15394,7 +15395,7 @@
 /turf/floor/tiled/old_cargo/dark,
 /area/ship/errai/service/bar)
 "mxU" = (
-/obj/structure/sign/department/greencross{
+/obj/structure/sign/department/cross/green{
 	pixel_y = 32
 	},
 /obj/effect/floor_decal/borderfloor{
@@ -15930,7 +15931,7 @@
 /turf/wall/r_wall/prepainted,
 /area/ship/errai/security/prison_riot_control)
 "nbQ" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 22
@@ -15974,7 +15975,7 @@
 "ndM" = (
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/effect/floor_decal/steeldecal/steel_decals3{
 	dir = 6
 	},
@@ -16079,7 +16080,7 @@
 /turf/floor/tiled/steel_grid,
 /area/ship/errai/service/janitor)
 "ngf" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 22
@@ -16111,7 +16112,7 @@
 /obj/machinery/atmospherics/pipe/manifold/hidden/yellow{
 	dir = 8
 	},
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/effect/floor_decal/steeldecal/steel_decals3{
 	dir = 5
 	},
@@ -16166,7 +16167,7 @@
 /obj/structure/closet/secure_closet/personal,
 /obj/item/towel,
 /obj/item/towel,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 22
@@ -16281,7 +16282,7 @@
 /turf/floor/tiled/white,
 /area/ship/errai/research/corridor)
 "nqw" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 22
@@ -16337,14 +16338,15 @@
 /turf/floor/laminate/walnut,
 /area/ship/errai/service/bar)
 "nsJ" = (
-/obj/structure/sign/warning/pods/east{
-	pixel_y = 32
-	},
 /obj/effect/floor_decal/borderfloorwhite{
 	dir = 1
 	},
 /obj/effect/floor_decal/corner/lime/border{
 	dir = 1
+	},
+/obj/structure/sign/directions/pods{
+	dir = 4;
+	pixel_y = 32
 	},
 /turf/floor/tiled/white,
 /area/ship/errai/medical/treatment_center)
@@ -16608,7 +16610,7 @@
 /area/ship/errai/maintenance/substation/medical)
 "nAF" = (
 /obj/machinery/cell_charger,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -16769,7 +16771,7 @@
 /turf/floor/tiled/old_cargo/dark,
 /area/ship/errai/research/mech_bay)
 "nFd" = (
-/obj/machinery/power/breakerbox/activated{
+/obj/machinery/breakerbox/activated{
 	RCon_tag = "Deck Two Substation Bypass"
 	},
 /turf/floor/plating,
@@ -16788,15 +16790,14 @@
 	},
 /obj/effect/floor_decal/borderfloorblack/corner,
 /obj/effect/floor_decal/industrial/danger/corner,
-/obj/structure/sign/warning/pods/south{
-	dir = 1;
-	pixel_y = -32
-	},
 /obj/effect/floor_decal/steeldecal/steel_decals4{
 	dir = 1
 	},
 /obj/structure/disposalpipe/segment{
 	dir = 4
+	},
+/obj/structure/sign/directions/pods{
+	pixel_y = -32
 	},
 /turf/floor/tiled/dark,
 /area/ship/errai/medical/morgue)
@@ -17467,7 +17468,7 @@
 "ohr" = (
 /obj/abstract/landmark/latejoin/cryo,
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/effect/floor_decal/steeldecal/steel_decals3{
 	dir = 1
 	},
@@ -17608,7 +17609,7 @@
 /turf/floor/plating,
 /area/ship/errai/hallway/deck_two_aft_port_hallway)
 "onq" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24
@@ -17641,7 +17642,7 @@
 /turf/open,
 /area/ship/errai/engineering/atmospherics/deck_two)
 "onX" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/effect/floor_decal/steeldecal/steel_decals3{
 	dir = 9
 	},
@@ -17896,7 +17897,7 @@
 /area/ship/errai/medical/chemistry)
 "oCw" = (
 /obj/machinery/light,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 22
@@ -18210,7 +18211,7 @@
 /obj/structure/chair{
 	dir = 4
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -18454,7 +18455,7 @@
 /obj/effect/floor_decal/spline/plain/black{
 	dir = 8
 	},
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/effect/floor_decal/steeldecal/steel_decals3{
 	dir = 1
 	},
@@ -18680,7 +18681,7 @@
 /turf/floor/carpet,
 /area/ship/errai/service/chapel)
 "pej" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -19304,7 +19305,7 @@
 /area/ship/errai/medical/foyer)
 "pDR" = (
 /obj/effect/floor_decal/corner/grey/diagonal,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -22
@@ -19597,7 +19598,7 @@
 	id_tag = "interrogation_exterior_tint";
 	pixel_y = -8
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 22
@@ -19621,7 +19622,7 @@
 /area/ship/errai/security/interrogation)
 "pUB" = (
 /obj/structure/closet/crate/hydroponics/beekeeping,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 22
@@ -19688,7 +19689,7 @@
 /obj/structure/table,
 /obj/item/chems/spray/antiseptic,
 /obj/item/chems/rag,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -19713,7 +19714,7 @@
 /turf/floor/tiled/white,
 /area/ship/errai/medical/operating_room)
 "pYj" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/structure/cable/green{
 	icon_state = "1-2"
 	},
@@ -19885,7 +19886,7 @@
 /turf/floor/tiled/dark,
 /area/ship/errai/medical/operation_observation)
 "qde" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -19941,7 +19942,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
 	dir = 4
 	},
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/effect/floor_decal/steeldecal/steel_decals3{
 	dir = 10
 	},
@@ -20274,7 +20275,7 @@
 /turf/floor/tiled/white,
 /area/ship/errai/research/xeno_studies)
 "qur" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -20346,7 +20347,7 @@
 /turf/wall/r_wall,
 /area/ship/errai/research/gas_mixing)
 "qxp" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -20384,7 +20385,7 @@
 /obj/structure/cable/orange{
 	icon_state = "0-8"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 22
@@ -20595,7 +20596,7 @@
 /turf/floor/tiled,
 /area/ship/errai/hallway/deck_two_fore_port_hallway)
 "qJl" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/old_tile/dark,
 /area/ship/errai/research/research_and_development)
 "qJu" = (
@@ -20880,7 +20881,7 @@
 /turf/floor/tiled/white,
 /area/ship/errai/research/robotics)
 "qWI" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -22
@@ -20969,7 +20970,7 @@
 /turf/floor/tiled/techmaint,
 /area/ship/errai/security/evidence_storage)
 "qYb" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -21077,7 +21078,7 @@
 /area/ship/errai/security/forensics)
 "rbE" = (
 /obj/structure/bed,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -21333,7 +21334,7 @@
 /turf/floor/plating,
 /area/ship/errai/security/brig)
 "roy" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -21589,7 +21590,7 @@
 /obj/effect/floor_decal/steeldecal/steel_decals_central7{
 	dir = 4
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -21638,7 +21639,7 @@
 /area/ship/errai/medical/morgue)
 "rCQ" = (
 /obj/effect/floor_decal/corner/grey/diagonal,
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /turf/floor/tiled/white,
 /area/ship/errai/service/kitchen)
 "rCY" = (
@@ -21948,7 +21949,7 @@
 	dir = 8;
 	pixel_x = -21
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -22217,7 +22218,7 @@
 /turf/floor/plating,
 /area/ship/errai/research/gas_mixing)
 "rUw" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 22
@@ -22309,7 +22310,7 @@
 /obj/structure/cable/orange{
 	icon_state = "0-2"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 22
@@ -22397,7 +22398,7 @@
 /obj/structure/window/reinforced{
 	dir = 8
 	},
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/effect/floor_decal/steeldecal/steel_decals3{
 	dir = 6
@@ -22526,7 +22527,7 @@
 /turf/wall/prepainted,
 /area/ship/errai/commons/restroom)
 "sjy" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -22899,7 +22900,7 @@
 /turf/floor/tiled/techfloor,
 /area/ship/errai/engineering/thruster/main/starboard)
 "svm" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -23147,7 +23148,7 @@
 /turf/floor/plating,
 /area/ship/errai/commons/cryo)
 "sEP" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 22
@@ -23211,7 +23212,7 @@
 /obj/structure/cable/orange{
 	icon_state = "0-4"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -24001,7 +24002,7 @@
 /turf/floor/tiled/white,
 /area/ship/errai/research/research_and_development)
 "tjs" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/effect/floor_decal/steeldecal/steel_decals3{
 	dir = 6
 	},
@@ -24060,7 +24061,7 @@
 /turf/floor/tiled,
 /area/ship/errai/commons/tool_storage)
 "tkr" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -22
@@ -24114,7 +24115,7 @@
 /turf/floor/tiled/freezer,
 /area/ship/errai/medical/restroom)
 "tpc" = (
-/obj/structure/sign/department/greencross{
+/obj/structure/sign/department/cross/green{
 	pixel_y = 32
 	},
 /obj/effect/floor_decal/borderfloor{
@@ -24130,7 +24131,7 @@
 /turf/floor/tiled,
 /area/ship/errai/hallway/deck_two_fore_hallway)
 "tpi" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -22
@@ -24206,7 +24207,7 @@
 /turf/floor/tiled/freezer,
 /area/ship/errai/research/restroom)
 "ttg" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 22
@@ -25206,7 +25207,7 @@
 /obj/machinery/light{
 	dir = 4
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -25400,7 +25401,7 @@
 /turf/wall/prepainted,
 /area/ship/errai/security/prison_riot_control)
 "uCZ" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -25574,7 +25575,7 @@
 /turf/floor/plating,
 /area/ship/errai/maintenance/incinerator)
 "uKA" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -25681,7 +25682,7 @@
 /turf/floor/tiled,
 /area/ship/errai/hallway/stairwell/deck_two_fore)
 "uRJ" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -26238,7 +26239,7 @@
 /obj/structure/cable/green{
 	icon_state = "0-8"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -26610,7 +26611,7 @@
 /turf/floor/tiled/white,
 /area/ship/errai/service/kitchen)
 "vCD" = (
-/obj/machinery/power/breakerbox/activated{
+/obj/machinery/breakerbox/activated{
 	RCon_tag = "Security Substation Bypass"
 	},
 /turf/floor/plating,
@@ -26629,7 +26630,7 @@
 /turf/floor/tiled/techmaint,
 /area/ship/errai/security/reception)
 "vEk" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/effect/floor_decal/steeldecal/steel_decals3,
 /obj/effect/floor_decal/steeldecal/steel_decals3{
 	dir = 6
@@ -26888,7 +26889,7 @@
 /obj/machinery/light{
 	dir = 8
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 22
@@ -26949,7 +26950,7 @@
 /turf/floor/tiled/white,
 /area/ship/errai/research/xeno_studies)
 "vPR" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -26986,7 +26987,7 @@
 /area/ship/errai/commons/pool)
 "vQf" = (
 /obj/effect/floor_decal/corner/grey/full,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -27608,7 +27609,7 @@
 /turf/floor/plating,
 /area/ship/errai/hallway/stairwell/deck_two_aft)
 "woU" = (
-/obj/machinery/hologram/holopad,
+/obj/machinery/holopad,
 /obj/effect/floor_decal/steeldecal/steel_decals3{
 	dir = 10
 	},
@@ -27764,7 +27765,7 @@
 /obj/structure/cable/green{
 	icon_state = "1-2"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -22
@@ -28627,7 +28628,7 @@
 /turf/floor/tiled,
 /area/ship/errai/hallway/deck_two_aft_hallway)
 "xjr" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -29142,7 +29143,7 @@
 /turf/floor/tiled/freezer,
 /area/ship/errai/medical/restroom)
 "xEF" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 22
@@ -29194,7 +29195,7 @@
 /obj/machinery/firealarm{
 	pixel_y = 24
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -29455,7 +29456,7 @@
 /turf/floor/tiled/dark,
 /area/ship/errai/hallway/deck_two_fore_hallway)
 "xQu" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 22

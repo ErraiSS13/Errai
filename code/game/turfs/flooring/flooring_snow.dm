@@ -4,6 +4,7 @@
 	icon            = 'icons/turf/flooring/snow.dmi'
 	icon_base       = "snow"
 	icon_edge_layer = FLOOR_EDGE_SNOW
+	has_corners     = FALSE
 	flooring_flags  = TURF_REMOVE_SHOVEL
 	footstep_type   = /decl/footsteps/snow
 	has_base_range  = 13
@@ -11,6 +12,8 @@
 	can_collect     = TRUE
 	print_type      = /obj/effect/footprints
 	drop_material_on_remove = TRUE
+	uid             = "floor_snow"
+	can_conceal_hazards = TRUE
 
 /decl/flooring/snow/get_movement_delay(var/travel_dir, var/mob/mover)
 	. = ..()
@@ -24,7 +27,7 @@
 		. = max(., 0)
 
 /decl/flooring/snow/fire_act(turf/floor/target, datum/gas_mixture/air, exposed_temperature, exposed_volume)
-	if(!target.reagents?.total_volume)
+	if(!REAGENT_TOTAL_VOLUME(target.reagents))
 		if(target.get_topmost_flooring() == src)
 			target.remove_flooring(src)
 		else if(target.get_base_flooring() == src)
@@ -40,10 +43,8 @@
 	// of the snow flooring layer, so deep snow gives you more coating
 	walker.add_walking_contaminant(force_material.type, rand(1, 2))
 
-/decl/flooring/snow/can_show_coating_footprints(turf/target, decl/material/contaminant)
-	if(force_material == contaminant) // So we don't end up covered in a million footsteps that we provided.
-		return FALSE
-	return ..()
+/decl/flooring/snow/get_vehicle_transit_delay(obj/vehicle/vehicle)
+	return vehicle.vehicle_transit_type == vehicle::VEHICLE_SNOWMOBILE ? 0.8 : 1.7
 
 /decl/flooring/permafrost
 	name            = "permafrost"
@@ -51,8 +52,18 @@
 	icon            = 'icons/turf/flooring/snow.dmi'
 	icon_base       = "permafrost"
 	force_material  = /decl/material/solid/ice
+	uid             = "floor_permafrost"
+
+/decl/flooring/permafrost/get_vehicle_transit_delay(obj/vehicle/vehicle)
+	if(visual_only)
+		return vehicle::base_speed
+	if(vehicle.vehicle_transit_type == vehicle::VEHICLE_SNOWMOBILE)
+		return 0.8
+	return ..()
 
 /decl/flooring/snow/fake
 	name            = "holosnow"
 	desc            = "Not quite the same as snow on an entertainment terminal, but close."
-	holographic     = TRUE
+	visual_only     = TRUE
+	uid             = "floor_snow_fake"
+

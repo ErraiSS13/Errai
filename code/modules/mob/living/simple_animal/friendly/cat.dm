@@ -13,7 +13,11 @@
 	return ..()
 
 /datum/mob_controller/passive/hunter/cat/consume_prey(mob/living/prey)
+	if(prey.stat != DEAD)
+		return
 	next_hunt = world.time + rand(1 SECONDS, 10 SECONDS)
+	set_target(null)
+	resume_wandering()
 
 /datum/mob_controller/passive/hunter/cat/can_hunt(mob/living/victim)
 	return istype(victim, /mob/living/simple_animal/passive/mouse) && !victim.stat
@@ -59,9 +63,6 @@
 	butchery_data = /decl/butchery_data/animal/cat
 	base_animal_type = /mob/living/simple_animal/passive/cat
 	ai = /datum/mob_controller/passive/hunter/cat
-	var/turns_since_scan = 0
-	var/mob/living/simple_animal/passive/mouse/movement_target
-	var/mob/flee_target
 
 /mob/living/simple_animal/passive/cat/get_bodytype()
 	return GET_DECL(/decl/bodytype/quadruped/animal/cat)
@@ -83,6 +84,9 @@
 //Basic friend AI
 /mob/living/simple_animal/passive/cat/fluff
 	ai = /datum/mob_controller/passive/hunter/cat/friendly
+
+/mob/living/simple_animal/passive/cat/fluff/is_tagging_suitable()
+	return FALSE
 
 /datum/mob_controller/passive/hunter/cat/friendly
 	var/befriend_job = null
@@ -222,10 +226,14 @@
 
 /mob/living/simple_animal/passive/cat/kitten/Initialize()
 	. = ..()
-	gender = pick(MALE, FEMALE)
+	set_gender(pick(MALE, FEMALE))
 
 /mob/living/simple_animal/passive/cat/fluff/ran
 	name = "Runtime"
 	desc = "Under no circumstances is this feline allowed inside the atmospherics system."
 	gender = FEMALE
 	holder_type = /obj/item/holder/runtime
+
+/mob/living/simple_animal/passive/cat/fluff/felix
+	name = "Felix"
+	desc = "A very oddly-behaved, malnourished cat. Their scratched name tag reads 'Felix'."

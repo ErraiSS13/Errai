@@ -1,6 +1,8 @@
 /mob/living/Initialize()
 
-	current_health            = get_max_health()
+	if(isnull(current_health) || current_health == INFINITY)
+		current_health = get_max_health()
+
 	original_fingerprint_seed = sequential_id(/mob)
 	fingerprint               = md5(num2text(original_fingerprint_seed))
 	original_genetic_seed     = sequential_id(/mob)
@@ -269,7 +271,7 @@ default behaviour is:
 			gear_tree |= storage_contents
 
 /mob/living/proc/can_inject(var/mob/user, var/target_zone)
-	return 1
+	return TRUE
 
 /mob/living/proc/get_organ_target()
 	var/mob/shooter = src
@@ -309,7 +311,7 @@ default behaviour is:
 /mob/living/proc/revive()
 	rejuvenate()
 	if(buckled)
-		buckled.unbuckle_mob()
+		buckled.unbuckle_mob(src)
 	BITSET(hud_updateflag, HEALTH_HUD)
 	BITSET(hud_updateflag, STATUS_HUD)
 	BITSET(hud_updateflag, LIFE_HUD)
@@ -583,7 +585,7 @@ default behaviour is:
 		return TRUE
 
 	// Get rid of someone riding around on you.
-	if(buckled_mob)
+	if(has_buckled_mob())
 		unbuckle_mob()
 		return TRUE
 
@@ -744,9 +746,10 @@ default behaviour is:
 
 /mob/living/Destroy()
 	clear_mob_modifiers()
-	QDEL_NULL(aiming)
+	QDEL_NULL(_aiming)
 	QDEL_NULL_LIST(_hallucinations)
 	QDEL_NULL_LIST(aimed_at_by)
+	QDEL_NULL_LIST(stat_organs)
 	LAZYCLEARLIST(smell_cooldown)
 	if(stressors) // Do not QDEL_NULL, keys are managed instances.
 		stressors = null
@@ -784,7 +787,7 @@ default behaviour is:
 		. -= 3
 
 /mob/living/can_drown()
-	if(get_internals())
+	if(!suffers_inhaled_effects(gasmask_filters = FALSE))
 		return FALSE
 	var/obj/item/clothing/mask/mask = get_equipped_item(slot_wear_mask_str)
 	if(istype(mask) && mask.filters_water())
@@ -805,22 +808,22 @@ default behaviour is:
 		var/inhale_amount = 0
 		if(inhaled)
 			inhale_amount = rand(2,5)
-			T.reagents?.trans_to_holder(inhaled, min(T.reagents.total_volume, inhale_amount))
+			T.reagents?.trans_to_holder(inhaled, min(REAGENT_TOTAL_VOLUME(T.reagents), inhale_amount))
 		if(ingested)
 			var/ingest_amount = 5 - inhale_amount
-			reagents?.trans_to_holder(ingested, min(T.reagents.total_volume, ingest_amount))
+			reagents?.trans_to_holder(ingested, min(REAGENT_TOTAL_VOLUME(T.reagents), ingest_amount))
 
 	T.show_bubbles()
 	return TRUE // Presumably chemical smoke can't be breathed while you're underwater.
 
 /mob/living/fluid_act(var/datum/reagents/fluids)
 	..()
-	if(QDELETED(src) || fluids?.total_volume < FLUID_PUDDLE)
+	if(QDELETED(src) || REAGENT_TOTAL_VOLUME(fluids) < FLUID_PUDDLE)
 		return
 	fluids.touch_mob(src)
-	if(QDELETED(src) || fluids?.total_volume < FLUID_PUDDLE)
+	if(QDELETED(src) || REAGENT_TOTAL_VOLUME(fluids) < FLUID_PUDDLE)
 		return
-	var/on_turf = fluids.my_atom == get_turf(src)
+	var/on_turf = REAGENT_GET_ATOM(fluids) == get_turf(src)
 	for(var/atom/movable/A as anything in get_equipped_items(TRUE))
 		if(!A.simulated)
 			continue
@@ -829,22 +832,14 @@ default behaviour is:
 		if(on_turf && !A.submerged())
 			continue
 		A.fluid_act(fluids)
-		if(QDELETED(src) || !fluids.total_volume)
+		if(QDELETED(src) || !REAGENT_TOTAL_VOLUME(fluids))
 			return
 	// TODO: review saturation logic so we can end up with more than like 15 water in our contact reagents.
 	var/datum/reagents/touching_reagents = get_contact_reagents()
 	if(touching_reagents)
-		var/saturation =  min(fluids.total_volume, round(mob_size * 1.5 * reagent_permeability()) - touching_reagents.total_volume)
+		var/saturation =  min(REAGENT_TOTAL_VOLUME(fluids), round(mob_size * 1.5 * reagent_permeability()) - REAGENT_TOTAL_VOLUME(touching_reagents))
 		if(saturation > 0)
 			fluids.trans_to_holder(touching_reagents, saturation)
-
-/mob/living/proc/needs_wheelchair()
-	var/tmp_stance_damage = 0
-	for(var/limb_tag in list(BP_L_LEG, BP_R_LEG, BP_L_FOOT, BP_R_FOOT))
-		var/obj/item/organ/external/E = GET_EXTERNAL_ORGAN(src, limb_tag)
-		if(!E || !E.is_usable())
-			tmp_stance_damage += 2
-	return tmp_stance_damage >= 4
 
 /mob/living/proc/seizure()
 	set waitfor = 0
@@ -993,7 +988,8 @@ default behaviour is:
 
 /mob/living/proc/get_food_satiation(consumption_method = EATING_METHOD_EAT)
 	. = (consumption_method == EATING_METHOD_EAT) ? get_nutrition() : get_hydration()
-	. += get_ingested_reagents()?.total_volume * 5
+	var/datum/reagents/ingested = get_ingested_reagents()
+	. += REAGENT_TOTAL_VOLUME(ingested) * 5
 
 /mob/living/proc/get_ingested_reagents()
 	RETURN_TYPE(/datum/reagents)
@@ -1378,7 +1374,7 @@ default behaviour is:
 	//flush away reagents on the skin
 	var/datum/reagents/touching_reagents = get_contact_reagents()
 	if(touching_reagents)
-		var/remove_amount = touching_reagents.maximum_volume * reagent_permeability() //take off your suit first
+		var/remove_amount = REAGENT_MAXIMUM_VOLUME(touching_reagents) * reagent_permeability() //take off your suit first
 		touching_reagents.remove_any(remove_amount)
 
 	var/obj/item/mask = get_equipped_item(slot_wear_mask_str)
@@ -1465,7 +1461,7 @@ default behaviour is:
 	return TRUE
 
 /mob/living/proc/can_direct_mount(var/mob/user)
-	if((user.faction == faction || !faction) && can_buckle && istype(user) && !user.incapacitated() && user == buckled_mob)
+	if((user.faction == faction || !faction) && max_buckled_mobs && istype(user) && !user.incapacitated() && (user in get_buckled_mobs()))
 		if(client && !check_intent(I_FLAG_HELP))
 			return FALSE // do not Ratatouille your colleagues
 		// TODO: Piloting skillcheck for hands-free moving? Stupid but amusing
@@ -1495,9 +1491,9 @@ default behaviour is:
 
 /mob/living/buckle_mob(mob/living/M)
 	. = ..()
-	if(buckled_mob)
-		buckled_mob.reset_layer()
-		for(var/obj/item/grab/grab in buckled_mob.get_held_items())
+	for(var/mob/buckle_mob in get_buckled_mobs())
+		buckle_mob.reset_layer()
+		for(var/obj/item/grab/grab in buckle_mob.get_held_items())
 			if(grab.get_affecting_mob() == src && !istype(grab.current_grab, /decl/grab/simple/control))
 				qdel(grab)
 	if(istype(ai))
@@ -1505,7 +1501,7 @@ default behaviour is:
 	reset_layer()
 	update_icon()
 
-/mob/living/unbuckle_mob()
+/mob/living/unbuckle_mob(mob/unbuckling)
 	. = ..()
 	reset_layer()
 	update_icon()
@@ -1562,11 +1558,11 @@ default behaviour is:
 	var/obj/item/clothing/shoes/shoes = get_equipped_item(slot_shoes_str)
 	if(istype(shoes))
 		shoes.handle_movement(src, MOVING_QUICKLY(src))
-		if(shoes.coating && shoes.coating.total_volume > 1)
+		if(shoes.coating && REAGENT_TOTAL_VOLUME(shoes.coating) > 1)
 			source = shoes
 	else
 		for(var/obj/item/organ/external/stomper in get_organs_by_categories(global.child_stance_limbs))
-			if(stomper.coating?.total_volume > 1)
+			if(REAGENT_TOTAL_VOLUME(stomper.coating) > 1)
 				source = stomper
 				break
 
@@ -1579,7 +1575,10 @@ default behaviour is:
 	if(!use_move_trail)
 		return
 
-	var/decl/material/contaminant = source.coating.reagent_volumes[1] // take [1] instead of primary reagent to match what remove_any will probably remove
+	if(!istype(source.coating))
+		return
+
+	var/decl/material/contaminant = UNLINT(source.coating.reagent_volumes[1]) // take [1] instead of primary reagent to match what remove_any will probably remove
 	if(!T.can_show_coating_footprints(contaminant))
 		return
 	/// An associative list of DNA unique enzymes -> blood type. Used by forensics, mostly.
@@ -1643,6 +1642,17 @@ default behaviour is:
 
 	return TRUE
 
+/mob/living/set_dir()
+	var/lastdir = dir
+	. = ..()
+	if(. && dir != lastdir)
+		var/turn_sound = get_turn_sound()
+		if(turn_sound)
+			playsound(src, turn_sound, 50, 1)
+
+/mob/living/proc/get_turn_sound()
+	return
+
 /mob/living/proc/get_footstep_sound(turf/step_turf)
 	return step_turf?.get_footstep_sound(src)
 
@@ -1672,23 +1682,23 @@ default behaviour is:
 		return
 
 	var/range = world.view - 2
-	var/volume = 70
+	var/step_volume = 70
 	if(MOVING_DELIBERATELY(src))
-		volume -= 45
+		step_volume -= 45
 		range -= 0.333
 
 	var/obj/item/clothing/shoes/shoes = get_equipped_item(slot_shoes_str)
-	volume = round(modify_footstep_volume(volume, shoes))
+	step_volume = round(modify_footstep_volume(step_volume, shoes))
 	range  = round(modify_footstep_range(range, shoes))
-	if(volume > 0 && range > 0)
-		playsound(T, footsound, volume, 1, range)
+	if(step_volume > 0 && range > 0)
+		playsound(T, footsound, step_volume, 1, range)
 
-/mob/living/proc/modify_footstep_volume(volume, obj/item/clothing/shoes/shoes)
+/mob/living/proc/modify_footstep_volume(step_volume, obj/item/clothing/shoes/shoes)
 	if(istype(shoes))
-		return volume * shoes.footstep_volume_mod
+		return step_volume * shoes.footstep_volume_mod
 	if(!shoes)
-		return volume - 60
-	return volume
+		return step_volume - 60
+	return step_volume
 
 /mob/living/proc/modify_footstep_range(range, obj/item/clothing/shoes/shoes)
 	if(istype(shoes))
@@ -1807,7 +1817,7 @@ default behaviour is:
 	return !QDELETED(src) && !incapacitated()
 
 // Currently only used by AI behaviors
-/mob/living/proc/has_ranged_attack()
+/mob/living/proc/has_ranged_attack(atom/target)
 	return FALSE
 
 /mob/living/proc/get_ranged_attack_distance()
@@ -1954,7 +1964,7 @@ default behaviour is:
 			. += SPAN_WARNING("\The [src] will be ready to be sheared in [ceil((shearable.next_fleece-world.time) / 10)] second\s.")
 	if(has_extension(src, /datum/extension/milkable))
 		var/datum/extension/milkable/milkable = get_extension(src, /datum/extension/milkable)
-		if(milkable.udder.total_volume > 0)
+		if(REAGENT_TOTAL_VOLUME(milkable.udder) > 0)
 			. += SPAN_NOTICE("\The [src] can be milked into a bucket or other container.")
 		else
 			. += SPAN_WARNING("\The [src] cannot currently be milked.")
@@ -2005,3 +2015,63 @@ default behaviour is:
 
 /mob/living/is_cloaked()
 	return has_mob_modifier(/decl/mob_modifier/cloaked)
+
+/mob/living/proc/apply_random_mutation(radiation_amount)
+	set_unique_enzymes(num2text(random_id(/mob, 1000000, 9999999)))
+	if(prob(98))
+		add_genetic_condition(pick(decls_repository.get_decls_of_type(/decl/genetic_condition/disability)))
+	else
+		add_genetic_condition(pick(decls_repository.get_decls_of_type(/decl/genetic_condition/superpower)))
+	if(radiation_amount)
+		apply_damage(radiation_amount, IRRADIATE, armor_pen = 100)
+
+// Used by specimen taggers to avoid tagging/overwriting players or named mobs like Runtime.
+/mob/living/proc/is_tagging_suitable()
+	return !key && !client
+
+//Pixel projectiles need a client, so we need a way to pass who the last user was for view calcs
+/mob/living/proc/get_effective_gunner()
+	return src
+
+/mob/living/proc/is_playing_dead()
+	return stat || current_posture?.prone || (status_flags & FAKEDEATH)
+
+/mob/living/proc/clear_sprite_accessories(set_color, skip_update)
+	for(var/obj/item/organ/external/E in get_external_organs())
+		if(set_color)
+			E.skin_colour = set_color
+		E.clear_sprite_accessories(skip_update = TRUE)
+	if(!skip_update)
+		update_body()
+
+/mob/living/proc/set_sprite_accessories(list/setting_accessories, skip_update)
+	for(var/accessory_category in setting_accessories)
+		for(var/accessory in setting_accessories[accessory_category])
+			var/decl/sprite_accessory/accessory_decl = GET_DECL(accessory)
+			var/accessory_metadata = setting_accessories[accessory_category][accessory]
+			for(var/bodypart in accessory_decl.body_parts)
+				var/obj/item/organ/external/O = GET_EXTERNAL_ORGAN(src, bodypart)
+				if(O)
+					O.set_sprite_accessory(accessory, null, accessory_metadata, skip_update = TRUE)
+	if(!skip_update)
+		update_body()
+
+/mob/living/proc/inflict_cold_damage(amount)
+	amount *= 1 - get_cold_protection(50) // Within spacesuit protection.
+	if(amount > 0)
+		adjustFireLoss(amount)
+
+/mob/living/proc/suffers_inhaled_effects(gasmask_filters = TRUE)
+	// We aren't breathing regardless.
+	if(stat == DEAD || is_asystole())
+		return FALSE
+	// Do we breathe in the first place?
+	if(!should_have_organ(BP_LUNGS) || !get_inhaled_reagents())
+		return FALSE
+	// Gas mask.
+	if(gasmask_filters && istype(get_equipped_item(slot_wear_mask_str), /obj/item/clothing/mask/gas))
+		return FALSE
+	// Closed-loop air supply.
+	if(get_internals())
+		return FALSE
+	return TRUE

@@ -3,6 +3,10 @@
 #include "patches/heist_vox.dm"
 #endif
 
+#ifdef GAMEMODE_PACK_CULT
+#include "patches/cult.dm"
+#endif
+
 #ifdef MODPACK_PSIONICS
 #include "patches/psionics.dm"
 #endif
@@ -11,7 +15,7 @@
 #include "patches/mixed_gamemodes.dm"
 #endif
 
-#ifdef MODPACK_FANTASY_SPECIES
+#ifdef MODPACK_FANTASY
 #include "patches/fantasy.dm"
 #endif
 
@@ -25,4 +29,28 @@
 
 #ifdef MODPACK_CORPORATE
 #include "patches/corporate.dm"
+#endif
+
+#ifdef CONTENT_PACK_CIRCUITS
+#include "patches/circuits.dm"
+#endif
+
+#ifdef MODPACK_DRAKES
+#include "patches/drakes.dm"
+#endif
+
+#ifdef CONTENT_PACK_VENTCRAWL
+#include "patches/ventcrawl.dm"
+#endif
+
+#ifdef CONTENT_PACK_EXPLORATION
+#include "patches/exploration.dm"
+#endif
+
+#ifdef MODPACK_DUNGEON_LOOT
+#include "patches/dungeon_loot.dm"
+#endif
+
+#ifdef MODPACK_STANDARD_MERCHANTS
+#include "patches/standard_merchants.dm"
 #endif

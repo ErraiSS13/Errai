@@ -7,12 +7,14 @@
 	material_alteration = MAT_FLAG_ALTERATION_COLOR | MAT_FLAG_ALTERATION_NAME
 	max_health = 100
 	atom_flags = ATOM_FLAG_OPEN_CONTAINER
-	volume = 20 // updated in populate_reagents()
+	chem_volume = 20 // updated in Initialize()
 	var/product_type
 	var/list/product_metadata
 	var/work_skill = SKILL_CONSTRUCTION
 
 /obj/item/chems/mould/Initialize()
+	if(ispath(product_type, /obj))
+		update_volume_from_product()
 	. = ..()
 	var/datum/extension/labels/lext = get_or_create_extension(src, /datum/extension/labels)
 	if(ispath(product_type, /obj))
@@ -35,11 +37,6 @@
 	product_metadata = null
 	return ..()
 
-/obj/item/chems/mould/initialize_reagents()
-	if(ispath(product_type, /obj))
-		update_volume_from_product()
-	..()
-
 /obj/item/chems/mould/proc/update_volume_from_product()
 	var/required_volume = 0
 	var/list/matter_for_product = atom_info_repository.get_matter_for(product_type, /decl/material/placeholder, 1)
@@ -47,13 +44,10 @@
 		required_volume += matter_for_product[mat]
 	required_volume = ceil(required_volume * REAGENT_UNITS_PER_MATERIAL_UNIT)
 	if(required_volume > 0)
-		if(reagents)
-			reagents.maximum_volume = required_volume
-			reagents.update_total()
-		else if(atom_flags & ATOM_FLAG_INITIALIZED)
-			create_reagents(required_volume)
+		if(atom_flags & ATOM_FLAG_INITIALIZED)
+			create_or_update_reagents(required_volume)
 		else
-			volume = required_volume
+			chem_volume = required_volume
 	else
 		QDEL_NULL(reagents)
 
@@ -88,15 +82,15 @@
 	if(!product_type)
 		return FALSE
 
-	if(reagents?.total_volume <= 0)
+	if(REAGENT_TOTAL_VOLUME(reagents) <= 0)
 		to_chat(user, SPAN_WARNING("\The [src] is empty!"))
 		return TRUE
 
-	if(reagents.total_volume < reagents.maximum_volume)
+	if(REAGENT_TOTAL_VOLUME(reagents) < REAGENT_MAXIMUM_VOLUME(reagents))
 		to_chat(user, SPAN_WARNING("\The [src] is not full yet!"))
 		return TRUE
 
-	for(var/decl/material/reagent as anything in reagents.reagent_volumes)
+	for(var/decl/material/reagent as anything in REAGENT_VOLUMES(reagents))
 		if(reagent.melting_point && temperature >= reagent.melting_point)
 			to_chat(user, SPAN_WARNING("The contents of \the [src] are still molten! Wait for it to cool down."))
 			return TRUE
@@ -115,11 +109,11 @@
 	product.dropInto(loc)
 
 	reagents.remove_reagent(product_mat.type, REAGENT_VOLUME(reagents, product_mat.type))
-	for(var/decl/material/reagent as anything in reagents.reagent_volumes)
+	for(var/decl/material/reagent as anything in REAGENT_VOLUMES(reagents))
 		if(reagent.type == product_mat.type)
 			continue
 		LAZYINITLIST(product.matter)
-		product.matter[reagent.type] += max(1, round(reagents.reagent_volumes[reagent] / REAGENT_UNITS_PER_MATERIAL_UNIT))
+		product.matter[reagent.type] += max(1, round(REAGENT_VOLUME(reagents, reagent) / REAGENT_UNITS_PER_MATERIAL_UNIT))
 	reagents.clear_reagents()
 	if(length(product_metadata))
 		product.take_mould_metadata(product_metadata)

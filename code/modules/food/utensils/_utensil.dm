@@ -12,13 +12,14 @@
 
 /obj/item/utensil
 
-	abstract_type                    = /obj/item/utensil
-	icon_state                       = ICON_STATE_WORLD
-	w_class                          = ITEM_SIZE_SMALL
-	origin_tech                      = @'{"materials":1}'
-	attack_verb                      = list("attacked", "stabbed", "poked")
-	material                         = /decl/material/solid/metal/aluminium
-	material_alteration              = MAT_FLAG_ALTERATION_COLOR | MAT_FLAG_ALTERATION_NAME
+	abstract_type       = /obj/item/utensil
+	icon_state          = ICON_STATE_WORLD
+	w_class             = ITEM_SIZE_SMALL
+	origin_tech         = @'{"materials":1}'
+	attack_verb         = list("attacked", "stabbed", "poked")
+	material            = /decl/material/solid/metal/aluminium
+	material_alteration = MAT_FLAG_ALTERATION_COLOR | MAT_FLAG_ALTERATION_NAME
+	chem_volume         = 5
 
 	var/obj/item/food/loaded_food
 	var/utensil_flags
@@ -32,7 +33,6 @@
 	if (prob(60))
 		default_pixel_y = rand(0, 4)
 		reset_offsets(0)
-	create_reagents(5)
 	set_extension(src, /datum/extension/tool/variable/simple, list(
 		TOOL_RETRACTOR = TOOL_QUALITY_BAD,
 		TOOL_HEMOSTAT =  TOOL_QUALITY_MEDIOCRE
@@ -59,14 +59,14 @@
 			add_overlay(overlay_image(icon, loaded_state, loaded_food.reagents?.get_color() || loaded_food.filling_color || get_color(), RESET_COLOR))
 
 /obj/item/food/proc/handle_utensil_collection(obj/item/utensil/utensil, mob/user)
-	seperate_food_chunk(utensil, user)
+	separate_food_chunk(utensil, user)
 	if(utensil.loaded_food)
 		to_chat(user, SPAN_NOTICE("You collect [utensil.loaded_food] with \the [utensil]."))
 		return TRUE
 	return FALSE
 
 /obj/item/food/proc/handle_utensil_scooping(obj/item/utensil/utensil, mob/user)
-	seperate_food_chunk(utensil, user)
+	separate_food_chunk(utensil, user)
 	if(utensil.loaded_food)
 		to_chat(user, SPAN_NOTICE("You scoop up [utensil.loaded_food] with \the [utensil]."))
 		return TRUE
@@ -104,7 +104,7 @@
 	else
 		show_slice_message(user, tool, src)
 
-	var/reagents_per_slice = max(1, round(reagents.total_volume / slice_num))
+	var/reagents_per_slice = max(1, round(REAGENT_TOTAL_VOLUME(reagents) / slice_num))
 	for(var/i = 1 to slice_num)
 		var/atom/movable/slice = create_slice()
 		if(slice)

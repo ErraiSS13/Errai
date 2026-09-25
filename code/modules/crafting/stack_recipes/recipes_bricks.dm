@@ -9,6 +9,7 @@
 		/obj/item/stack/material/log,
 		/obj/item/stack/material/lump
 	)
+	validation_material        = /decl/material/solid/stone/basalt
 	category                   = "structures"
 
 /decl/stack_recipe/bricks/cup
@@ -100,6 +101,14 @@
 	name                       = "pedestal, round"
 	result_type                = /obj/structure/pedestal/round
 
+/decl/stack_recipe/bricks/furniture/fence
+	result_type                = /obj/structure/fence/brick
+	difficulty                 = MAT_VALUE_NORMAL_DIY
+
+/decl/stack_recipe/bricks/furniture/fence_door
+	result_type                = /obj/structure/fence/door/brick
+	difficulty                 = MAT_VALUE_NORMAL_DIY
+
 /decl/stack_recipe/bricks/gravestone
 	result_type                = /obj/item/gravemarker/gravestone
 	difficulty                 = MAT_VALUE_NORMAL_DIY
@@ -121,6 +130,7 @@
 	result_type                = /turf/wall/brick
 	craft_stack_types          = /obj/item/stack/material/brick
 	difficulty                 = MAT_VALUE_HARD_DIY
+	validation_material        = /decl/material/solid/stone/basalt
 
 /decl/stack_recipe/turfs/wall/brick/shutter
 	name                       = "shuttered brick wall"
@@ -129,8 +139,8 @@
 /decl/stack_recipe/turfs/floor/brick
 	name                       = "cobblestone path"
 	result_type                = /turf/floor/path
-	expected_product_type      = /turf/floor/path
 	craft_stack_types          = /obj/item/stack/material/brick
+	validation_material        = /decl/material/solid/stone/basalt
 
 /decl/stack_recipe/turfs/floor/brick/herringbone
 	name                       = "herringbone path"

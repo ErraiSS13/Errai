@@ -25,6 +25,8 @@
 		'sound/ambience/ominous2.ogg',
 		'sound/ambience/ominous3.ogg',
 	)
+	// hopefully the sound environment makes this sound nicer?
+	forced_ambience = list('sound/ambience/shore.ogg')
 
 /area/shaded_hills/outside/poi
 	name = "Deep Grassland"
@@ -34,11 +36,13 @@
 	color = COLOR_BLUE
 	description = "The soft susurration of running water mingles with the hum of insects and croak of frogs."
 	area_blurb_category = /area/shaded_hills/outside/river
+	forced_ambience = list('sound/ambience/shore.ogg')
 
 /area/shaded_hills/outside/river/get_additional_fishing_results()
 	var/static/list/additional_fishing_results = list(
 		/mob/living/simple_animal/aquatic/fish/large        = 5,
 		/mob/living/simple_animal/aquatic/fish/large/salmon = 5,
+		/mob/living/simple_animal/aquatic/fish/large/perch  = 5,
 		/mob/living/simple_animal/aquatic/fish/large/trout  = 5,
 		/mob/living/simple_animal/aquatic/fish/large/pike   = 3
 	)

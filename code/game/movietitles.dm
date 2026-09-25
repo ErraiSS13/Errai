@@ -68,7 +68,7 @@ var/global/list/end_titles
 		var/used_name = H.real_name
 		var/datum/computer_file/report/crew_record/record = get_crewmember_record(H.real_name)
 		if(record && record.get_rank())
-			var/datum/mil_rank/rank = mil_branches.get_rank(record.get_branch(), record.get_rank())
+			var/datum/mil_rank/rank = global.using_map.get_rank(record.get_branch(), record.get_rank())
 			if(rank.name_short)
 				used_name = "[rank.name_short] [used_name]"
 		var/showckey = 0
@@ -80,12 +80,12 @@ var/global/list/end_titles
 			background = GET_DECL(/decl/background_detail/heritage/human)
 		if(!showckey)
 			if(prob(90))
-				chunk += "[background.get_random_name(H, H.gender)]\t \t \t \t[uppertext(used_name)][job]"
+				chunk += "[background.get_random_cultural_name(H, H.gender, H.get_species())]\t \t \t \t[uppertext(used_name)][job]"
 			else
 				var/decl/pronouns/pronouns = H.get_pronouns()
 				chunk += "[used_name]\t \t \t \t[uppertext(pronouns.him)]SELF"
 		else
-			chunk += "[uppertext(background.get_random_name(H, H.gender))] a.k.a. '[uppertext(H.ckey)]'\t \t \t \t[uppertext(used_name)][job]"
+			chunk += "[uppertext(background.get_random_cultural_name(H, H.gender, H.get_species()))] a.k.a. '[uppertext(H.ckey)]'\t \t \t \t[uppertext(used_name)][job]"
 		chunksize++
 		if(chunksize > 2)
 			cast += "<center>[jointext(chunk,"<br>")]</center>"
@@ -119,7 +119,7 @@ var/global/list/end_titles
 		if(C.holder.rights & (R_DEBUG|R_ADMIN))
 			var/list/all_backgrounds = decls_repository.get_decls_of_subtype(/decl/background_detail/heritage)
 			var/decl/background_detail/cult = all_backgrounds[pick(all_backgrounds)]
-			staff += "[uppertext(pick(staffjobs))] - [cult.get_random_name(C.gender)] a.k.a. '[C.key]'"
+			staff += "[uppertext(pick(staffjobs))] - [cult.get_random_cultural_name(C.mob, C.mob.gender, C.mob.get_species())] a.k.a. '[C.key]'"
 		else if(C.holder.rights & R_MOD)
 			goodboys += "[C.key]"
 
@@ -128,7 +128,7 @@ var/global/list/end_titles
 		titles += "<center>STAFF'S GOOD BOYS:<br>[english_list(goodboys)]</center><br>"
 
 	var/disclaimer = "<br>Sponsored by [global.using_map.company_name].<br>All rights reserved.<br>\
-					 This motion picture is protected under the copyright laws of the Sol Central Government<br> and other nations throughout the galaxy.<br>\
+					 This motion picture is protected under the copyright laws of the system government<br> and other nations throughout the galaxy.<br>\
 					 Colony of First Publication: [pick("Mars", "Luna", "Earth", "Venus", "Phobos", "Ceres", "Tiamat", "Ceti Epsilon", "Eos", "Pluto", "Ouere",\
 					 "Lordania", "Kingston", "Cinu", "Yuklid V", "Lorriman", "Tersten", "Gaia")].<br>"
 	disclaimer += pick("Use for parody prohibited. PROHIBITED.",

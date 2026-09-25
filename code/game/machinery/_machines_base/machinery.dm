@@ -31,12 +31,6 @@ Class Variables:
    panel_open (num)
 	  Whether the panel is open
 
-   uid (num)
-	  Unique id of machine across all machines.
-
-   gl_uid (global num)
-	  Next uid value in sequence
-
    stat (bitflag)
 	  Machine status bit flags.
 	  Possible bit flags:
@@ -87,6 +81,7 @@ Class Procs:
 	)
 	temperature_sensitive = TRUE
 	abstract_type = /obj/machinery
+	interaction_priority = TRUE
 
 	var/stat = 0
 	var/waterproof = TRUE
@@ -112,9 +107,7 @@ Class Procs:
 	var/list/uncreated_component_parts = list(/obj/item/stock_parts/power/apc)
 	/// null - no max. list(type part = number max).
 	var/list/maximum_component_parts = list(/obj/item/stock_parts = 10)
-	var/uid
 	var/panel_open = FALSE
-	var/static/gl_uid = 1
 	/// Can the machine be interacted with while de-powered.
 	var/interact_offline = FALSE
 	/// sound played on successful interface use
@@ -321,7 +314,7 @@ Class Procs:
 		return
 	if(!CanPhysicallyInteract(user))
 		return FALSE // The interactions below all assume physical access to the machine. If this is not the case, we let the machine take further action.
-	if(!user.check_dexterity(required_interaction_dexterity))
+	if(!user.check_dexterity(required_interaction_dexterity, fail_message = "You lack the dexterity to interact with \the [src]."))
 		return TRUE
 	if((. = component_attack_hand(user)))
 		return
@@ -379,7 +372,7 @@ Class Procs:
 	if(electrocute_mob(user, get_area(src), src, 0.7))
 		var/area/temp_area = get_area(src)
 		if(temp_area)
-			var/obj/machinery/power/apc/temp_apc = temp_area.get_apc()
+			var/obj/machinery/apc/temp_apc = temp_area.get_apc()
 			var/obj/machinery/power/terminal/terminal = temp_apc && temp_apc.terminal()
 
 			if(terminal && terminal.powernet)
@@ -472,7 +465,7 @@ Class Procs:
 // This is really pretty crap and should be overridden for specific machines.
 /obj/machinery/fluid_act(var/datum/reagents/fluids)
 	..()
-	if(!QDELETED(src) && !(stat & (NOPOWER|BROKEN)) && !waterproof && (fluids?.total_volume > FLUID_DEEP))
+	if(!QDELETED(src) && !(stat & (NOPOWER|BROKEN)) && !waterproof && (REAGENT_TOTAL_VOLUME(fluids) > FLUID_DEEP))
 		explosion_act(3)
 
 /obj/machinery/Move()
@@ -506,12 +499,12 @@ Class Procs:
 	LAZYREMOVE(., component_parts)
 
 // This only includes external atoms by default, so we need to add components back.
-/obj/machinery/get_contained_matter()
+/obj/machinery/get_contained_matter(include_reagents = TRUE)
 	. = ..()
 	var/list/component_types = types_of_component(/obj/item/stock_parts)
 	for(var/path in component_types)
 		for(var/obj/item/stock_parts/part in get_all_components_of_type(path))
-			var/list/part_costs = part.get_contained_matter()
+			var/list/part_costs = part.get_contained_matter(include_reagents)
 			for(var/key in part_costs)
 				.[key] += part_costs[key] * component_types[path]
 

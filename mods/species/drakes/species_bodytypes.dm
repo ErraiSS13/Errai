@@ -130,7 +130,7 @@
 	)
 	z_flags = ZMM_WIDE_LOAD
 
-	eye_low_light_vision_effectiveness    = 0.15
+	eye_low_light_vision_effectiveness    = 0.45
 	eye_low_light_vision_adjustment_speed = 0.3
 	eye_darksight_range                   = 7
 
@@ -142,6 +142,28 @@
 		ARMOR_LASER  = ARMOR_LASER_SMALL,
 		ARMOR_ENERGY = ARMOR_ENERGY_MINOR,
 		ARMOR_BOMB   = ARMOR_BOMB_PADDED
+	)
+
+	cold_level_1 = 200
+	cold_level_2 = 140
+	cold_level_3 = 80
+
+	heat_level_1 = 330
+	heat_level_2 = 380
+	heat_level_3 = 800
+
+	heat_discomfort_level = 294
+	heat_discomfort_strings = list(
+		"You feel soothingly warm.",
+		"You feel the heat sink into your bones.",
+		"You feel warm enough to take a nap."
+	)
+
+	cold_discomfort_level   = 230
+	cold_discomfort_strings = list(
+		"You feel chilly.",
+		"You feel sluggish and cold.",
+		"Your scales bristle against the cold."
 	)
 
 	VAR_PRIVATE/list/_sitting_equip_adjust
@@ -258,13 +280,14 @@
 	return ..()
 
 /decl/sprite_accessory/marking/grafadreka
-	name            = "Drake Spines"
-	icon            = 'mods/species/drakes/icons/markings.dmi'
-	icon_state      = "spines"
-	uid             = "acc_marking_drake_spines"
-	species_allowed = list(/decl/species/grafadreka::uid)
-	color_blend     = ICON_MULTIPLY
-	body_parts      = list(
+	name             = "Drake Spines"
+	icon             = 'mods/species/drakes/icons/markings.dmi'
+	icon_state       = "spines"
+	uid              = "acc_marking_drake_spines"
+	species_allowed  = list(/decl/species/grafadreka::uid)
+	color_blend      = ICON_MULTIPLY
+	mask_to_bodypart = FALSE
+	body_parts       = list(
 		BP_CHEST,
 		BP_GROIN,
 		BP_TAIL,
@@ -289,6 +312,8 @@
 		BP_TAIL,
 		BP_HEAD
 	)
+	sprite_overlay_plane = ABOVE_LIGHTING_PLANE
+	sprite_overlay_layer = ABOVE_LIGHTING_LAYER
 
 /decl/sprite_accessory/marking/grafadreka/claws
 	name       = "Drake Claws"
@@ -321,8 +346,8 @@
 	. = ..()
 	item_flags |= ITEM_FLAG_NO_BLUDGEON
 	set_extension(src, /datum/extension/tool, list(
-		TOOL_SHOVEL = TOOL_QUALITY_GOOD,
-		TOOL_HOE    = TOOL_QUALITY_GOOD
+		TOOL_PICK   = TOOL_QUALITY_MEDIOCRE,
+		TOOL_SHOVEL = TOOL_QUALITY_GOOD
 	))
 
 /obj/item/organ/external/hand/quadruped/grafadreka/set_bodytype(decl/bodytype/new_bodytype, override_material, apply_to_internal_organs)
@@ -341,8 +366,8 @@
 	. = ..()
 	item_flags |= ITEM_FLAG_NO_BLUDGEON
 	set_extension(src, /datum/extension/tool, list(
-		TOOL_SHOVEL = TOOL_QUALITY_GOOD,
-		TOOL_HOE    = TOOL_QUALITY_GOOD
+		TOOL_PICK   = TOOL_QUALITY_MEDIOCRE,
+		TOOL_SHOVEL = TOOL_QUALITY_GOOD
 	))
 
 /obj/item/organ/external/hand/right/quadruped/grafadreka/set_bodytype(decl/bodytype/new_bodytype, override_material, apply_to_internal_organs)

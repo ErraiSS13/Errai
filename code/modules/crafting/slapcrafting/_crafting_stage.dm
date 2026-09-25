@@ -1,4 +1,5 @@
 /decl/crafting_stage
+	abstract_type = /decl/crafting_stage
 	var/descriptor = "undefined crafted item"
 	var/item_desc = "It's an unfinished item of some sort."
 	var/item_icon = 'icons/obj/crafting_icons.dmi'
@@ -125,8 +126,8 @@
 	. = istype(M) && (!stack_material || M.material.type == stack_material) && ..()
 
 /decl/crafting_stage/welding/consume_crafting_resource(var/mob/user, var/obj/item/thing, var/obj/item/target)
-	var/obj/item/weldingtool/T = thing
-	. = istype(T) && T.weld(0, user) && T.isOn()
+	var/obj/item/fuelled_tool/welding/T = thing
+	. = istype(T) && T.weld(0, user) && T.tool_is_running()
 
 /decl/crafting_stage/welding
 	consume_completion_trigger = FALSE

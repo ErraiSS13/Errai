@@ -37,10 +37,9 @@
 	base.icon_state = "[beaker ? "beaker" : "nothing"][attached ? "_hooked" : ""]"
 	add_overlay(base)
 
-	if(beaker)
-		var/datum/reagents/reagents = beaker.reagents
-		var/percent = round((reagents.total_volume / beaker.volume) * 100)
-		if(reagents.total_volume)
+	if(beaker?.reagents)
+		var/percent = round((REAGENT_TOTAL_VOLUME(beaker.reagents) / REAGENT_MAXIMUM_VOLUME(beaker.reagents)) * 100)
+		if(REAGENT_TOTAL_VOLUME(beaker.reagents))
 			var/mutable_appearance/filling = mutable_appearance(icon, "reagent")
 			switch(percent)
 				if(0)
@@ -59,7 +58,7 @@
 					filling.icon_state = "reagent80"
 				if(91 to INFINITY)
 					filling.icon_state = "reagent100"
-			filling.color = reagents.get_color()
+			filling.color = beaker.reagents.get_color()
 			add_overlay(filling)
 
 		if(istype(beaker, /obj/item/chems/ivbag))
@@ -120,11 +119,11 @@
 		return
 
 	if(mode) // Give blood
-		if(beaker.volume > 0)
+		if(REAGENT_TOTAL_VOLUME(beaker.reagents) > 0)
 			beaker.reagents.trans_to_mob(attached, transfer_amount, CHEM_INJECT)
 			queue_icon_update()
 	else // Take blood
-		var/amount = beaker.reagents.maximum_volume - beaker.reagents.total_volume
+		var/amount = REAGENT_MAXIMUM_VOLUME(beaker.reagents) - REAGENT_TOTAL_VOLUME(beaker.reagents)
 		amount = min(amount, 4)
 
 		if(amount == 0) // If the beaker is full, ping
@@ -142,7 +141,7 @@
 			queue_icon_update()
 
 /obj/structure/iv_drip/attack_hand(mob/user)
-	if(!user.check_dexterity(DEXTERITY_COMPLEX_TOOLS))
+	if(!user.check_dexterity(DEXTERITY_COMPLEX_TOOLS, fail_message = "You lack the dexterity to detach the drip."))
 		return ..()
 	if(attached)
 		drip_detach()
@@ -193,8 +192,8 @@
 	. += "The IV drip is [mode ? "injecting" : "taking blood"]."
 	. += "It is set to transfer [transfer_amount]u of chemicals per cycle."
 	if(beaker)
-		if(beaker.reagents && beaker.reagents.total_volume)
-			. += SPAN_NOTICE("Attached is \a [beaker] with [beaker.reagents.total_volume] units of liquid.")
+		if(REAGENT_TOTAL_VOLUME(beaker.reagents))
+			. += SPAN_NOTICE("Attached is \a [beaker] with [REAGENT_TOTAL_VOLUME(beaker.reagents)] units of liquid.")
 		else
 			. += SPAN_NOTICE("Attached is an empty [beaker].")
 	else

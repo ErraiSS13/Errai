@@ -1,8 +1,17 @@
 /mob/proc/get_visible_pronouns(hideflags)
 	//suits/masks/helmets make it hard to tell their gender
 	if((hideflags & HIDEJUMPSUIT) && (hideflags & HIDEFACE))
-		return GET_DECL(/decl/pronouns)
+		return GET_DECL(/decl/pronouns/pseudoplural)
 	return get_pronouns()
+
+// At some point this could have a client pref or server config option that switches second-person to first-person.
+/mob/proc/get_self_pronouns()
+	return GET_DECL(/decl/pronouns/second_person_singular)
+
+/mob/proc/get_visible_pronouns_for_viewer(mob/viewer, hideflags)
+	if(viewer == src)
+		return get_self_pronouns()
+	return get_visible_pronouns(hideflags)
 
 /mob/proc/get_equipment_visibility()
 	. = 0
@@ -22,13 +31,11 @@
 			if(slot_desc)
 				. += slot_desc
 	if(buckled)
-		if(user == src)
-			. += SPAN_WARNING("You are [html_icon(buckled)] buckled to [buckled]!")
-		else
-			. += SPAN_WARNING("[pronouns.He] [pronouns.is] [html_icon(buckled)] buckled to [buckled]!")
+		// pronouns can be second-person here if user == src so no need to handle that explicitly
+		. += SPAN_WARNING("[pronouns.He] [pronouns.is] [html_icon(buckled)] buckled to [buckled]!")
 
 /mob/proc/get_other_examine_strings(mob/user, distance, infix, suffix, hideflags, decl/pronouns/pronouns)
-	return
+	return list()
 
 // We add a default parameter here for hidden inventory flags.
 /mob/get_examine_header(mob/user, distance, infix, suffix, hideflags)
@@ -39,6 +46,9 @@
 	SHOULD_CALL_PARENT(FALSE)
 	. = list()
 
+	if(desc)
+		. += desc
+
 	// Collect equipment visibility flags.
 	var/hideflags = get_equipment_visibility()
 	//no accuately spotting headsets from across the room.
@@ -46,7 +56,7 @@
 		hideflags |= HIDEEARS
 
 	// Show our equipment, held items, desc, etc.
-	var/decl/pronouns/pronouns = get_visible_pronouns(hideflags)
+	var/decl/pronouns/pronouns = get_visible_pronouns_for_viewer(user, hideflags) // handles second-person if src == user
 	var/list/examine_items = get_examined_worn_held_items(user, distance, infix, suffix, hideflags, pronouns)
 	if(length(examine_items))
 		. += examine_items

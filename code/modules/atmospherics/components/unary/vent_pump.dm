@@ -85,7 +85,7 @@
 			update_name()
 			events_repository.register(/decl/observ/name_set, A, src, PROC_REF(change_area_name))
 	. = ..()
-	air_contents.volume = ATMOS_DEFAULT_VOLUME_PUMP
+	air_contents.total_volume = ATMOS_DEFAULT_VOLUME_PUMP
 	update_sound()
 
 /obj/machinery/atmospherics/unary/vent_pump/proc/change_area_name(var/area/A, var/old_area_name, var/new_area_name)
@@ -170,7 +170,7 @@
 
 /obj/machinery/atmospherics/unary/vent_pump/high_volume/Initialize()
 	. = ..()
-	air_contents.volume = ATMOS_DEFAULT_VOLUME_PUMP + 800
+	air_contents.total_volume = ATMOS_DEFAULT_VOLUME_PUMP + 800
 
 /obj/machinery/atmospherics/unary/vent_pump/on_update_icon()
 	var/visible_directions = build_device_underlays()
@@ -223,7 +223,7 @@
 			power_draw = pump_gas(src, air_contents, environment, transfer_moles, power_rating)
 		else //external -> internal
 			var/datum/pipe_network/network = network_in_dir(dir)
-			transfer_moles = calculate_transfer_moles(environment, air_contents, pressure_delta, network?.volume) / environment.group_multiplier // limit it to just one turf's worth of gas per tick
+			transfer_moles = calculate_transfer_moles(environment, air_contents, pressure_delta, network?.total_volume) / environment.group_multiplier // limit it to just one turf's worth of gas per tick
 			power_draw = pump_gas(src, environment, air_contents, transfer_moles, power_rating)
 
 	else
@@ -281,14 +281,14 @@
 /obj/machinery/atmospherics/unary/vent_pump/attackby(obj/item/used_item, mob/user)
 	if(IS_WELDER(used_item))
 
-		var/obj/item/weldingtool/welder = used_item
+		var/obj/item/fuelled_tool/welding/welder = used_item
 
-		if(!welder.isOn())
-			to_chat(user, "<span class='notice'>The welding tool needs to be on to start this task.</span>")
+		if(!welder.tool_is_running())
+			to_chat(user, "<span class='notice'>\The [welder] needs to be on to start this task.</span>")
 			return 1
 
 		if(!welder.weld(0,user))
-			to_chat(user, "<span class='warning'>You need more welding fuel to complete this task.</span>")
+			to_chat(user, "<span class='warning'>You need more fuel to complete this task.</span>")
 			return 1
 
 		to_chat(user, "<span class='notice'>Now welding \the [src].</span>")
@@ -301,8 +301,8 @@
 		if(!src)
 			return 1
 
-		if(!welder.isOn())
-			to_chat(user, "<span class='notice'>The welding tool needs to be on to finish this task.</span>")
+		if(!welder.tool_is_running())
+			to_chat(user, "<span class='notice'>\The [welder] needs to be on to finish this task.</span>")
 			return 1
 
 		welded = !welded
@@ -341,9 +341,7 @@
 				break
 		if (hidden_pipe_check && isturf(T) && !T.is_plating())
 			return SPAN_WARNING("You must remove the plating first.")
-		var/datum/gas_mixture/int_air = return_air()
-		var/datum/gas_mixture/env_air = loc.return_air()
-		if ((int_air.return_pressure()-env_air.return_pressure()) > (2 ATM))
+		if (check_internal_pressure_difference_over(2 ATM))
 			return SPAN_WARNING("You cannot unwrench \the [src], it is too exerted due to internal pressure.")
 	return ..()
 
@@ -368,7 +366,7 @@
 	desc = "The pump mode of the vent. Expected values are \"siphon\" or \"release\"."
 	can_write = TRUE
 	has_updates = TRUE
-	var_type = IC_FORMAT_STRING
+	var_type = VAR_FORMAT_STRING
 
 /decl/public_access/public_variable/pump_dir/access_var(obj/machinery/atmospherics/unary/vent_pump/machine)
 	return machine.pump_direction ? "release" : "siphon"
@@ -386,7 +384,7 @@
 	desc = "Numerical codes for whether the pump checks internal or internal pressure (or both) prior to operating. Can also be supplied the string keyword \"default\"."
 	can_write = TRUE
 	has_updates = FALSE
-	var_type = IC_FORMAT_ANY
+	var_type = VAR_FORMAT_ANY
 
 /decl/public_access/public_variable/pump_checks/access_var(obj/machinery/atmospherics/unary/vent_pump/machine)
 	return machine.pressure_checks
@@ -405,7 +403,7 @@
 	desc = "The bound on internal pressure used in checks (a number). When writing, can be supplied the string keyword \"default\" instead."
 	can_write = TRUE
 	has_updates = FALSE
-	var_type = IC_FORMAT_ANY
+	var_type = VAR_FORMAT_ANY
 
 /decl/public_access/public_variable/pressure_bound/access_var(obj/machinery/atmospherics/unary/vent_pump/machine)
 	return machine.internal_pressure_bound
@@ -562,7 +560,7 @@
 
 /obj/machinery/atmospherics/unary/vent_pump/engine/Initialize()
 	. = ..()
-	air_contents.volume = ATMOS_DEFAULT_VOLUME_PUMP + 500 //meant to match air injector
+	air_contents.total_volume = ATMOS_DEFAULT_VOLUME_PUMP + 500 //meant to match air injector
 
 /obj/machinery/atmospherics/unary/vent_pump/power_change()
 	. = ..()

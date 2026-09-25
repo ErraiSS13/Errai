@@ -11,12 +11,13 @@
 		/decl/bodytype/quadruped/grafadreka,
 		/decl/bodytype/quadruped/grafadreka/hatchling
 	)
+	flesh_color = "#608894"
 	base_external_prosthetics_model = null // no robolimbs for dogs
 	preview_outfit = null                  // no pants for dogs
 	snow_slowdown_mod = -0.5
 	gluttonous = GLUT_TINY
 	available_pronouns = list(
-		/decl/pronouns,
+		/decl/pronouns/pseudoplural,
 		/decl/pronouns/neuter,
 		/decl/pronouns/male,
 		/decl/pronouns/female
@@ -57,7 +58,7 @@
 
 	// Drakes must be whitelisted for jobs to be able to join as them, see maps.dm.
 	job_blacklist_by_default = TRUE
-	spawn_flags = SPECIES_CAN_JOIN | SPECIES_IS_WHITELISTED
+	spawn_flags = SPECIES_CAN_JOIN
 
 	var/list/adult_pain_emotes_with_pain_level = list(
 		list(/decl/emote/audible/drake_huff, /decl/emote/audible/drake_rattle) = 20
@@ -73,6 +74,10 @@
 	else
 		pain_emotes_with_pain_level = adult_pain_emotes_with_pain_level
 	return ..()
+
+/decl/species/grafadreka/handle_post_spawn(var/mob/living/human/H)
+	. = ..()
+	H.default_attack = GET_DECL(/decl/natural_attack/claws/strong/drake)
 
 // Stub for muscle memory of the Sit verb on Polaris.
 /mob/living/human/proc/drake_sit()

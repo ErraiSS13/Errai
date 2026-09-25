@@ -430,23 +430,16 @@ var/global/list/localhost_addresses = list(
 	if(world.byond_version >= 511 && byond_version >= 511 && client_fps >= CLIENT_MIN_FPS && client_fps <= CLIENT_MAX_FPS)
 		vars["fps"] = client_fps
 
-/client/MouseDrag(src_object, over_object, src_location, over_location, src_control, over_control, params)
-	. = ..()
-	var/mob/living/M = mob
-	if(istype(M))
-		M.OnMouseDrag(src_object, over_object, src_location, over_location, src_control, over_control, params)
-
 /client/MouseUp(object, location, control, params)
 	. = ..()
-	var/mob/living/M = mob
-	if(istype(M))
-		M.OnMouseUp(object, location, control, params)
+	if(mob?.on_mouse_up())
+		_block_next_click = TRUE
 
 /client/MouseDown(object, location, control, params)
 	. = ..()
 	var/mob/living/M = mob
 	if(istype(M) && !M.in_throw_mode)
-		M.OnMouseDown(object, location, control, params)
+		M.on_mouse_down(object, location, control, params)
 
 /client/verb/SetWindowIconSize(var/val as num|text)
 	set hidden = 1
@@ -599,6 +592,12 @@ var/global/const/MAX_VIEW = 41
 		winset(src, "mainwindow.split", "splitter=[pct]")
 
 /client/Click(atom/A)
+
+	// Mouse drag safeguard against a trailing Click() called after MouseUp().
+	if(_block_next_click)
+		_block_next_click = FALSE
+		return
+
 	if(!user_acted(src))
 		return
 
@@ -638,6 +637,8 @@ var/global/const/MAX_VIEW = 41
 	var/list/communication_hotkeys = list()
 	for(var/key in D.key_bindings)
 		for(var/kb_name in D.key_bindings[key])
+			if(!prefs.hotkeys && !SSinput.unprintables_cache[key])
+				continue
 			switch(kb_name)
 				if("north")
 					movement_keys[key] = NORTH
@@ -663,24 +664,18 @@ var/global/const/MAX_VIEW = 41
 					winset(src, "default-\ref[key]", "parent=default;name=[key];command=.me")
 					communication_hotkeys += key
 
-	// winget() does not work for F1 and F2
-	for(var/key in communication_hotkeys)
-		if(!(key in list("F1","F2")) && !winget(src, "default-\ref[key]", "command"))
-			to_chat(src, SPAN_WARNING("You probably entered the game with a different keyboard layout.\n<a href='byond://?src=\ref[src];reset_macros=1'>Please switch to the English layout and click here to fix the communication hotkeys.</a>"))
-			break
-
 /client/proc/get_byond_membership()
 	return prefs?.is_byond_member || IsByondMember()
 
 /client/proc/set_right_click_menu_mode(shift_only)
 	if(shift_only)
 		winset(src, "mapwindow.map", "right-click=true")
-		winset(src, "ShiftUp", "is-disabled=false")
-		winset(src, "Shift", "is-disabled=false")
+		winset(src, "default.PROTECTED-Shift", "command=\".winset :map.right-click=false\nKeyDown Shift\"")
+		winset(src, "default.PROTECTED-ShiftUp", "command=\".winset :map.right-click=true\nKeyUp Shift\"")
 	else
 		winset(src, "mapwindow.map", "right-click=false")
-		winset(src, "default.Shift", "is-disabled=true")
-		winset(src, "default.ShiftUp", "is-disabled=true")
+		winset(src, "default.PROTECTED-Shift", "command=\"KeyDown Shift\"")
+		winset(src, "default.PROTECTED-ShiftUp", "command=\"KeyUp Shift\"")
 
 /client/verb/drop_item()
 	set hidden = 1

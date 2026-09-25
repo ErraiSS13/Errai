@@ -20,7 +20,6 @@
 	var/lethal = 0
 	var/locked = 1
 	var/area/control_area //can be area name, path or nothing.
-	var/mob/living/silicon/ai/master_ai
 
 	var/check_arrest = 1	//checks if the perp is set to arrest
 	var/check_records = 1	//checks if a security record exists at all
@@ -49,6 +48,10 @@
 	. = ..()
 
 /obj/machinery/turretid/Initialize()
+	. = ..()
+	return INITIALIZE_HINT_LATELOAD // Because areas initialize AFTER these!
+
+/obj/machinery/turretid/LateInitialize()
 	if(!control_area)
 		control_area = get_area(src)
 	else if(istext(control_area))
@@ -56,6 +59,8 @@
 			if(A.name && A.name==control_area)
 				control_area = A
 				break
+	else if(ispath(control_area))
+		control_area = locate(control_area) in global.areas
 
 	if(control_area)
 		var/area/A = control_area

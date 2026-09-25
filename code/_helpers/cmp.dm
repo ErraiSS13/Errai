@@ -86,6 +86,9 @@
 /proc/cmp_fusion_reaction_des(var/decl/fusion_reaction/A, var/decl/fusion_reaction/B)
 	return B.priority - A.priority
 
+/proc/cmp_human_examine_priority(decl/human_examination/a, decl/human_examination/b)
+	return a.priority - b.priority
+
 /proc/cmp_program(var/datum/computer_file/program/A, var/datum/computer_file/program/B)
 	return cmp_text_asc(A.filedesc, B.filedesc)
 
@@ -93,6 +96,11 @@
 	return cmp_text_asc(A.login, B.login)
 
 /proc/cmp_planelayer(atom/A, atom/B)
+	return (B.plane - A.plane) || (B.layer - A.layer)
+
+/proc/cmp_planelayer_interact_priority(atom/A, atom/B)
+	if(A.interaction_priority != B.interaction_priority)
+		return (B.interaction_priority - A.interaction_priority)
 	return (B.plane - A.plane) || (B.layer - A.layer)
 
 /proc/cmp_currency_denomination_des(var/datum/denomination/A, var/datum/denomination/B)

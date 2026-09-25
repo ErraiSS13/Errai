@@ -1,16 +1,11 @@
 /* Cards
  * Contains:
- *		DATA CARD
- *		ID CARD
- *		FINGERPRINT CARD HOLDER
- *		FINGERPRINT CARD
+ *		UNION CARD
+ *		DATA CARDS
+ *		EMAG & BROKEN EMAG
+ *		ID CARDS
  */
 
-
-
-/*
- * DATA CARDS - Used for the IC data card reader
- */
 /obj/item/card
 	name = "card"
 	desc = "Does card things."
@@ -20,6 +15,10 @@
 	slot_flags = SLOT_EARS
 	drop_sound = 'sound/foley/paperpickup1.ogg'
 	pickup_sound = 'sound/foley/paperpickup2.ogg'
+
+/*
+ * UNION CARD
+ */
 
 /obj/item/card/union
 	name = "union card"
@@ -47,6 +46,10 @@
 		return TRUE
 	return ..()
 
+/*
+ * DATA CARDS - Used for the IC data card reader and, for some reason, faxes and teleporters.
+ */
+// Please modpack this once those last two are made to use data disks instead.
 /obj/item/card/data
 	name = "data card"
 	desc = "A plastic magstripe card for simple and speedy data storage and transfer. This one has a stripe running down the middle."
@@ -63,13 +66,6 @@
 	. = ..()
 	add_overlay(overlay_image(icon, "[icon_state]-color", detail_color))
 
-/obj/item/card/data/attackby(obj/item/used_item, mob/user)
-	if(istype(used_item, /obj/item/integrated_electronics/detailer))
-		var/obj/item/integrated_electronics/detailer/D = used_item
-		detail_color = D.detail_color
-		update_icon()
-	return ..()
-
 /obj/item/card/data/full_color
 	desc = "A plastic magstripe card for simple and speedy data storage and transfer. This one has the entire card colored."
 	icon_state = "data_2"
@@ -82,7 +78,7 @@
 	return detail_color
 
 /*
- * ID CARDS
+ * EMAG & BROKEN EMAG
  */
 
 /obj/item/card/emag_broken
@@ -148,6 +144,10 @@ var/global/const/NO_EMAG_ACT = -50
 	. = ..()
 	if(user.skill_check(SKILL_DEVICES,SKILL_ADEPT))
 		. += SPAN_WARNING("This ID card has some form of non-standard modifications.")
+
+/*
+ * ID CARDS
+ */
 
 /obj/item/card/id
 	name = "identification card"
@@ -338,7 +338,7 @@ var/global/const/NO_EMAG_ACT = -50
 		return
 
 	if(ispath(var_value, /datum/mil_branch) || istext(var_value))
-		var/datum/mil_branch/new_branch = mil_branches.get_branch(var_value)
+		var/datum/mil_branch/new_branch = global.using_map.get_branch(var_value)
 		if(new_branch)
 			if(new_branch != id.military_branch)
 				id.military_branch = new_branch
@@ -369,7 +369,7 @@ var/global/const/NO_EMAG_ACT = -50
 		var_value = rank.name
 
 	if(istext(var_value))
-		var/new_rank = mil_branches.get_rank(id.military_branch.name, var_value)
+		var/new_rank = global.using_map.get_rank(id.military_branch.name, var_value)
 		if(new_rank)
 			id.military_rank = new_rank
 			return

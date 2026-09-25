@@ -25,8 +25,7 @@
 	sleeper?.go_out()
 
 /obj/item/mech_equipment/sleeper/attack_self(var/mob/user)
-	. = ..()
-	if(.)
+	if(!(. = ..()))
 		sleeper.ui_interact(user)
 
 /obj/item/mech_equipment/sleeper/attackby(var/obj/item/used_item, var/mob/user)
@@ -56,6 +55,9 @@
 	stasis_power = 0
 	interact_offline = TRUE
 	stat_immune = NOPOWER
+	// Spawned inside a mech component, not built as a machine.
+	construct_state = null
+	base_type = /obj/machinery/sleeper/mounted
 
 /obj/machinery/sleeper/mounted/standard/Initialize(mapload, d, populate_parts)
 	. = ..()

@@ -9,6 +9,9 @@
 	///The current health of the obj. Leave to null, unless you want the object to start at a different health than max_health.
 	current_health = null
 
+	// If non-null and positive, will create a reagent holder on Initialize()
+	var/chem_volume
+
 	var/obj_flags
 	var/datum/talking_atom/talking_atom
 	var/list/req_access
@@ -18,20 +21,25 @@
 	var/in_use = FALSE // If we have a user using us, this will be set on. We will check if the user has stopped using us, and thus stop updating and LAGGING EVERYTHING!
 	var/armor_penetration = 0
 	var/anchor_fall = FALSE
-	/// if the obj is a holographic object spawned by the holodeck
-	var/holographic = FALSE
 	///JSON list of directions to x,y offsets to be applied to the object depending on its direction EX: @'{"NORTH":{"x":12,"y":5}, "EAST":{"x":10,"y":50}}'
 	var/directional_offset
 
 /obj/Initialize(mapload)
-	//Health should be set to max_health only if it's null.
 	. = ..()
 	create_matter()
 	//Only apply directional offsets if the mappers haven't set any offsets already
 	if(!pixel_x && !pixel_y && !pixel_w && !pixel_z)
 		update_directional_offset()
-	if(isnull(current_health))
-		current_health = get_max_health()
+
+	//Health should be set to max_health only if it's null.
+	var/_max_health = get_max_health()
+	if(isnull(current_health) || current_health == INFINITY)
+		current_health = _max_health
+	current_health = min(current_health, _max_health)
+
+	// Initialize our reagents if they've been preloaded or we have a chem_volume
+	if((!isnull(chem_volume) && chem_volume >= 0) || islist(reagents))
+		initialize_reagents()
 
 /obj/object_shaken()
 	shake_animation()
@@ -64,6 +72,23 @@
 
 /obj/return_air()
 	return loc?.return_air()
+
+/obj/proc/get_internal_pressure_difference()
+	var/datum/gas_mixture/int_air = return_air()
+	var/datum/gas_mixture/env_air = loc.return_air()
+	return int_air.return_pressure()-env_air.return_pressure()
+
+/// Return TRUE if the internal pressure difference is over `limit`.
+/obj/proc/check_internal_pressure_difference_over(limit)
+	var/datum/gas_mixture/int_air = return_air()
+	var/datum/gas_mixture/env_air = loc.return_air()
+	return (int_air.return_pressure()-env_air.return_pressure()) > limit
+
+/// Return TRUE if the internal pressure difference is under `limit`.
+/obj/proc/check_internal_pressure_difference_under(limit)
+	var/datum/gas_mixture/int_air = return_air()
+	var/datum/gas_mixture/env_air = loc.return_air()
+	return (int_air.return_pressure()-env_air.return_pressure()) < limit
 
 /obj/proc/updateUsrDialog()
 	if(in_use)
@@ -108,19 +133,9 @@
 /obj/proc/hides_under_flooring()
 	return level == LEVEL_BELOW_PLATING
 
-/obj/proc/hear_talk(mob/M, text, verb, decl/language/speaking)
+/obj/proc/hear_talk(mob/living/speaker, datum/speech/phrases, verb, stars, decl/language/force_language)
 	if(talking_atom)
-		talking_atom.catchMessage(text, M)
-/*
-	var/mob/mo = locate(/mob) in src
-	if(mo)
-		var/rendered = "<span class='game say'><span class='name'>[M.name]: </span> <span class='message'>[text]</span></span>"
-		mo.show_message(rendered, 2)
-		*/
-	return
-
-/obj/proc/show_message(msg, type, alt, alt_type)//Message, type of message (1 or 2), alternative message, alt message type (1 or 2)
-	return
+		talking_atom.catchMessage(istype(phrases) ? phrases.unformatted_message : phrases, speaker)
 
 /obj/proc/damage_flags()
 	. = 0
@@ -156,7 +171,7 @@
 	if(do_after(user, delay, src))
 		if(!src) return
 		to_chat(user, SPAN_NOTICE("You [anchored? "un" : ""]secured \the [src]!"))
-		anchored = !anchored
+		set_anchored(!anchored)
 	return 1
 
 /obj/attack_hand(mob/user)
@@ -200,7 +215,7 @@
 	return w_class
 
 /obj/get_mob()
-	return buckled_mob
+	return get_buckled_mob()
 
 /obj/set_dir(ndir)
 	. = ..()
@@ -257,14 +272,21 @@
 	return TRUE
 
 /**
- * Init starting reagents and/or reagent var. Not called at the /obj level.
- * populate: If set to true, we expect map load/admin spawned reagents to be set.
+ * Init starting reagents and/or reagent var. Called in /obj/Initialize() if volume is above 0.
+ * Skips populate_initialize() if reagents is null, or if it is a list, ie. we are pending deserialization.
  */
-/obj/proc/initialize_reagents(var/populate = TRUE)
+/obj/proc/initialize_reagents()
 	SHOULD_CALL_PARENT(TRUE)
-	if(reagents?.total_volume > 0)
+	// Check if this is getting called twice, or we created reagents somewhere in Initialize() (bad juju)
+	if(istype(reagents))
 		log_warning("\The [src] possibly is initializing its reagents more than once!")
-	if(populate)
+	// If preloaded from serde, handle expected list structure.
+	// Returns if preload is successful to skip populate_reagents() call.
+	FINALIZE_REAGENTS_SERDE_AND_RETURN(reagents)
+	// Standard non-serde reagent init behavior after this point.
+	if(chem_volume > 0)
+		create_or_update_reagents(chem_volume)
+	if(istype(reagents))
 		populate_reagents()
 
 /**
@@ -293,7 +315,7 @@
 /obj/proc/WillContain()
 	return
 
-/obj/get_contained_matter()
+/obj/get_contained_matter(include_reagents = TRUE)
 	. = ..()
 	if(length(matter))
 		. = MERGE_ASSOCS_WITH_NUM_VALUES(., matter.Copy())
@@ -323,7 +345,7 @@
 
 /obj/fluid_act(var/datum/reagents/fluids)
 	..()
-	if(!QDELETED(src) && fluids?.total_volume)
+	if(!QDELETED(src) && REAGENT_TOTAL_VOLUME(fluids))
 		fluids.touch_obj(src)
 
 // TODO: maybe iterate the entire matter list or do some partial damage handling
@@ -337,8 +359,9 @@
 	. = ..()
 	if(QDELETED(src))
 		return
-	if(reagents?.total_volume)
-		reagents.trans_to(loc, reagents.total_volume)
+	var/reagent_volume = REAGENT_TOTAL_VOLUME(reagents)
+	if(reagent_volume)
+		reagents.trans_to(loc, reagent_volume)
 	dump_contents()
 	return place_melted_product(meltable_materials)
 
@@ -416,12 +439,12 @@
 /obj/physically_destroyed(skip_qdel)
 	var/dumped_reagents = FALSE
 	var/atom/last_loc = loc
-	if(last_loc && reagents?.total_volume)
-		reagents.trans_to(loc, reagents.total_volume, defer_update = TRUE)
+	if(last_loc && REAGENT_TOTAL_VOLUME(reagents))
+		reagents.trans_to(loc, REAGENT_TOTAL_VOLUME(reagents), defer_update = TRUE)
 		dumped_reagents = TRUE
 		reagents.clear_reagents() // We are qdeling, don't bother with a more nuanced update.
 	. = ..()
-	if(dumped_reagents && last_loc && !QDELETED(last_loc) && last_loc.reagents?.total_volume)
+	if(dumped_reagents && last_loc && !QDELETED(last_loc) && REAGENT_TOTAL_VOLUME(last_loc.reagents))
 		last_loc.reagents.handle_update()
 		HANDLE_REACTIONS(last_loc.reagents)
 

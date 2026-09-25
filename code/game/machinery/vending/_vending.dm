@@ -186,10 +186,7 @@
 	if((user.check_intent(I_FLAG_HELP)) && attempt_to_stock(used_item, user))
 		return TRUE
 
-	if((obj_flags & OBJ_FLAG_ANCHORABLE) && (IS_WRENCH(used_item) || IS_HAMMER(used_item)))
-		wrench_floor_bolts(user, null, used_item)
-		power_change()
-		return
+	return ..() // handle anchoring and bashing
 
 /obj/machinery/vending/state_transition(decl/machine_construction/new_state)
 	. = ..()
@@ -407,6 +404,11 @@
 
 	SSnano.update_uis(src)
 
+/// Used to get a slogan to say in Process().
+/// If you want to do things like non-constant token replacement you can do that in an override.
+/obj/machinery/vending/proc/get_slogan()
+	return pick(slogan_list)
+
 /obj/machinery/vending/Process()
 	if(stat & (BROKEN|NOPOWER))
 		return
@@ -418,8 +420,8 @@
 		seconds_electrified--
 
 	//Pitch to the people!  Really sell it!
-	if(((last_slogan + slogan_delay) <= world.time) && (slogan_list.len > 0) && (!shut_up) && prob(5))
-		var/slogan = pick(slogan_list)
+	if(((last_slogan + slogan_delay) <= world.time) && length(slogan_list) && (!shut_up) && prob(5))
+		var/slogan = get_slogan()
 		speak(slogan)
 		last_slogan = world.time
 

@@ -18,6 +18,7 @@
 	anchored = FALSE
 	atom_flags = ATOM_FLAG_NO_CHEM_CHANGE | ATOM_FLAG_OPEN_CONTAINER
 	idle_power_usage = 100
+	chem_volume = 100
 
 	var/list/product_types = list()
 	var/dispense_flavour = ICECREAM_VANILLA
@@ -66,13 +67,8 @@
 
 /obj/machinery/icecream_vat/Initialize(mapload, d, populate_parts)
 	. = ..()
-	initialize_reagents()
 	while(product_types.len < 8)
 		product_types.Add(5)
-
-/obj/machinery/icecream_vat/initialize_reagents(populate = TRUE)
-	create_reagents(100)
-	. = ..()
 
 /obj/machinery/icecream_vat/populate_reagents()
 	add_to_reagents(/decl/material/liquid/drink/milk, 5)
@@ -100,11 +96,11 @@
 	dat += "<b>Chocolate cones:</b> <a href='byond://?src=\ref[src];cone=[CONE_CHOC]'><b>Dispense</b></a> <a href='byond://?src=\ref[src];make=[CONE_CHOC];amount=1'><b>Make</b></a> <a href='byond://?src=\ref[src];make=[CONE_CHOC];amount=5'><b>x5</b></a> [product_types[CONE_CHOC]] cones left. (Ingredients: flour, sugar, coco powder)<br></div>"
 	dat += "<br>"
 	dat += "<b>VAT CONTENT</b><br>"
-	for(var/decl/material/reagent as anything in reagents?.liquid_volumes)
+	for(var/decl/material/reagent as anything in REAGENT_LIQUID_VOLUMES(reagents))
 		dat += "[reagent.get_reagent_name(reagents, MAT_PHASE_LIQUID)]: [LIQUID_VOLUME(reagents, reagent)]"
 		dat += "<A href='byond://?src=\ref[src];disposeI=\ref[reagent]'>Purge</A><BR>"
 
-	for(var/decl/material/reagent as anything in reagents?.solid_volumes)
+	for(var/decl/material/reagent as anything in REAGENT_SOLID_VOLUMES(reagents))
 		dat += "[reagent.get_reagent_name(reagents, MAT_PHASE_SOLID)]: [SOLID_VOLUME(reagents, reagent)]"
 		dat += "<A href='byond://?src=\ref[src];disposeI=\ref[reagent]'>Purge</A><BR>"
 
@@ -124,8 +120,9 @@
 				icecream.add_ice_cream(flavour_name)
 			//	if(beaker)
 			//		beaker.reagents.trans_to(icecream, 10)
-				if(icecream.reagents.total_volume < 10)
-					icecream.add_to_reagents(/decl/material/liquid/nutriment/sugar, 10 - icecream.reagents.total_volume)
+				var/icecream_volume = REAGENT_TOTAL_VOLUME(icecream.reagents)
+				if(icecream_volume < 10)
+					icecream.add_to_reagents(/decl/material/liquid/nutriment/sugar, 10 - icecream_volume)
 			else
 				to_chat(user, "<span class='warning'>There is not enough icecream left!</span>")
 		else
@@ -201,7 +198,7 @@
 	icon_state = "icecream_cone_waffle" //default for admin-spawned cones, href_list["cone"] should overwrite this all the time
 	layer = ABOVE_OBJ_LAYER
 	bitesize = 3
-	volume = 20
+	chem_volume = 20
 	nutriment_amt = 5
 	nutriment_type = /decl/material/liquid/nutriment
 	nutriment_desc = list("crunchy waffle cone" = 1)

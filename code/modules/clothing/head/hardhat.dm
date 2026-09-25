@@ -3,7 +3,7 @@
 	desc = "A piece of headgear used in dangerous working conditions to protect the head. Comes with a built-in flashlight."
 	icon = 'icons/clothing/head/hardhat/yellow.dmi'
 	action_button_name = "Toggle Headlamp"
-	brightness_on = 4 //luminosity when on
+	headlamp_range = 4 //luminosity when on
 	w_class = ITEM_SIZE_NORMAL
 	armor = list(
 		ARMOR_MELEE = ARMOR_MELEE_RESISTANT,
@@ -22,7 +22,7 @@
 	material = /decl/material/solid/organic/plastic
 	matter = list(/decl/material/solid/metal/steel = MATTER_AMOUNT_REINFORCEMENT)
 	origin_tech = @'{"materials":1,"engineering":1,"combat":1}'
-	replaced_in_loadout = FALSE
+	replaced_in_loadout = LOADOUT_CONFLICT_STORAGE
 	_base_attack_force = 5
 
 /obj/item/clothing/head/hardhat/orange

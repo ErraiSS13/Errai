@@ -2,7 +2,7 @@
  *
  * 1. AI should not implement any bespoke mob logic within the proc it uses
  *    to trigger or respond to game events. It should share entrypoints with
- *    action performed by players and should respect the same intents, etc.
+ *    actions performed by players and should respect the same intents, etc.
  *    that players have to manage, through the same procs players use. This
  *    should mean that players can be slotted into the pilot seat of any mob,
  *    suspending AI behavior, and should then be able to freely use any of the
@@ -79,6 +79,9 @@
 	/// How long minimum between scans.
 	var/target_scan_delay = 1 SECOND
 
+	/// Last mob to attempt to handle this mob.
+	var/weakref/last_handler
+
 /datum/mob_controller/New(var/mob/living/target_body)
 	body = target_body
 	if(expected_type && !istype(body, expected_type))
@@ -123,15 +126,21 @@
 // This is the place to actually do work in the AI.
 /datum/mob_controller/proc/do_process()
 	SHOULD_CALL_PARENT(TRUE)
-	if(get_stance() != STANCE_BUSY && !QDELETED(body) && !QDELETED(src))
-		if(!body.stat)
-			try_unbuckle()
-			try_wander()
-			try_bark()
-			// Recheck in case we walked into lava or something during wandering.
-			return get_stance() != STANCE_BUSY && !QDELETED(body) && !QDELETED(src)
-		return TRUE
-	return FALSE
+
+	if(QDELETED(body) || QDELETED(src) || get_stance() == STANCE_BUSY)
+		return FALSE
+
+	if(!isnull(home) && get_dist(body, home) > home_wander_distance)
+		body.start_automove(home, metadata = new /datum/automove_metadata(_acceptable_distance = home_wander_distance))
+		return FALSE
+
+	if(get_stance() == STANCE_IDLE && !body.stat)
+		try_unbuckle()
+		try_wander()
+		try_bark()
+
+	// Recheck in case we walked into lava or something during wandering.
+	return get_stance() != STANCE_BUSY && !QDELETED(body) && !QDELETED(src)
 
 // The mob will try to unbuckle itself from nets, beds, chairs, etc.
 /datum/mob_controller/proc/try_unbuckle()
@@ -144,22 +153,42 @@
 		else if(prob(25))
 			body.visible_message(SPAN_WARNING("\The [body] struggles against \the [body.buckled]!"))
 
+
+/datum/mob_controller/proc/get_wander_candidates(turf/centre)
+	. = list()
+	var/turf/wall/natural/ramp = centre
+	var/ramp_dir = (istype(ramp) && ramp.ramp_slope_direction) ? global.reverse_dir[ramp.ramp_slope_direction] : 0
+	for(var/dir in (wander_directions || global.cardinal))
+		var/turf/neighbor = get_step(centre, dir)
+		if(dir == ramp_dir)
+			neighbor = GetAbove(neighbor)
+		if(istype(neighbor) && !turf_contains_dense_objects(neighbor) && body.turf_is_safe(neighbor))
+			. |= dir
+
 // The mob will periodically sit up or step 1 tile in a random direction.
 /datum/mob_controller/proc/try_wander()
+
 	//Movement
-	if(stop_wander || body.buckled_mob || !do_wander || body.anchored)
+	if(stop_wander || body.has_buckled_mob() || !do_wander || body.anchored)
 		return
-	if(body.current_posture?.prone)
-		if(!body.incapacitated())
-			body.set_posture(/decl/posture/standing)
-	else if(isturf(body.loc))		//This is so it only moves if it's not inside a closet, gentics machine, etc.
-		turns_since_wander++
-		if(turns_since_wander >= turns_per_wander && (!(stop_wander_when_pulled) || !LAZYLEN(body.grabbed_by))) //Some animals don't move when pulled
-			var/direction = pick(wander_directions || global.cardinal)
-			var/turf/move_to = get_step(body.loc, direction)
-			if(body.turf_is_safe(move_to))
-				body.SelfMove(direction)
-				turns_since_wander = 0
+
+	if(body.current_posture?.prone && !body.incapacitated())
+		body.set_posture(/decl/posture/standing)
+		return
+
+	//This is so it only moves if it's not inside a closet, gentics machine, etc.
+	if(!isturf(body.loc))
+		return
+
+	turns_since_wander++
+	//Some animals don't move when pulled
+	if(turns_since_wander < turns_per_wander || (stop_wander_when_pulled && LAZYLEN(body.grabbed_by)))
+		return
+
+	turns_since_wander = 0
+	var/alist/wander_candidates = get_wander_candidates(body.loc)
+	if(length(wander_candidates))
+		body.SelfMove(pick(wander_candidates))
 
 // The mob will periodically make a noise or perform an emote.
 /datum/mob_controller/proc/try_bark()
@@ -206,7 +235,7 @@
 	return FALSE
 
 /datum/mob_controller/proc/on_buckled(mob/scary_grabber)
-	if(!scary_grabber || body.buckled_mob != scary_grabber) // the buckle got cancelled somehow?
+	if(!scary_grabber || !(scary_grabber in body.get_buckled_mobs())) // the buckle got cancelled somehow?
 		return
 	if(spooked_by_grab && !is_friend(scary_grabber))
 		retaliate(scary_grabber)
@@ -216,3 +245,20 @@
 		return
 	if(spooked_by_grab && !is_friend(scary_grabber))
 		retaliate(scary_grabber)
+
+// General stubs for when another mob has directed this mob to attack.
+/datum/mob_controller/proc/check_handler_can_order(mob/handler, atom/target, intent_flags)
+	return is_friend(handler)
+
+/datum/mob_controller/proc/process_handler_target(mob/handler, atom/target, intent_flags)
+	if(!check_handler_can_order(handler, target, intent_flags))
+		return process_handler_failure(handler, target)
+	last_handler = weakref(handler)
+	return TRUE
+
+/datum/mob_controller/proc/process_handler_failure(mob/handler, atom/target)
+	return FALSE
+
+/datum/mob_controller/proc/process_holder_interaction(mob/handler)
+	last_handler = weakref(handler)
+	return body?.attack_hand_with_interaction_checks(handler)

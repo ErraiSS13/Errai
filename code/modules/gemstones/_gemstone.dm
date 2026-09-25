@@ -12,9 +12,11 @@ var/global/list/_available_gemstone_cuts
 	name                      = "uncut gemstone"
 	desc                      = "A hunk of uncut gemstone."
 	icon                      = 'icons/obj/items/gemstones/uncut.dmi'
+	icon_state                = ICON_STATE_WORLD
 	w_class                   = ITEM_SIZE_TINY
 	material                  = /decl/material/solid/gemstone/diamond
 	material_alteration       = MAT_FLAG_ALTERATION_COLOR // Name and desc are handled manually.
+	color                     = /decl/material/solid/gemstone/diamond::color
 	var/decl/gemstone_cut/cut = /decl/gemstone_cut/uncut
 	var/work_skill            = SKILL_CONSTRUCTION
 
@@ -33,10 +35,12 @@ var/global/list/_available_gemstone_cuts
 	SetName("[cut.adjective] [material.solid_name]")
 
 /obj/item/gemstone/get_single_monetary_worth()
+	if(worthless)
+		return 0
 	. = ..() * cut.worth_multiplier
 
 /obj/item/gemstone/attackby(obj/item/used_item, mob/user)
-	if(IS_HAMMER(used_item) && !user.check_intent(I_FLAG_HARM)) // TOOL_CHISEL when?
+	if(IS_CHISEL(used_item) && !user.check_intent(I_FLAG_HARM))
 		if(!cut.can_attempt_cut)
 			to_chat(user, SPAN_WARNING("\The [src] has already been cut."))
 			return TRUE
@@ -90,38 +94,24 @@ var/global/list/_available_gemstone_cuts
 
 
 // Material subtypes.
-/obj/item/gemstone/baguette/topaz
-	material = /decl/material/solid/gemstone/topaz
+#define MATERIAL_CUT_GEMSTONES(MAT)\
+/obj/item/gemstone/baguette/##MAT{\
+	material = /decl/material/solid/gemstone/##MAT;\
+	color    = /decl/material/solid/gemstone/##MAT::color;\
+}\
+/obj/item/gemstone/hexagon/##MAT{\
+	material = /decl/material/solid/gemstone/##MAT;\
+	color    = /decl/material/solid/gemstone/##MAT::color;\
+}\
+/obj/item/gemstone/octagon/##MAT{\
+	material = /decl/material/solid/gemstone/##MAT;\
+	color    = /decl/material/solid/gemstone/##MAT::color;\
+}\
+/obj/item/gemstone/round/##MAT{\
+	material = /decl/material/solid/gemstone/##MAT;\
+	color    = /decl/material/solid/gemstone/##MAT::color;\
+}
 
-/obj/item/gemstone/baguette/sapphire
-	material = /decl/material/solid/gemstone/sapphire
-
-/obj/item/gemstone/baguette/ruby
-	material = /decl/material/solid/gemstone/ruby
-
-/obj/item/gemstone/hexagon/topaz
-	material = /decl/material/solid/gemstone/topaz
-
-/obj/item/gemstone/hexagon/sapphire
-	material = /decl/material/solid/gemstone/sapphire
-
-/obj/item/gemstone/hexagon/ruby
-	material = /decl/material/solid/gemstone/ruby
-
-/obj/item/gemstone/octagon/topaz
-	material = /decl/material/solid/gemstone/topaz
-
-/obj/item/gemstone/octagon/sapphire
-	material = /decl/material/solid/gemstone/sapphire
-
-/obj/item/gemstone/octagon/ruby
-	material = /decl/material/solid/gemstone/ruby
-
-/obj/item/gemstone/round/topaz
-	material = /decl/material/solid/gemstone/topaz
-
-/obj/item/gemstone/round/sapphire
-	material = /decl/material/solid/gemstone/sapphire
-
-/obj/item/gemstone/round/ruby
-	material = /decl/material/solid/gemstone/ruby
+MATERIAL_CUT_GEMSTONES(topaz)
+MATERIAL_CUT_GEMSTONES(sapphire)
+MATERIAL_CUT_GEMSTONES(ruby)

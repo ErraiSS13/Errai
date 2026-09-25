@@ -16,7 +16,7 @@
 		/obj/item/clothing/gloves/thick,
 		/obj/item/clothing/shoes/color/black,
 		/obj/item/scanner/gas,
-		/obj/item/ore,
+		/obj/item/ore_satchel,
 		/obj/item/flashlight/lantern,
 		/obj/item/tool/shovel,
 		/obj/item/tool/pickaxe,
@@ -38,6 +38,9 @@
 	z_flags = ZMM_MANGLE_PLANES
 
 	var/upright = FALSE
+
+/obj/item/stack/flag/ten
+	amount = 10
 
 /obj/item/stack/flag/red
 	light_color = COLOR_RED

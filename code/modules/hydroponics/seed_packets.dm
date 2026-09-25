@@ -7,6 +7,7 @@
 	abstract_type = /obj/item/seeds
 	max_health = 10 //Can't set a material, otherwise extracting seeds would generate free materials
 	material = /decl/material/solid/organic/plantmatter/pith
+	chem_volume = 3
 
 	var/seed_mask_icon = 'icons/obj/seeds/seed_masks.dmi'
 	var/seed_base_name = "packet"
@@ -17,11 +18,6 @@
 	if(isnull(seed) && !isnull(_seed))
 		seed = _seed
 	update_seed()
-	initialize_reagents()
-	. = ..()
-
-/obj/item/seeds/initialize_reagents()
-	create_reagents(3)
 	. = ..()
 
 /obj/item/seeds/populate_reagents()
@@ -29,6 +25,8 @@
 	add_to_reagents(/decl/material/liquid/oil/plant, 3)
 
 /obj/item/seeds/get_single_monetary_worth()
+	if(worthless)
+		return 0
 	. = seed ? seed.get_monetary_value() : ..()
 
 // Used for extracts/seed sampling purposes.

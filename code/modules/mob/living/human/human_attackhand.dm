@@ -1,4 +1,7 @@
-/mob/living/human/proc/get_unarmed_attack(var/mob/target, var/hit_zone = null)
+/mob/proc/get_unarmed_attack(var/mob/target, var/hit_zone = null)
+	return null
+
+/mob/living/human/get_unarmed_attack(var/mob/target, var/hit_zone = null)
 	if(!hit_zone)
 		hit_zone = get_target_zone()
 	var/list/available_attacks = get_mob_natural_attacks()
@@ -230,6 +233,7 @@
 	if(attack.apply_cooldown)
 		H.setClickCooldown(attack.apply_cooldown)
 
+	remove_cloak()
 	if(istype(ai))
 		ai.retaliate(user)
 	return TRUE
@@ -382,6 +386,7 @@
 		user.visible_message( \
 			SPAN_NOTICE("\The [user] starts applying pressure to \the [src]'s [organ.name]!"), \
 			SPAN_NOTICE("You start applying pressure to \the [src]'s [organ.name]!"))
+	// TODO: refactor applying pressure to use grabs instead? would probably require making grabs locked to the zone they were started on
 	spawn(0)
 		organ.applied_pressure = user
 
@@ -424,7 +429,7 @@
 			to_chat(src, SPAN_NOTICE(summary))
 	refresh_hud_element(HUD_ATTACK)
 
-/mob/living/human/UnarmedAttack(atom/A, proximity_flag)
+/mob/living/human/ResolveUnarmedAttack(atom/A)
 	// Hackfix for humans trying to attack someone without hands.
 	// Dexterity ect. should be checked in these procs regardless,
 	// but unarmed attacks that don't require hands should still

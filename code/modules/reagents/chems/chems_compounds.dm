@@ -30,8 +30,9 @@
 		H.update_eyes()
 
 /decl/material/liquid/glowsap/on_leaving_metabolism(datum/reagents/metabolism/holder)
-	if(ishuman(holder?.my_atom))
-		var/mob/living/human/H = holder.my_atom
+	var/my_atom = REAGENT_GET_ATOM(holder)
+	if(ishuman(my_atom))
+		var/mob/living/human/H = my_atom
 		addtimer(CALLBACK(H, TYPE_PROC_REF(/mob/living/human, update_eyes)), 5 SECONDS)
 	. = ..()
 
@@ -90,6 +91,12 @@
 	if(prob(1))
 		M.emote(/decl/emote/visible/shiver)
 	holder.remove_reagent(/decl/material/liquid/capsaicin, 5)
+
+/decl/material/liquid/frostoil/cryotoxin
+	name = "cryotoxin"
+	lore_text = "An exotic venom that depresses metabolism and lowers body temperature."
+	uid = "chem_cryotoxin"
+	metabolism = REM * 0.5
 
 /decl/material/liquid/nettle_histamine
 	name = "nettle histamine"
@@ -262,12 +269,7 @@
 	if(!M.has_genetic_information())
 		return
 	if(prob(removed * 0.1)) // Approx. one mutation per 10 injected/20 ingested/30 touching units
-		M.set_unique_enzymes(num2text(random_id(/mob, 1000000, 9999999)))
-		if(prob(98))
-			M.add_genetic_condition(pick(decls_repository.get_decls_of_type(/decl/genetic_condition/disability)))
-		else
-			M.add_genetic_condition(pick(decls_repository.get_decls_of_type(/decl/genetic_condition/superpower)))
-	M.apply_damage(10 * removed, IRRADIATE, armor_pen = 100)
+		M.apply_random_mutation(10 * removed)
 
 /decl/material/liquid/lactate
 	name = "lactate"
@@ -283,14 +285,14 @@
 
 /decl/material/liquid/lactate/affect_blood(var/mob/living/M, var/removed, var/datum/reagents/holder)
 	. = ..()
-	var/volume = REAGENT_VOLUME(holder, src)
+	var/affect_volume = REAGENT_VOLUME(holder, src)
 	M.add_chemical_effect(CE_PULSE, 1)
-	if(volume >= 10)
+	if(affect_volume >= 10)
 		M.add_chemical_effect(CE_PULSE, 1)
-		M.add_chemical_effect(CE_SLOWDOWN, (volume/15) ** 2)
+		M.add_chemical_effect(CE_SLOWDOWN, (affect_volume/15) ** 2)
 	else if(CHEM_DOSE(M, src) > 30) //after prolonged exertion
 		ADJ_STATUS(M, STAT_JITTER, 5)
-		M.add_chemical_effect(CE_BREATHLOSS, 0.02 * volume)
+		M.add_chemical_effect(CE_BREATHLOSS, 0.02 * affect_volume)
 
 /decl/material/liquid/nanoblood
 	name = "nanoblood"
@@ -382,7 +384,7 @@
 	var/list/data = REAGENT_DATA(holder, src)
 	if(world.time > LAZYACCESS(data, DATA_COOLDOWN_TIME) + 3 MINUTES)
 		LAZYSET(data, DATA_COOLDOWN_TIME, world.time)
-		LAZYSET(holder.reagent_data, type, data)
+		REAGENT_SET_DATA(holder, type, data)
 		to_chat(M, SPAN_NOTICE("You feel faintly sore in the throat."))
 
 /decl/material/liquid/nanitefluid
@@ -476,3 +478,49 @@
 		M.take_damage(rand(3,6))
 		if(prob(10))
 			new /obj/item/shard(get_turf(M), result_mat)
+
+/decl/material/liquid/thermite
+	name              = "thermite"
+	uid               = "chem_thermite"
+	lore_text         = "Thermite produces an aluminothermic reaction known as a thermite reaction. Can be used to melt walls."
+	color             = "#673910"
+	touch_met         = 50
+	taste_description = "metallic sweetness"
+	melting_point     = 323
+	ignition_point    = 353
+	accelerant_value  = 0.8
+
+	var/decal_type = /obj/effect/decal/cleanable/thermite
+
+/decl/material/liquid/thermite/touch_mob(var/mob/victim, var/amount)
+	..()
+	if(istype(victim))
+		victim.adjust_fire_intensity(round(amount / 5))
+
+/decl/material/liquid/thermite/affect_blood(mob/living/M, removed, datum/reagents/holder)
+	. = ..()
+	// Do this rather than take_damage() to avoid armour checks.
+	M.adjustFireLoss(3 * removed)
+
+/decl/material/liquid/thermite/touch_turf(var/turf/touching_turf, var/amount, var/datum/reagents/holder)
+	..()
+	if(decal_type && !(locate(decal_type) in touching_turf))
+		touching_turf.visible_message(SPAN_NOTICE("The thermite splashes over \the [touching_turf]."))
+		new decal_type(touching_turf)
+
+/decl/material/liquid/thermite/venom
+	name = "pyrotoxin"
+	uid = "chem_pyrotoxin"
+	lore_text = "A biologically-produced compound capable of melting steel. Do not ingest."
+	decal_type = /obj/effect/decal/cleanable/thermite/self_igniting
+
+/decl/material/liquid/thermite/venom/affect_blood(mob/living/M, removed, datum/reagents/holder)
+	. = ..()
+	if(M.get_fire_intensity() <= 1.5)
+		M.adjust_fire_intensity(0.15)
+	else if(prob(10))
+		to_chat(M, SPAN_DANGER("An awful burning sensation eats away inside..."))
+		M.adjust_fire_intensity(0.1)
+	else if(prob(5))
+		M.ignite_fire()
+		to_chat(M, SPAN_DANGER("Your body begins to rupture and ignite!"))

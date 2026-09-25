@@ -28,7 +28,7 @@
 			/decl/material/solid/clay = TRUE
 		)
 		if(istype(used_item, /obj/item/stack/material) && daub_materials[used_item.material?.type])
-			if(!user.check_dexterity(DEXTERITY_WIELD_ITEM))
+			if(!user.check_dexterity(DEXTERITY_WIELD_ITEM, fail_message = "You lack the dexterity to daub \the [src]."))
 				return TRUE
 			var/obj/item/stack/material/stack = used_item
 			var/sheets_to_use = stack.matter_units_to_sheets(matter_to_daub)
@@ -76,8 +76,10 @@
 	else if(paint_color)
 		if(reinf_material)
 			SetName("[reinf_material.solid_name]-framed plastered wall")
+			desc = "A plastered wall framed with [reinf_material.solid_name]."
 		else
 			SetName("plastered wall")
+			desc = "A plastered wall."
 	else
 		if(reinf_material)
 			SetName("[reinf_material.solid_name]-framed [material.adjective_name] wattle and daub wall")

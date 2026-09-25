@@ -36,6 +36,8 @@
 	add_to_reagents(/decl/material/solid/organic/meat, 10)
 
 /obj/item/food/animal_cube/get_single_monetary_worth()
+	if(worthless)
+		return 0
 	. = (spawn_type ? round(atom_info_repository.get_combined_worth_for((islist(spawn_type) ? spawn_type[1] : spawn_type)) * 1.25) : 5)
 	if(wrapper_type)
 		. += atom_info_repository.get_combined_worth_for(wrapper_type)
@@ -81,15 +83,6 @@
 /obj/item/food/animal_cube/on_reagent_change()
 	if((. = ..()) && !QDELETED(src) && reagents?.has_reagent(/decl/material/liquid/water))
 		spawn_creature()
-
-//Spider cubes, all that's left of the cube PR
-/obj/item/food/animal_cube/spider
-	name = "spider cube"
-	spawn_type = /obj/effect/spider/spiderling
-
-/obj/item/food/animal_cube/wrapped/spider
-	name = "spider cube"
-	spawn_type = /obj/effect/spider/spiderling
 
 /obj/item/food/animal_cube/monkey
 	name = "monkey cube"

@@ -293,7 +293,7 @@
 	dir = 1
 	},
 /obj/structure/flora/pottedplant/unusual,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -747,7 +747,7 @@
 	icon_state = "0-8"
 	},
 /obj/structure/flora/pottedplant/unusual,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -882,7 +882,7 @@
 /obj/structure/cable{
 	icon_state = "0-8"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -943,7 +943,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
 	dir = 6
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24;
@@ -1243,7 +1243,7 @@
 /obj/structure/cable/green{
 	icon_state = "0-2"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "north bump";
 	pixel_y = 24;
@@ -1686,7 +1686,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
 	dir = 10
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -1723,7 +1723,7 @@
 /obj/structure/cable{
 	icon_state = "0-8"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -24
 	},
@@ -1757,7 +1757,7 @@
 /obj/structure/cable,
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -2031,7 +2031,7 @@
 "fR" = (
 /obj/effect/decal/cleanable/blood/splatter,
 /obj/structure/cable,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -2644,7 +2644,7 @@
 /obj/structure/cable{
 	icon_state = "0-2"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -3589,7 +3589,7 @@
 /obj/structure/rack,
 /obj/item/wrench,
 /obj/item/clothing/head/welding,
-/obj/item/weldingtool,
+/obj/item/fuelled_tool/welding,
 /turf/floor/plating,
 /area/casino/casino_crew_atmos)
 "kn" = (
@@ -3787,7 +3787,7 @@
 /area/casino/casino_mainfloor)
 "kQ" = (
 /obj/machinery/door/firedoor,
-/obj/structure/door/wood{
+/obj/structure/door/oak{
 	name = "VIP Private room"
 	},
 /obj/structure/cable{
@@ -3802,7 +3802,7 @@
 /area/casino/casino_private_vip)
 "kS" = (
 /obj/machinery/door/firedoor,
-/obj/structure/door/wood{
+/obj/structure/door/oak{
 	name = "Private room 1"
 	},
 /obj/structure/cable{
@@ -3817,7 +3817,7 @@
 /area/casino/casino_private1)
 "kU" = (
 /obj/machinery/door/firedoor,
-/obj/structure/door/wood{
+/obj/structure/door/oak{
 	name = "Private room 2"
 	},
 /obj/structure/cable{
@@ -3924,7 +3924,7 @@
 	dir = 8;
 	level = 2
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -3971,7 +3971,7 @@
 	dir = 8;
 	level = 2
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -4018,7 +4018,7 @@
 	dir = 8;
 	level = 2
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -4273,7 +4273,7 @@
 /obj/structure/cable{
 	icon_state = "0-8"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -4449,7 +4449,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
 	dir = 9
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -4575,7 +4575,7 @@
 /turf/floor/plating,
 /area/casino/casino_bow)
 "ne" = (
-/obj/machinery/atmospherics/unary/heater{
+/obj/machinery/atmospherics/unary/temperature/heater{
 	dir = 8
 	},
 /turf/floor/plating,
@@ -4663,7 +4663,7 @@
 	id_tag = "Casino_escape_pod_1";
 	name = "Casino escape pod One controller";
 	pixel_x = 24;
-	tag_door = "escape_pod_17_hatch";
+	tag_door = "escape_pod_casino_17_hatch";
 	dir = 8
 	},
 /turf/floor/plating,
@@ -4967,7 +4967,7 @@
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24
@@ -5199,7 +5199,7 @@
 "Oc" = (
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	name = "east bump";
 	pixel_x = 24
@@ -5449,7 +5449,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
 	dir = 5
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 8;
 	name = "west bump";
 	pixel_x = -24

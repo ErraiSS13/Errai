@@ -244,10 +244,14 @@
 					break
 			if(still_processing_reagent)
 				continue
-			var/dose = CHEM_DOSE(src, reagent) - reagent.metabolism*2
-			LAZYSET(_chem_doses, reagent, dose)
-			if(CHEM_DOSE(src, reagent) <= 0)
+			var/amount_removed = get_adjusted_metabolism(reagent.metabolism*2) // reagents metabolize out twice as fast as they metabolize in
+			if(!(reagent.flags & IGNORE_MOB_SIZE))
+				amount_removed *= (MOB_SIZE_MEDIUM/mob_size)
+			var/dose = CHEM_DOSE(src, reagent) - amount_removed
+			if(dose <= 0)
 				LAZYREMOVE(_chem_doses, reagent)
+			else
+				LAZYSET(_chem_doses, reagent, dose)
 	if(apply_chemical_effects())
 		update_health()
 
@@ -271,10 +275,10 @@
 	if(!loc)
 		return
 	var/datum/reagents/touching_reagents = get_contact_reagents()
-	if(touching_reagents?.total_volume <= FLUID_MINIMUM_TRANSFER)
+	if(REAGENT_TOTAL_VOLUME(touching_reagents) <= FLUID_MINIMUM_TRANSFER)
 		touching_reagents?.clear_reagents()
 		return
-	var/drip_amount = max(FLUID_MINIMUM_TRANSFER, round(touching_reagents.total_volume * 0.2))
+	var/drip_amount = max(FLUID_MINIMUM_TRANSFER, round(REAGENT_TOTAL_VOLUME(touching_reagents) * 0.2))
 	if(drip_amount)
 		touching_reagents.trans_to(loc, drip_amount)
 
@@ -315,7 +319,7 @@
 	// Push sound to client. Pipe dream TODO: crossfade between the new and old weather ambience.
 	sound_to(src, sound(null, repeat = 0, wait = 0, volume = 0, channel = sound_channels.weather_channel))
 	if(send_sound)
-		sound_to(src, sound(send_sound, repeat = TRUE, wait = 0, volume = 30, channel = sound_channels.weather_channel))
+		sound_to(src, sound(send_sound, repeat = TRUE, wait = 0, volume = 60, channel = sound_channels.weather_channel))
 
 /mob/living/proc/handle_environment(var/datum/gas_mixture/environment)
 	SHOULD_CALL_PARENT(TRUE)

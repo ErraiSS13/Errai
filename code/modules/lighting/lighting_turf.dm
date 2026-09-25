@@ -1,10 +1,6 @@
 /turf
 	var/dynamic_lighting = TRUE
-	/// If non-null, a hex RGB light color that should be applied to this turf.
-	var/ambient_light
-	/// The power of the above is multiplied by this. Setting too high may drown out normal lights on the same turf.
-	var/ambient_light_multiplier = 0.3
-	luminosity           = 1
+	luminosity = 1
 
 	var/tmp/lighting_corners_initialised = FALSE
 
@@ -15,69 +11,6 @@
 	var/tmp/list/datum/lighting_corner/corners
 	/// Not to be confused with opacity, this will be TRUE if there's any opaque atom on the tile.
 	var/tmp/has_opaque_atom = FALSE
-	/// If this is TRUE, an above turf's ambient light is affecting this turf.
-	var/tmp/ambient_has_indirect = FALSE
-
-	// Record-keeping, do not touch -- that means you, admins.
-	var/tmp/ambient_light_old
-	var/tmp/ambient_light_old_r = 0
-	var/tmp/ambient_light_old_g = 0
-	var/tmp/ambient_light_old_b = 0
-
-/turf/proc/set_ambient_light(color, multiplier)
-	if (color == ambient_light && multiplier == ambient_light_multiplier)
-		return
-
-	ambient_light = isnull(color) ? ambient_light : color
-	ambient_light_multiplier = isnull(multiplier) ? ambient_light_multiplier : multiplier
-
-	update_ambient_light()
-
-/turf/proc/clear_ambient_light()
-	if (ambient_light == null)
-		return
-
-	ambient_light = null
-	update_ambient_light()
-
-/turf/proc/update_ambient_light(no_corner_update = FALSE)
-	// These are deltas.
-	var/ambient_r = 0
-	var/ambient_g = 0
-	var/ambient_b = 0
-
-	if (ambient_light && ambient_light_multiplier) // If either of these are false-y we can use the simplier path and avoid calculations
-		ambient_r = round(((HEX_RED(ambient_light)   / 255) * ambient_light_multiplier)/4 - ambient_light_old_r, LIGHTING_ROUND_VALUE)
-		ambient_g = round(((HEX_GREEN(ambient_light) / 255) * ambient_light_multiplier)/4 - ambient_light_old_g, LIGHTING_ROUND_VALUE)
-		ambient_b = round(((HEX_BLUE(ambient_light)  / 255) * ambient_light_multiplier)/4 - ambient_light_old_b, LIGHTING_ROUND_VALUE)
-	else
-		ambient_r = -ambient_light_old_r
-		ambient_g = -ambient_light_old_g
-		ambient_b = -ambient_light_old_b
-
-	ambient_light_old_r += ambient_r
-	ambient_light_old_g += ambient_g
-	ambient_light_old_b += ambient_b
-
-	if (abs(ambient_r + ambient_g + ambient_b) == 0)
-		return
-
-	if (!corners || !lighting_corners_initialised)
-		if (TURF_IS_DYNAMICALLY_LIT_UNSAFE(src))
-			generate_missing_corners()
-		else
-			return
-
-	// This list can contain nulls on things like space turfs -- they only have their neighbors' corners.
-	for (var/datum/lighting_corner/C in corners)
-		C.update_ambient_lumcount(ambient_r, ambient_g, ambient_b, no_corner_update)
-
-	if (ambient_light_old == null && ambient_light != ambient_light_old)
-		SSlighting.total_ambient_turfs += 1
-	else if (ambient_light_old != null && ambient_light == null)
-		SSlighting.total_ambient_turfs -= 1
-
-	ambient_light_old = ambient_light
 
 /// Causes any affecting light sources to be queued for a visibility update, for example a door got opened.
 /turf/proc/reconsider_lights()
@@ -137,9 +70,9 @@
 		lum_g += L.apparent_g
 		lum_b += L.apparent_b
 
-	lum_r = CLAMP01(lum_r / length(corners)) * 255
-	lum_g = CLAMP01(lum_g / length(corners)) * 255
-	lum_b = CLAMP01(lum_b / length(corners)) * 255
+	lum_r = CLAMP01(lum_r / 4) * 255
+	lum_g = CLAMP01(lum_g / 4) * 255
+	lum_b = CLAMP01(lum_b / 4) * 255
 
 	return rgb(lum_r, lum_g, lum_b)
 
@@ -193,6 +126,11 @@
 		recalc_atom_opacity() // Make sure to do this before reconsider_lights(), incase we're on instant updates.
 		reconsider_lights()
 
+// The normal opacity logic doesn't work for entities not located inside turfs, such as turfs.
+/turf/set_opacity(new_opacity)
+	. = ..()
+	reconsider_lights()
+
 // This block isn't needed now, but it's here if supporting area dyn lighting changes is needed later.
 
 // /turf/change_area(area/old_area, area/new_area)
@@ -205,7 +143,14 @@
 // This is inlined in lighting_source.dm.
 // Update it too if you change this.
 /turf/proc/generate_missing_corners()
-	if (!TURF_IS_DYNAMICALLY_LIT_UNSAFE(src) && !light_source_solo && !light_source_multi && !(z_flags & ZM_ALLOW_LIGHTING) && !ambient_light && !ambient_has_indirect)
+	var/is_dyn = TURF_IS_DYNAMICALLY_LIT_UNSAFE(src) || ambient_light
+	if (!is_dyn)
+		for (var/turf/Tneigh as anything in RANGE_TURFS(src, 1))
+			if (TURF_IS_DYNAMICALLY_LIT_UNSAFE(Tneigh))
+				is_dyn = TRUE
+				break
+
+	if (!is_dyn)
 		return
 
 	lighting_corners_initialised = TRUE
@@ -216,4 +161,7 @@
 		if (corners[i]) // Already have a corner on this direction.
 			continue
 
-		corners[i] = new/datum/lighting_corner(src, LIGHTING_CORNER_DIAGONAL[i], i)
+		corners[i] = new/datum/lighting_corner(src, LIGHTING_CORNER_DIAGONAL[i], i, LIGHTING_CORNER_DO_NOT_SCAN)
+
+	for (var/datum/lighting_corner/C as anything in corners)
+		C.generate_z_connections()

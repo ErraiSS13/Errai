@@ -53,7 +53,7 @@
 	var/static/list/spawnable_choices = list(
 		/obj/item/remains/lizard,
 		/obj/effect/decal/cleanable/blood/gibs/robot,
-		/obj/effect/decal/cleanable/spiderling_remains,
+		/obj/effect/decal/cleanable/spider_remains,
 		/obj/item/remains/mouse,
 		/obj/effect/decal/cleanable/vomit,
 		/obj/effect/decal/cleanable/blood/splatter,
@@ -65,3 +65,11 @@
 		/obj/item/remains/robot
 	)
 	return spawnable_choices
+
+// Slightly more generic pain strings compared to 'dear god' and 'you need painkillers'
+/decl/bodytype/get_custom_pain_strings()
+	var/static/list/custom_pain_strings = list(
+		"It hurts so much!",
+		"The pain is overwhelming!"
+	)
+	return custom_pain_strings

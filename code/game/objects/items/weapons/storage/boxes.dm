@@ -166,6 +166,18 @@
 /obj/item/box/ammo/blanks/WillContain()
 	return list(/obj/item/ammo_casing/shotgun/blank = 8)
 
+/obj/item/box/ammo/blanks/large
+	icon_state = "largebox"
+	w_class = ITEM_SIZE_LARGE
+	storage = /datum/storage/box/large/metal
+
+/obj/item/box/ammo/blanks/large/Initialize(ml, material_key)
+	. = ..()
+	storage.make_exact_fit()
+
+/obj/item/box/ammo/blanks/large/WillContain()
+	return list(/obj/item/ammo_casing/shotgun/blank = 16)
+
 /obj/item/box/ammo/practiceshells
 	name = "box of practice shells"
 /obj/item/box/ammo/practiceshells/WillContain()
@@ -357,13 +369,6 @@
 /obj/item/box/animal_cubes/monkeys/WillContain()
 	return list(/obj/item/food/animal_cube/wrapped/monkey = 5)
 
-/obj/item/box/animal_cubes/spiders
-	name = "spiderling cube box"
-	desc = "Drymate brand spider cubes. WHY WOULD YOU ORDER THIS!?"
-
-/obj/item/box/animal_cubes/spiders/WillContain()
-	return list(/obj/item/food/animal_cube/wrapped/spider = 5)
-
 /obj/item/box/animal_cubes/carp
 	name = "space carp cube box"
 	desc = "Drymate brand carp cubes. Allergen information: May contain traces of pike."
@@ -431,6 +436,7 @@
 	return list(/obj/item/chems/hypospray/autoinjector/stabilizer = 7)
 
 /obj/item/box/lights
+	abstract_type = /obj/item/box/lights
 	name = "box of replacement bulbs"
 	icon_state = "light"
 	desc = "This box is shaped on the inside so that only light tubes and bulbs fit."

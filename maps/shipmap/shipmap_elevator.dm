@@ -1,5 +1,5 @@
 /obj/abstract/turbolift_spawner/shipmap
-	icon = 'icons/obj/turbolift_preview_3x3.dmi'
+	icon = 'mods/content/turbolift/icons/turbolift_preview_3x3.dmi'
 	depth = 3
 	lift_size_x = 4
 	lift_size_y = 4
@@ -26,7 +26,7 @@
 
 /obj/abstract/turbolift_spawner/shipmap/small
 	abstract_type = /obj/abstract/turbolift_spawner/shipmap/small
-	icon = 'icons/obj/turbolift_preview_nowalls_3x3.dmi' // This is wrong but there is no 2x2.
+	icon = 'mods/content/turbolift/icons/turbolift_preview_nowalls_3x3.dmi' // This is wrong but there is no 2x2.
 	dir = SOUTH
 	depth = 2
 	lift_size_x = 1

@@ -26,7 +26,7 @@
 	)
 
 	vital_organs = list(
-		BP_STACK,
+		BP_VOXSTACK,
 		BP_BRAIN
 	)
 	override_limb_types = list(
@@ -45,7 +45,7 @@
 		BP_KIDNEYS    = /obj/item/organ/internal/kidneys/vox,
 		BP_BRAIN      = /obj/item/organ/internal/brain,
 		BP_EYES       = /obj/item/organ/internal/eyes/vox,
-		BP_STACK      = /obj/item/organ/internal/voxstack,
+		BP_VOXSTACK   = /obj/item/organ/internal/voxstack,
 		BP_HINDTONGUE = /obj/item/organ/internal/hindtongue
 	)
 	default_sprite_accessories = list(
@@ -124,7 +124,7 @@
 	return ..()
 
 /decl/bodytype/vox/get_movement_slowdown(var/mob/living/human/H)
-	if(H && global.vox_current_pressure_toggle["\ref[H]"])
+	if(H?.has_mob_modifier(/decl/mob_modifier/sealed_carapace, source = H))
 		return 1.5
 	return ..()
 

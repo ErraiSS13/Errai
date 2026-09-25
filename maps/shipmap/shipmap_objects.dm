@@ -6,9 +6,11 @@
 
 /decl/flooring/tiling/new_tile/dark
 	color = COLOR_DARK_GUNMETAL
+	uid = "floor_tiled_new_dark"
 
 /decl/flooring/tiling/new_tile/cargo_one/dark
 	color = COLOR_DARK_GUNMETAL
+	uid = "floor_tiled_cargo_dark"
 
 // Makes the lights less intense.
 /decl/flooring/reinforced/circuit
@@ -33,7 +35,8 @@
 		/obj/item/chems/drinks,
 		/obj/item/chems/condiment
 	)
-	return istype(O) && O.reagents?.total_volume && is_type_in_list(O, _allowed_types)
+	var/datum/reagents/reagents = O.reagents
+	return istype(O) && reagents && REAGENT_TOTAL_VOLUME(reagents) && is_type_in_list(O, _allowed_types)
 
 
 /obj/machinery/computer/modular/preset/pilot

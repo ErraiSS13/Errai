@@ -57,14 +57,14 @@
 				. += "<span class='warning'>Pressure: [round(pressure,0.01)] kPa</span>"
 
 			var/perGas_add_string = ""
-			for(var/mix in mixture.gas)
-				var/percentage = round(mixture.gas[mix]/total_moles * 100, 0.01)
+			for(var/gas_type, gas_moles in mixture.gas)
+				var/percentage = round(gas_moles/total_moles * 100, 0.01)
 				if(!percentage)
 					continue
-				var/decl/material/mat = GET_DECL(mix)
+				var/decl/material/mat = GET_DECL(gas_type)
 				switch(mode)
 					if(MV_MODE)
-						perGas_add_string = ", Moles: [round(mixture.gas[mix], 0.01)]"
+						perGas_add_string = ", Moles: [round(gas_moles, 0.01)]"
 					if(MAT_TRAIT_MODE)
 						var/list/traits = list()
 						if(mat.gas_flags & XGM_GAS_FUEL)
@@ -79,7 +79,7 @@
 				. += "[capitalize(mat.gas_name)]: [percentage]%[perGas_add_string]"
 			var/totalGas_add_string = ""
 			if(mode == MV_MODE)
-				totalGas_add_string = ", Total moles: [round(mixture.total_moles, 0.01)], Volume: [mixture.volume]L"
+				totalGas_add_string = ", Total moles: [round(mixture.total_moles, 0.01)], Volume: [mixture.total_volume]L"
 			. += "Temperature: [round(mixture.temperature-T0C)]&deg;C / [round(mixture.temperature)]K[totalGas_add_string]"
 
 			return

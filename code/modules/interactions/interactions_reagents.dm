@@ -4,7 +4,7 @@
 	examine_desc = "dip an item into $TARGET_THEM$"
 
 /decl/interaction_handler/dip_item/is_possible(atom/target, mob/user, obj/item/prop)
-	return ..() && target != prop && target.reagents?.total_volume >= FLUID_MINIMUM_TRANSFER && istype(prop) && target.can_be_poured_from(user, prop)
+	return ..() && target != prop && REAGENT_TOTAL_VOLUME(target.reagents) >= FLUID_MINIMUM_TRANSFER && istype(prop) && target.can_be_poured_from(user, prop)
 
 /decl/interaction_handler/dip_item/invoked(atom/target, mob/user, obj/item/prop)
 	user.visible_message(SPAN_NOTICE("\The [user] dips \the [prop] into \the [target.reagents.get_primary_reagent_name()]."))
@@ -13,7 +13,7 @@
 		var/transferring = min(target_obj.get_food_default_transfer_amount(user), REAGENTS_FREE_SPACE(prop.reagents))
 		if(transferring)
 			target.reagents.trans_to_holder(prop.reagents, transferring)
-	if(target.reagents?.total_volume >= FLUID_MINIMUM_TRANSFER)
+	if(REAGENT_TOTAL_VOLUME(target.reagents) >= FLUID_MINIMUM_TRANSFER)
 		prop.fluid_act(target.reagents)
 	return TRUE
 
@@ -25,17 +25,21 @@
 /decl/interaction_handler/fill_from/is_possible(atom/target, mob/user, obj/item/prop)
 	if(!(. = ..()))
 		return
-	if(target == prop || target.reagents?.total_volume < FLUID_PUDDLE)
+	if(target == prop || REAGENT_TOTAL_VOLUME(target.reagents) < FLUID_PUDDLE)
 		return FALSE
-	if(!istype(prop) || (!isitem(target) && !istype(target, /obj/structure/reagent_dispensers)))
+	if(!istype(prop) || (!isitem(target) && !istype(target, /obj/structure)))
 		return FALSE
+	if(istype(target, /obj/structure))
+		var/obj/structure/struct = target
+		if(isnull(struct.get_possible_reagent_transfer_amounts()))
+			return FALSE // Not a dispenser
 	return target.can_be_poured_from(user, prop) && prop.can_be_poured_into(user, target)
 
 /decl/interaction_handler/fill_from/invoked(atom/target, mob/user, obj/item/prop)
 	if(isitem(target))
 		var/obj/item/vessel = target
 		return vessel.standard_pour_into(user, prop)
-	if(istype(target, /obj/structure/reagent_dispensers))
+	if(istype(target, /obj/structure))
 		// Reagent dispensers have some wonky assumptions due to old UX around filling/emptying so we skip the atom flags check.
 		return prop.standard_dispenser_refill(user, target, skip_container_check = TRUE)
 	return FALSE
@@ -48,7 +52,7 @@
 /decl/interaction_handler/empty_into/is_possible(atom/target, mob/user, obj/item/prop)
 	if(!(. = ..()))
 		return
-	if(target == prop || !istype(prop) || prop.reagents?.total_volume <= 0)
+	if(target == prop || !istype(prop) || REAGENT_TOTAL_VOLUME(prop.reagents) <= 0)
 		return FALSE
 	return target.can_be_poured_into(user, prop) && prop.can_be_poured_from(user, target)
 
@@ -124,7 +128,7 @@
 		target.show_food_no_mouth_message(user, user)
 		return
 
-	if(!target?.reagents?.total_volume)
+	if(!REAGENT_TOTAL_VOLUME(target?.reagents))
 		target.show_food_empty_message(user, EATING_METHOD_DRINK)
 		return
 

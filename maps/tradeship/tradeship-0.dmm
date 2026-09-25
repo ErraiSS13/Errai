@@ -27,7 +27,7 @@
 /turf/floor,
 /area/ship/trade/undercomms)
 "ad" = (
-/obj/structure/door/wood{
+/obj/structure/door/oak{
 	name = "captain's quarters"
 	},
 /obj/structure/cable{
@@ -712,7 +712,7 @@
 /turf/floor,
 /area/ship/trade/fore_port_underside_maint)
 "bD" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -22
 	},
@@ -932,7 +932,7 @@
 /turf/floor,
 /area/ship/trade/aft_port_underside_maint)
 "bZ" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -22
 	},
@@ -1499,7 +1499,7 @@
 /turf/floor/tiled/white,
 /area/ship/trade/livestock)
 "xZ" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -22
 	},
@@ -1621,9 +1621,7 @@
 /turf/floor,
 /area/ship/trade/fore_port_underside_maint)
 "Dt" = (
-/obj/abstract/level_data_spawner/main_level{
-	name = "Tradeship Basement Deck"
-	},
+/obj/abstract/level_data_spawner/tradeship_basement,
 /turf/space,
 /area/space)
 "Dz" = (
@@ -1724,7 +1722,7 @@
 /obj/structure/cable{
 	icon_state = "0-8"
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -22
 	},
@@ -1770,7 +1768,7 @@
 /obj/structure/chair/comfy/green{
 	dir = 1
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -22
 	},
@@ -1850,7 +1848,7 @@
 /turf/wall/r_wall/hull,
 /area/ship/trade/undercomms)
 "Lx" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 4;
 	pixel_x = 22
 	},
@@ -2124,7 +2122,7 @@
 /turf/floor,
 /area/ship/trade/loading_bay)
 "VT" = (
-/obj/machinery/hologram/holopad/longrange,
+/obj/machinery/holopad/longrange,
 /turf/floor/laminate/walnut,
 /area/ship/trade/disused)
 "Xe" = (
@@ -2201,7 +2199,7 @@
 /turf/floor,
 /area/ship/trade/aft_starboard_underside_maint)
 "Zz" = (
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	name = "south bump";
 	pixel_y = -22
 	},

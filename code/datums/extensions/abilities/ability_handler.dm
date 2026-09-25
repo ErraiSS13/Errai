@@ -21,7 +21,7 @@
 	if(!istype(owner))
 		CRASH("Ability handler received invalid owner!")
 	..()
-	refresh_login()
+	refresh_login(being_created = TRUE)
 
 /datum/ability_handler/Process()
 
@@ -125,7 +125,7 @@
 		add_screen_element(category_toggle, "toggle", TRUE)
 		toggle_category_visibility(TRUE)
 
-/datum/ability_handler/proc/refresh_element_positioning(row = 1, col = 1)
+/datum/ability_handler/proc/refresh_element_positioning(row = 1, col = 0)
 	if(!LAZYLEN(screen_elements))
 		return 0
 	var/button_pos = col
@@ -134,14 +134,14 @@
 	for(var/ability in screen_elements)
 		var/obj/screen/element = screen_elements[ability]
 		if(istype(element, /obj/screen/ability/category))
-			element.screen_loc = "RIGHT-[col]:-4,TOP-[row]"
+			element.screen_loc = "RIGHT-[col]:-4,TOP-[row]:-24"
 		else if(!element.invisibility)
 			button_pos++
 			if((button_pos-col) > 5)
 				button_row++
 				.++
 				button_pos = col+1
-			element.screen_loc = "RIGHT-[button_pos]:-4,TOP-[button_row]"
+			element.screen_loc = "RIGHT-[button_pos]:-4,TOP-[button_row]:-24"
 
 /datum/ability_handler/proc/toggle_category_visibility(force_state)
 	showing_abilities = isnull(force_state) ? !showing_abilities : force_state
@@ -211,7 +211,7 @@
 			stat(stat_strings[1], stat_strings[2])
 
 /// Individual ability methods/disciplines (psioncs, etc.) so that mobs can have multiple.
-/datum/ability_handler/proc/refresh_login()
+/datum/ability_handler/proc/refresh_login(being_created = FALSE)
 	SHOULD_CALL_PARENT(TRUE)
 	if(LAZYLEN(screen_elements))
 		var/list/add_elements = list()
@@ -226,7 +226,7 @@
 	if(!prepared_ability)
 		return FALSE
 	if(prepared_ability.cancel_ability_1p_str)
-		to_chat(owner, capitalize(emote_replace_user_tokens(prepared_ability.cancel_ability_1p_str), owner))
+		to_chat(owner, capitalize_proper_html(emote_replace_user_tokens(prepared_ability.cancel_ability_1p_str), owner))
 	var/obj/screen/ability/button/button = LAZYACCESS(screen_elements, prepared_ability)
 	prepared_ability = null
 	if(istype(button))
@@ -238,7 +238,7 @@
 		return FALSE
 	prepared_ability = ability
 	if(ability.ready_ability_1p_str)
-		to_chat(owner, capitalize(emote_replace_user_tokens(ability.ready_ability_1p_str), owner))
+		to_chat(owner, capitalize_proper_html(emote_replace_user_tokens(ability.ready_ability_1p_str), owner))
 	var/obj/screen/ability/button/button = LAZYACCESS(screen_elements, ability)
 	if(istype(button))
 		button.update_icon()

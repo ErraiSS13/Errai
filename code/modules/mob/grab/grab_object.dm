@@ -77,6 +77,10 @@
 	if(affecting_mob && assailant?.check_intent(I_FLAG_HARM))
 		upgrade(TRUE)
 
+/obj/item/grab/ShouldSerialize(_age)
+	SHOULD_CALL_PARENT(FALSE)
+	return FALSE
+
 /obj/item/grab/mob_can_unequip(mob/user, slot, disable_warning = FALSE, dropping = FALSE)
 	if(dropping)
 		return TRUE
@@ -178,7 +182,7 @@
 	current_grab.let_go(src)
 
 /obj/item/grab/proc/on_affecting_move()
-	if(!affecting || !isturf(affecting.loc) || get_dist(affecting, assailant) > 1)
+	if(!affecting || !isturf(affecting.loc) || (get_dist_3d(affecting, assailant) > 1 && affecting.moving_diagonally != /atom/movable::FIRST_DIAGONAL_STEP))
 		force_drop()
 
 /obj/item/grab/proc/force_drop()
@@ -187,7 +191,7 @@
 /obj/item/grab/proc/get_affecting_mob()
 	if(isobj(affecting))
 		var/obj/O = affecting
-		return O.buckled_mob
+		return O.get_buckled_mob()
 	if(isliving(affecting))
 		return affecting
 

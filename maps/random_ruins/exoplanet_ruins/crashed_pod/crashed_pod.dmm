@@ -527,7 +527,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
 	dir = 4
 	},
-/obj/machinery/power/apc{
+/obj/machinery/apc{
 	dir = 1;
 	name = "_North APC";
 	pixel_y = 24
@@ -562,7 +562,6 @@
 /obj/machinery/door/airlock{
 	dir = 8
 	},
-/obj/effect/decal/cleanable/dirt/visible,
 /obj/effect/decal/cleanable/dirt/visible,
 /turf/floor/tiled/techfloor,
 /area/map_template/crashed_pod)
@@ -613,7 +612,7 @@
 /obj/item/tool/axe/hatchet,
 /obj/item/plantspray/pests,
 /obj/item/plantspray/weeds,
-/obj/item/plants,
+/obj/item/plant_satchel,
 /obj/item/chems/glass/bottle/eznutrient,
 /obj/item/seeds/wheatseed,
 /obj/effect/decal/cleanable/dirt/visible,
@@ -626,8 +625,8 @@
 /obj/structure/closet/crate{
 	dir = 8
 	},
-/obj/item/ore,
-/obj/item/ore,
+/obj/item/ore_satchel,
+/obj/item/ore_satchel,
 /obj/item/mop,
 /obj/item/flashlight/lantern,
 /obj/item/flashlight/lantern,
@@ -947,10 +946,6 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/machinery/door/airlock,
-/obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
-/obj/effect/decal/cleanable/dirt/visible,
 /obj/effect/decal/cleanable/dirt/visible,
 /turf/floor/tiled/techfloor,
 /area/map_template/crashed_pod)
@@ -1319,7 +1314,6 @@
 /turf/floor/tiled/techfloor,
 /area/map_template/crashed_pod)
 "Ta" = (
-/obj/effect/decal/cleanable/dirt/visible,
 /obj/effect/decal/cleanable/dirt/visible,
 /obj/structure/hygiene/sink{
 	dir = 8;

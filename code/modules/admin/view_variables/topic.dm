@@ -4,6 +4,8 @@
 		return
 	if(href_list["Vars"])
 		debug_variables(locate(href_list["Vars"]))
+	if(href_list["zm_analyze"])
+		analyze_openturf(locate(href_list["zm_analyze"]))
 
 	//~CARN: for renaming mobs (updates their name, real_name, mind.name, their ID/PDA and datacore records).
 	else if(href_list["rename"])
@@ -587,9 +589,9 @@
 			href_list["datumrefresh"] = href_list["mobToDamage"]
 
 	else if(href_list["call_proc"])
-		var/datum/called_proc = locate(href_list["call_proc"])
-		if(istype(called_proc) || istype(called_proc, /client)) // can call on clients too, not just datums
-			callproc_targetpicked(1, called_proc)
+		var/datum/proc_callee = locate(href_list["call_proc"])
+		if(istype(proc_callee) || istype(proc_callee, /client)) // can call on clients too, not just datums
+			callproc_targetpicked(1, proc_callee)
 
 	else if(href_list["addstressor"])
 		if(!check_rights(R_DEBUG))

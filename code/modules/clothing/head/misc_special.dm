@@ -31,7 +31,7 @@
 	w_class = ITEM_SIZE_NORMAL
 	flash_protection = FLASH_PROTECTION_MAJOR
 	tint = TINT_HEAVY
-	replaced_in_loadout = FALSE
+	replaced_in_loadout = LOADOUT_CONFLICT_STORAGE
 	accessory_slot = null // cannot be equipped on top of helmets
 	var/up = 0
 	var/base_state
@@ -143,7 +143,7 @@
 	icon = 'icons/clothing/head/pumpkin.dmi'
 	flags_inv = HIDEMASK|HIDEEARS|HIDEEYES|HIDEFACE|BLOCK_ALL_HAIR
 	body_parts_covered = SLOT_HEAD|SLOT_FACE|SLOT_EYES
-	brightness_on = 2
+	headlamp_range = 2
 	w_class = ITEM_SIZE_NORMAL
 	material = /decl/material/solid/organic/plantmatter
 	valid_accessory_slots = list(ACCESSORY_SLOT_OVER_HELMET)

@@ -96,6 +96,7 @@
 /obj/machinery/fabricator/modify_mapped_vars(map_hash)
 	..()
 	ADJUST_TAG_VAR(initial_network_id, map_hash)
+	ADJUST_TAG_VAR(initial_network_key, map_hash)
 
 /obj/machinery/fabricator/handle_post_network_connection()
 	..()
@@ -230,6 +231,6 @@
 	return pipe_colors //override with null for hex color selections
 
 // Our stored_material is just the right format to be added to the matter list.
-/obj/machinery/fabricator/get_contained_matter()
+/obj/machinery/fabricator/get_contained_matter(include_reagents = TRUE)
 	. = ..()
 	. = MERGE_ASSOCS_WITH_NUM_VALUES(., stored_material)

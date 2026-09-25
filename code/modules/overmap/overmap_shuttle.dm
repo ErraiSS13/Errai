@@ -1,4 +1,4 @@
-#define waypoint_sector(waypoint) global.overmap_sectors[num2text(waypoint.z)]
+#define waypoint_sector(waypoint) global.overmap_sectors[waypoint.z]
 
 /datum/shuttle/autodock/overmap
 	warmup_time = 10
@@ -25,10 +25,10 @@
 
 /datum/shuttle/autodock/overmap/fuel_check()
 	if(!try_consume_fuel()) //insufficient fuel
-		for(var/mob/hearer in global.living_mob_list_ + global.ghost_mob_list)
-			if(is_type_in_list(get_area(hearer), shuttle_area))
-				hearer.show_message(SPAN_WARNING("You hear the shuttle engines sputter... perhaps it doesn't have enough fuel?"), AUDIBLE_MESSAGE,
-				SPAN_WARNING("The shuttle shakes but fails to take off."), VISIBLE_MESSAGE)
+		message_passengers(
+			SPAN_WARNING("You hear the shuttle engines sputter... perhaps it doesn't have enough fuel?"),
+			SPAN_WARNING("The shuttle shakes but fails to take off.")
+		)
 		return FALSE //failure
 	return TRUE //sucess, continue with launch
 

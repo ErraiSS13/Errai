@@ -38,6 +38,7 @@
 	return stamina
 
 /mob/living/human/adjust_stamina(var/amt)
+	. = (stamina + amt) > 0
 	var/last_stamina = stamina
 	if(stat == DEAD)
 		stamina = 0
@@ -157,9 +158,9 @@
 	var/adjusted_pressure = calculate_affecting_pressure(pressure)
 
 	//Check for contaminants before anything else because we don't want to skip it.
-	for(var/g in environment.gas)
-		var/decl/material/mat = GET_DECL(g)
-		if((mat.gas_flags & XGM_GAS_CONTAMINANT) && environment.gas[g] > mat.gas_overlay_limit + 1)
+	for(var/gas_type, gas_amount in environment.gas)
+		var/decl/material/mat = GET_DECL(gas_type)
+		if((mat.gas_flags & XGM_GAS_CONTAMINANT) && gas_amount > mat.gas_overlay_limit + 1)
 			handle_contaminants()
 			break
 
@@ -173,7 +174,7 @@
 			var/temperature_gain = heat_gain/HUMAN_HEAT_CAPACITY
 			bodytemperature += temperature_gain //temperature_gain will often be negative
 
-	var/relative_density = (environment.total_moles/environment.volume) / (MOLES_CELLSTANDARD/CELL_VOLUME)
+	var/relative_density = (environment.total_moles/environment.total_volume) / (MOLES_CELLSTANDARD/CELL_VOLUME)
 	if(relative_density > 0.02) //don't bother if we are in vacuum or near-vacuum
 		var/loc_temp = environment.temperature
 
@@ -535,7 +536,9 @@
 		// Please be very careful when calling custom_pain() from within code that relies on pain/trauma values. There's the
 		// possibility of a feedback loop from custom_pain() being called with a positive power, incrementing pain on a limb,
 		// which triggers this proc, which calls custom_pain(), etc. Make sure you call it with nohalloss = TRUE in these cases!
-		custom_pain("[pick("It hurts so much", "You really need some painkillers", "Dear god, the pain")]!", 10, nohalloss = TRUE)
+		var/list/custom_pain_strings = get_bodytype()?.get_custom_pain_strings()
+		if(length(custom_pain_strings))
+			custom_pain(pick(custom_pain_strings), 10, nohalloss = TRUE)
 
 	if(rounded_shock_stage >= 30)
 		if(rounded_shock_stage == 30)

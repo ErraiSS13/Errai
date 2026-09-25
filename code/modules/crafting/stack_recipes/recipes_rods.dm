@@ -2,7 +2,6 @@
 	abstract_type               = /decl/stack_recipe/rods
 	craft_stack_types           = list(
 		/obj/item/stack/material/rods,
-		/obj/item/stack/material/strut,
 		/obj/item/stack/material/bone
 	)
 	one_per_turf                = TRUE
@@ -10,6 +9,7 @@
 	difficulty                  = MAT_VALUE_HARD_DIY
 	available_to_map_tech_level = MAP_TECH_LEVEL_MEDIEVAL
 	category                    = "structures"
+	validation_material         = /decl/material/solid/metal/steel
 
 /decl/stack_recipe/rods/stick
 	result_type                 = /obj/item/stick
@@ -37,7 +37,6 @@
 /decl/stack_recipe/rods/girder
 	result_type                 = /obj/structure/girder
 	required_wall_support_value = 10
-	req_amount                  = 5 * SHEET_MATERIAL_AMOUNT // Arbitrary value since girders return weird matter values.
 	available_to_map_tech_level = MAP_TECH_LEVEL_SPACE
 
 /decl/stack_recipe/rods/wall_frame
@@ -77,3 +76,19 @@
 	result_type                 = /obj/structure/grille
 	one_per_turf                = TRUE
 	difficulty                  = MAT_VALUE_NORMAL_DIY
+
+/decl/stack_recipe/rods/furniture
+	abstract_type          = /decl/stack_recipe/rods/furniture
+	one_per_turf           = TRUE
+	on_floor               = TRUE
+	difficulty             = MAT_VALUE_HARD_DIY
+	category               = "furniture"
+
+/decl/stack_recipe/rods/furniture/fence
+	result_type            = /obj/structure/fence/stick
+	difficulty             = MAT_VALUE_NORMAL_DIY
+
+/decl/stack_recipe/rods/furniture/fence_door
+	result_type            = /obj/structure/fence/door/stick
+	difficulty             = MAT_VALUE_NORMAL_DIY
+

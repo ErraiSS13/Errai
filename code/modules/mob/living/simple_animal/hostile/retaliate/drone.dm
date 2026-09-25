@@ -3,7 +3,7 @@
 /mob/living/simple_animal/hostile/malf_drone
 	name                = "combat drone"
 	desc                = "An automated combat drone armed with state of the art weaponry and shielding."
-	icon                = 'icons/mob/simple_animal/drone_combat.dmi'
+	icon                = 'icons/mob/simple_animal/drones/combat.dmi'
 	burst_projectile    = 0
 	max_health          = 300
 	move_intents        = list(
@@ -52,7 +52,7 @@
 	//1 - hostile, attack everything that comes near
 	var/hostile_range = 10
 
-/mob/living/simple_animal/hostile/malf_drone/has_ranged_attack()
+/mob/living/simple_animal/hostile/malf_drone/has_ranged_attack(atom/target)
 	return TRUE
 
 /datum/mob_controller/aggressive/malf_drone/get_raw_target_list()
@@ -273,3 +273,13 @@
 
 /obj/item/projectile/beam/pulse/drone
 	damage = 10
+
+/mob/living/simple_animal/hostile/malf_drone/lesser
+	name = "old combat drone"
+	desc = "An automated combat drone with an aged apperance."
+	base_movement_delay = 1 SECOND
+
+/mob/living/simple_animal/hostile/malf_drone/mining
+	name = "mining drone"
+	desc = "An automated drone with a worn-out appearance, but an ominous gaze."
+	icon = 'icons/mob/simple_animal/drones/mining.dmi'

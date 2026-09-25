@@ -81,7 +81,7 @@
 		if(!can_breathe_air_above)
 			breath = new
 			if(!can_drown())
-				breath.volume = volume_needed
+				breath.total_volume = volume_needed
 				breath.temperature = my_turf.temperature
 				// TODO: species-breathable gas instead of oxygen default. Maybe base it on the reagents being breathed
 				breath.adjust_gas(/decl/material/gas/oxygen, ONE_ATMOSPHERE*volume_needed/(R_IDEAL_GAS_EQUATION*T20C))
@@ -132,7 +132,7 @@
 			return
 
 	for(var/obj/effect/effect/smoke/chem/smoke in view(1, src))
-		if(smoke.reagents.total_volume)
+		if(REAGENT_TOTAL_VOLUME(smoke.reagents))
 			smoke.reagents.trans_to_mob(src, 5, CHEM_INGEST, copy = 1)
 			smoke.reagents.trans_to_mob(src, 5, CHEM_INJECT, copy = 1)
 			// I dunno, maybe the reagents enter the blood stream through the lungs?

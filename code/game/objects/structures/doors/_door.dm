@@ -9,6 +9,7 @@
 	anchored              = TRUE
 	opacity               = TRUE
 	structure_flags       = STRUCTURE_FLAG_THROWN_DAMAGE
+	interaction_priority  = TRUE
 	var/has_window        = FALSE
 	var/changing_state    = FALSE
 	var/door_sound_volume = 25
@@ -97,9 +98,9 @@
 	changing_state = FALSE
 
 /obj/structure/door/attack_hand(mob/user)
-	if(user.check_dexterity(DEXTERITY_SIMPLE_MACHINES, TRUE))
+	. = ..()
+	if(!. && user.check_dexterity(DEXTERITY_SIMPLE_MACHINES, TRUE))
 		return density ? open(user) : close(user)
-	return ..()
 
 /obj/structure/door/proc/close(mob/user)
 	set waitfor = FALSE
@@ -255,7 +256,7 @@
 /obj/structure/door/diamond
 	material = /decl/material/solid/gemstone/diamond
 
-/obj/structure/door/wood
+/obj/structure/door/oak
 	material = /decl/material/solid/organic/wood/oak
 	color = /decl/material/solid/organic/wood/oak::color
 
@@ -275,17 +276,18 @@
 	material = /decl/material/solid/organic/wood/walnut
 	color = /decl/material/solid/organic/wood/walnut::color
 
-/obj/structure/door/wood/saloon
-	material = /decl/material/solid/organic/wood/oak
-	opacity = FALSE
-
-/obj/structure/door/wood/saloon/ebony
+/obj/structure/door/ebony
 	material = /decl/material/solid/organic/wood/ebony
 	color = /decl/material/solid/organic/wood/ebony::color
 
-/obj/structure/door/wood/saloon/walnut
-	material = /decl/material/solid/organic/wood/walnut
-	color = /decl/material/solid/organic/wood/walnut::color
+/obj/structure/door/oak/saloon
+	opacity = FALSE
+
+/obj/structure/door/ebony/saloon
+	opacity = FALSE
+
+/obj/structure/door/walnut/saloon
+	opacity = FALSE
 
 /obj/structure/door/glass
 	material = /decl/material/solid/glass

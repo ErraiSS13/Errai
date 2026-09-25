@@ -7,7 +7,7 @@
 	w_class = ITEM_SIZE_TINY
 	material = /decl/material/solid/metal/steel
 	center_of_mass = @'{"x":16,"y":7}'
-	attack_verb = list("stabbed")
+	attack_verb = "stabbed"
 	lock_picking_level = 5
 	sharp = TRUE
 	material_alteration = MAT_FLAG_ALTERATION_COLOR
@@ -20,7 +20,10 @@
 	if(prob(75))
 		pixel_y = rand(0, 16)
 	. = ..()
-	set_extension(src, /datum/extension/tool, list(TOOL_SCREWDRIVER = TOOL_QUALITY_DEFAULT))
+	set_extension(src, /datum/extension/tool, list(
+		TOOL_SCREWDRIVER = TOOL_QUALITY_DEFAULT,
+		TOOL_CHISEL = TOOL_QUALITY_BAD
+	))
 
 /obj/item/screwdriver/on_update_icon()
 	. = ..()

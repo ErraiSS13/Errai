@@ -21,9 +21,8 @@
 	w_class = ITEM_SIZE_SMALL
 	abstract_type = /obj/item/food
 	needs_attack_dexterity = DEXTERITY_NONE
+	chem_volume = 50
 
-	/// The maximum reagent volume of this food. Used in initialize_reagents.
-	var/volume = 50
 	/// Indicates the food should give a stress effect on eating.
 	// This is set to 1 if the food is created by a recipe, -1 if the food is raw.
 	var/cooked_food = FOOD_PREPARED
@@ -59,18 +58,10 @@
 	else if(!istype(plate))
 		plate = null
 
-	initialize_reagents()
 	if(isnull(_utensil_food_type))
 		_utensil_food_type = type
 	if(slice_path && slice_num)
 		utensil_flags |= UTENSIL_FLAG_SLICE
-
-/obj/item/food/initialize_reagents(populate = TRUE)
-	if(!reagents)
-		create_reagents(volume)
-	else
-		reagents.maximum_volume = max(reagents.maximum_volume, volume)
-	return ..()
 
 // Dummy type used solely for soup bowls/soup spoons.
 /obj/item/food/lump
@@ -78,7 +69,7 @@
 
 /obj/item/food/lump/on_reagent_change()
 	. = ..()
-	if(reagents?.total_volume)
+	if(REAGENT_TOTAL_VOLUME(reagents))
 		SetName(reagents.get_primary_reagent_name())
 		filling_color = reagents.get_color()
 	else
@@ -95,7 +86,7 @@
 
 // Does not rely on ATOM_IS_OPEN_CONTAINER because we want to be able to pour in but not out.
 /obj/item/food/can_be_poured_into(atom/source)
-	return (reagents?.maximum_volume > 0)
+	return (REAGENT_MAXIMUM_VOLUME(reagents) > 0)
 
 /obj/item/food/attack_self(mob/user)
 	if(is_edible(user) && handle_eaten_by_mob(user, user) != EATEN_INVALID)
@@ -179,8 +170,8 @@
 
 //Since we automatically create some reagents types for the nutriments, make sure we call this proc when overriding it
 /obj/item/food/populate_reagents()
-	. = ..()
 	SHOULD_CALL_PARENT(TRUE)
+	. = ..()
 	if(!nutriment_amt || !nutriment_type)
 		return
 	// Ensure our taste data is in the expected format.
@@ -200,9 +191,8 @@
 		.[DATA_INGREDIENT_FLAGS] |= allergen_flags
 
 /obj/item/food/proc/set_nutriment_data(list/newdata)
-	if(reagents?.total_volume && reagents.has_reagent(nutriment_type, 1))
-		LAZYINITLIST(reagents.reagent_data)
-		reagents.reagent_data[nutriment_type] = newdata
+	if(REAGENT_TOTAL_VOLUME(reagents) && reagents.has_reagent(nutriment_type, 1))
+		REAGENT_SET_DATA(reagents, nutriment_type, newdata)
 
 /obj/item/food/get_utensil_food_type()
 	return _utensil_food_type
@@ -213,10 +203,9 @@
 /obj/item/food/handle_chunk_separated()
 	bitecount++
 
-
 /obj/item/food/proc/add_allergen_flags(new_flags)
-	for(var/decl/material/reagent as anything in reagents.reagent_volumes)
+	for(var/decl/material/reagent as anything in REAGENT_VOLUMES(reagents))
 		var/list/newdata = reagent.mix_data(reagents, list(DATA_INGREDIENT_FLAGS = new_flags))
 		if(newdata)
-			LAZYSET(reagents.reagent_data, reagent, newdata)
+			REAGENT_SET_DATA(reagents, reagent, newdata)
 

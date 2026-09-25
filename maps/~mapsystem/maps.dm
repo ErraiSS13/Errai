@@ -23,7 +23,7 @@ var/global/const/MAP_HAS_RANK   = 2		//Rank system, also toggleable
 
 		global.all_maps[map_instance.path] = map_instance
 		if(map_instance.votable)
-			global.votable_maps[map_instance.path] = map_instance
+			global.votable_maps[map_instance.full_name] = map_instance
 
 	return 1
 
@@ -68,18 +68,11 @@ var/global/const/MAP_HAS_RANK   = 2		//Rank system, also toggleable
 	var/shuttle_leaving_dock
 	var/shuttle_called_message
 	var/shuttle_recall_message
+	var/shuttle_arriving_at_dock_message
 	var/emergency_shuttle_docked_message
 	var/emergency_shuttle_leaving_dock
 	var/emergency_shuttle_recall_message
-
-	var/list/holodeck_programs = list() // map of string ids to /datum/holodeck_program instances
-	var/list/holodeck_supported_programs = list() // map of maps - first level maps from list-of-programs string id (e.g. "BarPrograms") to another map
-												  // this is in order to support multiple holodeck program listings for different holodecks
-	                                              // second level maps from program friendly display names ("Picnic Area") to program string ids ("picnicarea")
-	                                              // as defined in holodeck_programs
-	var/list/holodeck_restricted_programs = list() // as above... but EVIL!
-	var/list/holodeck_default_program = list() // map of program list string ids to default program string id
-	var/list/holodeck_off_program = list() // as above... but for being off i guess
+	var/emergency_shuttle_arriving_at_dock_message
 
 	var/allowed_latejoin_spawns = list(
 		/decl/spawnpoint/arrivals
@@ -157,14 +150,15 @@ var/global/const/MAP_HAS_RANK   = 2		//Rank system, also toggleable
 		/decl/background_category/religion    = /decl/background_detail/religion/other
 	)
 
+	// Order must conform to ACCESS_REGION_FOO defines.
 	var/access_modify_region = list(
-		ACCESS_REGION_SECURITY = list(access_hos, access_change_ids),
-		ACCESS_REGION_MEDBAY = list(access_cmo, access_change_ids),
-		ACCESS_REGION_RESEARCH = list(access_rd, access_change_ids),
-		ACCESS_REGION_ENGINEERING = list(access_ce, access_change_ids),
-		ACCESS_REGION_COMMAND = list(access_change_ids),
-		ACCESS_REGION_GENERAL = list(access_change_ids),
-		ACCESS_REGION_SUPPLY = list(access_change_ids)
+		list(access_hos, access_change_ids),
+		list(access_cmo, access_change_ids),
+		list(access_rd, access_change_ids),
+		list(access_ce, access_change_ids),
+		list(access_change_ids),
+		list(access_change_ids),
+		list(access_change_ids)
 	)
 	var/secrets_directory
 
@@ -196,6 +190,7 @@ var/global/const/MAP_HAS_RANK   = 2		//Rank system, also toggleable
 		"reinforced"
 	)
 	var/background_categories_generated = FALSE
+
 	// Hard defining this to avoid pulling in unimplemented citizenship decls for the time being.
 	var/list/_background_categories = list(
 		/decl/background_category/heritage,
@@ -205,6 +200,9 @@ var/global/const/MAP_HAS_RANK   = 2		//Rank system, also toggleable
 	)
 
 	var/default_ui_style
+
+	/// Is maint currently all-access?
+	var/maint_all_access = FALSE
 
 /datum/map/New()
 	..()
@@ -253,6 +251,8 @@ var/global/const/MAP_HAS_RANK   = 2		//Rank system, also toggleable
 	return _available_backpacks
 
 /datum/map/proc/setup_map()
+
+	populate_branches()
 
 	if(!length(loadout_categories))
 		loadout_categories = list()
@@ -472,11 +472,11 @@ var/global/const/MAP_HAS_RANK   = 2		//Rank system, also toggleable
 	return
 
 /datum/map/proc/make_maint_all_access(var/radstorm = 0)
-	maint_all_access = 1
+	maint_all_access = TRUE
 	priority_announcement.Announce("The maintenance access requirement has been revoked on all maintenance airlocks.", "Attention!")
 
 /datum/map/proc/revoke_maint_all_access(var/radstorm = 0)
-	maint_all_access = 0
+	maint_all_access = FALSE
 	priority_announcement.Announce("The maintenance access requirement has been readded on all maintenance airlocks.", "Attention!")
 
 /datum/map/proc/show_titlescreen(client/C)
@@ -503,9 +503,6 @@ var/global/const/MAP_HAS_RANK   = 2		//Rank system, also toggleable
 	for(var/mob/new_player/player in global.player_list)
 		show_titlescreen(player.client)
 		player.show_lobby_menu()
-
-/datum/map/proc/create_trade_hubs()
-	new /datum/trade_hub/singleton
 
 /datum/map/proc/get_radio_chatter_types()
 	return
@@ -546,7 +543,7 @@ var/global/const/MAP_HAS_RANK   = 2		//Rank system, also toggleable
 	var/obj/item/passport/pass = new passport_type(get_turf(H))
 	if(istype(pass))
 		pass.set_info(H)
-	if(!H.equip_to_slot(pass, slot_in_backpack_str))
+	if(!H.equip_to_slot_if_possible(pass, slot_in_wallet_str, del_on_fail=FALSE, disable_warning=TRUE) && !H.equip_to_slot_if_possible(pass, slot_in_backpack_str, del_on_fail=FALSE, disable_warning=TRUE))
 		H.put_in_hands(pass)
 
 /datum/map/proc/populate_overmap_events()

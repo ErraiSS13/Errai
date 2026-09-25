@@ -27,6 +27,9 @@
 	color = COLOR_ORANGE
 	paint_color = COLOR_ORANGE
 
+/obj/structure/railing/mapped/grey
+	paint_color = COLOR_SILVER
+
 /obj/structure/railing/mapped/no_density
 	density = FALSE
 
@@ -273,8 +276,8 @@ WOOD_RAILING_SUBTYPE(yew)
 			return TRUE
 	// Repair
 	if(IS_WELDER(used_item))
-		var/obj/item/weldingtool/F = used_item
-		if(F.isOn())
+		var/obj/item/fuelled_tool/welding/F = used_item
+		if(F.tool_is_running())
 			var/current_max_health = get_max_health()
 			if(current_health >= current_max_health)
 				to_chat(user, "<span class='warning'>\The [src] does not need repairs.</span>")
@@ -296,7 +299,7 @@ WOOD_RAILING_SUBTYPE(yew)
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, 1)
 		if(do_after(user, 10, src) && density)
 			to_chat(user, (anchored ? "<span class='notice'>You have unfastened \the [src] from the floor.</span>" : "<span class='notice'>You have fastened \the [src] to the floor.</span>"))
-			anchored = !anchored
+			set_anchored(!anchored)
 			update_connections(TRUE)
 			update_icon()
 		return TRUE
@@ -304,7 +307,7 @@ WOOD_RAILING_SUBTYPE(yew)
 	var/force = used_item.expend_attack_force(user)
 	if(force && (used_item.atom_damage_type == BURN || used_item.atom_damage_type == BRUTE))
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-		visible_message("<span class='danger'>\The [src] has been [LAZYLEN(used_item.attack_verb) ? pick(used_item.attack_verb) : "attacked"] with \the [used_item] by \the [user]!</span>")
+		visible_message("<span class='danger'>\The [src] has been [used_item.pick_attack_verb()] with \the [used_item] by \the [user]!</span>")
 		take_damage(force, used_item.atom_damage_type)
 		return TRUE
 	. = ..()
@@ -314,13 +317,13 @@ WOOD_RAILING_SUBTYPE(yew)
 	if(!QDELETED(src))
 		qdel(src)
 
-/obj/structure/railing/can_climb(var/mob/living/user, post_climb_check=0)
-	. = ..()
-	if(. && get_turf(user) == get_turf(src))
+/obj/structure/railing/can_climb(mob/living/user, post_climb_check = FALSE, silent = FALSE)
+	if((. = ..()) && get_turf(user) == get_turf(src))
 		var/turf/T = get_step(src, dir)
 		if(T.turf_is_crowded(user))
-			to_chat(user, "<span class='warning'>You can't climb there, the way is blocked.</span>")
-			return 0
+			if(!silent)
+				to_chat(user, SPAN_WARNING("You can't climb there, the way is blocked."))
+			return FALSE
 
 /obj/structure/railing/do_climb(var/mob/living/user)
 	. = ..()

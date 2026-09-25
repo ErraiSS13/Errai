@@ -23,6 +23,7 @@
 /obj/machinery/destructive_analyzer/modify_mapped_vars(map_hash)
 	..()
 	ADJUST_TAG_VAR(initial_network_id, map_hash)
+	ADJUST_TAG_VAR(initial_network_key, map_hash)
 
 /obj/machinery/destructive_analyzer/RefreshParts()
 	var/T = 0
@@ -79,6 +80,10 @@
 	D.ui_interact(user)
 	return TRUE
 
+/// Returns TRUE if used_item can be deconstructed, assuming it meets other criteria (tech level, etc.)
+/obj/machinery/destructive_analyzer/proc/can_deconstruct(var/obj/item/used_item)
+	return TRUE
+
 /obj/machinery/destructive_analyzer/attackby(var/obj/item/used_item, var/mob/user)
 
 	if(IS_MULTITOOL(used_item) && !user.check_intent(I_FLAG_HARM))
@@ -105,7 +110,7 @@
 		return TRUE
 
 	var/list/techlvls = cached_json_decode(tech)
-	if(!length(techlvls) || used_item.holographic)
+	if(!length(techlvls) || !can_deconstruct(used_item))
 		to_chat(user, SPAN_WARNING("You cannot deconstruct this item."))
 		return TRUE
 

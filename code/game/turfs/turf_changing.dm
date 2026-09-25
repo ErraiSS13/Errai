@@ -55,6 +55,7 @@
 
 	// Track a number of old values for the purposes of raising
 	// state change events after changing the turf to the new type.
+	var/old_earliest_type =    _earliest_type
 	var/old_fire =             fire
 	var/old_above =            above
 	var/old_opacity =          opacity
@@ -64,6 +65,8 @@
 	var/old_affecting_lights = affecting_lights
 	var/old_lighting_overlay = lighting_overlay
 	var/old_dynamic_lighting = TURF_IS_DYNAMICALLY_LIT_UNSAFE(src)
+	var/old_z_opacity        = z_flags & ZM_ALLOW_LIGHTING
+	var/old_z_flags          = z_flags & ZM_INFECTIOUS_MIMIC_FLAGS
 	var/old_flooded =          flooded
 	var/old_outside =          is_outside
 	var/old_is_open =          is_open()
@@ -79,6 +82,7 @@
 	var/old_ambient_light_old_r = ambient_light_old_r
 	var/old_ambient_light_old_g = ambient_light_old_g
 	var/old_ambient_light_old_b = ambient_light_old_b
+	var/old_dangerous_objects   = dangerous_objects
 
 	var/old_zone_membership_candidate = zone_membership_candidate
 
@@ -103,11 +107,15 @@
 	// Set our observation bookkeeping lists back.
 	changed_turf.event_listeners =  old_event_listeners
 	changed_turf._listening_to =    old_listening_to
+	changed_turf.dangerous_objects = old_dangerous_objects
 
 	changed_turf.affecting_heat_sources = old_affecting_heat_sources
 
+#ifndef AO_USE_LIGHTING_OPACITY
+	// If we're using opacity-based AO, this is done in recalc_atom_opacity().
 	if (permit_ao)
 		regenerate_ao()
+#endif
 
 	// Update ZAS, atmos and fire.
 	if(keep_air && changed_turf.can_inherit_air)
@@ -129,7 +137,24 @@
 	if(changed_turf.density != old_density && changed_turf.event_listeners?[/decl/observ/density_set])
 		changed_turf.raise_event_non_global(/decl/observ/density_set, old_density, changed_turf.density)
 
-	// lighting stuff
+	// lighting and z-mimic stuff
+
+	// This only copies a subset, see ZM_INFECTIOUS_MIMIC_FLAGS. This must be done before ambient lights are rebuilt.
+	if (old_z_flags)
+		z_flags |= old_z_flags
+		if (z_flags & ZM_MIMIC_BELOW)
+			setup_zmimic(FALSE)
+		// If we're a boundary *but not also a mimic*, initialize the boundary info.
+		else if (z_flags & ZM_BOUNDARY)
+			setup_zmimic_boundary()
+	else if (z_flags & ZM_MIMIC_BELOW)
+		setup_zmimic(FALSE)
+	else if (HasAbove(z) || HasBelow(z))
+		for (var/turf/T as anything in RANGE_TURFS(src, 1))
+			if (TURF_IS_MIMIC(T))
+				z_flags |= ZM_BOUNDARY
+				setup_zmimic_boundary()
+				break
 
 	affecting_lights = old_affecting_lights
 	corners = old_corners
@@ -144,6 +169,11 @@
 
 	if (old_ambience != ambient_light || old_ambience_mult != ambient_light_multiplier)
 		update_ambient_light(FALSE)
+
+	var/new_z_opacity = z_flags & ZM_ALLOW_LIGHTING
+	if (new_z_opacity != old_z_opacity)
+		for (var/datum/lighting_corner/corn in corners)
+			corn.generate_z_connections()
 
 	var/tidlu = TURF_IS_DYNAMICALLY_LIT_UNSAFE(src)
 	if ((old_opacity != opacity) || (tidlu != old_dynamic_lighting) || force_lighting_update)
@@ -187,6 +217,14 @@
 	if(old_alpha_mask_state != get_movable_alpha_mask_state(null))
 		for(var/atom/movable/AM as anything in changed_turf)
 			AM.update_turf_alpha_mask()
+
+	// Anything on our turf needs to fall down.
+	if(HasBelow(z) && changed_turf.is_open() && !old_is_open)
+		for(var/atom/movable/thing in changed_turf.get_contained_external_atoms())
+			thing.fall()
+
+	changed_turf._earliest_type = old_earliest_type
+	changed_turf.state_was_modified()
 
 /turf/proc/transport_properties_from(turf/other, transport_air)
 	if(transport_air && can_inherit_air && (other.zone || other.air))

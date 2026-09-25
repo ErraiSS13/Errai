@@ -61,7 +61,8 @@
 	if(ispath(ai_type))
 		return ai_type
 
-/mob/proc/show_message(msg, type, alt, alt_type)//Message, type of message (1 or 2), alternative message, alt message type (1 or 2)
+//Message, type of message (1 or 2), alternative message, alt message type (1 or 2)
+/mob/show_message(msg, type, alt, alt_type, atom/source)
 	if(!client)	return
 
 	//spaghetti code
@@ -89,7 +90,7 @@
 // message is the message output to anyone who can see e.g. "[src] does something!"
 // self_message (optional) is what the src mob sees  e.g. "You do something!"
 // blind_message (optional) is what blind people will hear e.g. "You hear something!"
-/mob/visible_message(var/message, var/self_message, var/blind_message, var/range = world.view, var/check_ghosts = null, var/narrate = FALSE)
+/mob/visible_message(message, self_message, blind_message, range = world.view, check_ghosts = null, narrate = FALSE, atom/source = null)
 	var/turf/T = get_turf(src)
 	var/list/mobs = list()
 	var/list/objs = list()
@@ -97,7 +98,7 @@
 
 	for(var/o in objs)
 		var/obj/O = o
-		O.show_message(message, VISIBLE_MESSAGE, blind_message, AUDIBLE_MESSAGE)
+		O.show_message(message, VISIBLE_MESSAGE, blind_message, AUDIBLE_MESSAGE, source = source)
 
 	for(var/m in mobs)
 		var/mob/M = m
@@ -109,19 +110,135 @@
 			mob_message = add_ghost_track(mob_message, M)
 
 		if(self_message && M == src)
-			M.show_message(self_message, VISIBLE_MESSAGE, blind_message, AUDIBLE_MESSAGE)
+			M.show_message(self_message, VISIBLE_MESSAGE, blind_message, AUDIBLE_MESSAGE, source = source)
 			continue
 
 		if(!M.is_blind() || narrate)
-			M.show_message(mob_message, VISIBLE_MESSAGE, blind_message, AUDIBLE_MESSAGE)
+			M.show_message(mob_message, VISIBLE_MESSAGE, blind_message, AUDIBLE_MESSAGE, source = source)
 			continue
 
 		if(blind_message)
-			M.show_message(blind_message, AUDIBLE_MESSAGE)
+			M.show_message(blind_message, AUDIBLE_MESSAGE, source = source)
 			continue
 	//Multiz, have shadow do same
 	if(bound_overlay)
-		bound_overlay.visible_message(message, self_message, blind_message)
+		bound_overlay.visible_message(message, self_message, blind_message, source = source)
+
+/mob/proc/get_action_string(is_self, var/using_verb, var/object_phrase, var/infix, var/postfix)
+	var/decl/pronouns/using_pronouns = is_self ? get_self_pronouns() : get_visible_pronouns()
+	// A little kludgy/special-cased: we don't use the name for self messages.
+	var/actor_string = is_self ? using_pronouns.He : "\The [src]"
+	// this will hopefully handle is/does/has agreement properly
+	. = "[actor_string] [verb_agree_with_pronouns(using_verb, using_pronouns, is_after_pronoun = is_self)] [infix ? infix + " " : null][object_phrase][postfix ? " " + postfix : null]"
+	// uh oh, time to handle tokens.
+	. = replacetext(., "$USER$",      "\the [src]")
+	. = replacetext(., "$USER'S$",    "\the [src]'s")
+	. = replacetext(., "$USER_THEY$",  using_pronouns.he)
+	. = replacetext(., "$USER_THEM$",  using_pronouns.him)
+	. = replacetext(., "$USER_THEIR$", using_pronouns.his)
+	. = replacetext(., "$USER_SELF$",  using_pronouns.self)
+	. = replacetext(., "$USER_DOES$",  using_pronouns.does)
+	. = replacetext(., "$USER_HAS$",   using_pronouns.has)
+	. = replacetext(., "$USER_IS$",    using_pronouns.is)
+	. = replacetext(., "$USER_S$",     using_pronouns.s)
+	. = replacetext(., "$USER_ES$",    using_pronouns.es)
+
+/mob/proc/get_targeted_action_string(mob/target, is_self, var/using_verb, var/object_phrase, var/infix, var/postfix)
+	. = get_action_string(is_self, using_verb, object_phrase, infix, postfix)
+	var/target_is_self = target == src
+	var/decl/pronouns/target_pronouns = target_is_self ? target.get_self_pronouns() : target.get_visible_pronouns()
+	// A little kludgy/special-cased: we don't use the name if it's self-targeted, regardless of who's viewing
+	. = replacetext(., "$TARGET$",       target_is_self ? target_pronouns.self : "\the [target]")
+	. = replacetext(., "$TARGET'S$",     target_is_self ? target_pronouns.his : "\the [target]'s")
+	. = replacetext(., "$TARGET_THEM$",  target_is_self ? target_pronouns.self : target_pronouns.him) // reflexive if self, so use self instead of them
+	. = replacetext(., "$TARGET_THEIR$", target_pronouns.his)
+	. = replacetext(., "$TARGET_THEY$",  target_pronouns.he)
+	. = replacetext(., "$TARGET_DOES$",  target_pronouns.does)
+	. = replacetext(., "$TARGET_HAS$",   target_pronouns.has)
+	. = replacetext(., "$TARGET_IS$",    target_pronouns.is)
+	. = replacetext(., "$TARGET_S$",     target_pronouns.s)
+	. = replacetext(., "$TARGET_ES$",    target_pronouns.es)
+
+// Determines span styling used for visible_action_message.
+/// Uses SPAN_NOTICE for both self and other messages.
+var/global/const/ACTION_DANGER_NONE = 0
+/// Uses SPAN_DANGER for others and SPAN_WARNING for self.
+var/global/const/ACTION_DANGER_OTHERS = 1
+/// Uses SPAN_DANGER for both self and others.
+var/global/const/ACTION_DANGER_ALL = 2
+/**
+	Show an action message to all mobs and objects in sight of this mob.
+
+	Used for atoms performing visible actions. Handles basic self-messages automatically.
+
+	- `using_verb`: The verb to use in the message, e.g. "open", "is", "attack". Should be in the base form (no "s" at the end).
+	- `object_phrase`: The phrase to use after the verb, e.g. "\the [used_item]". Could be a phrase including a gerund or infinitive, like "repairing \the [machine]."
+	- `dangerous?`: One of the ACTION_DANGER_* constants, determining the styling of the message, OR a string style class. Default: ACTION_DANGER_NONE
+	- `blind_message?`: The string blind mobs will see. Example: "You hear something!" Default: null
+	- `range?`: The number of tiles away the message will be visible from. Default: world.view
+	- `self_infix?`: An optional infix to insert between the verb and object phrase in the self message. Default: null
+	- `self_postfix?`: An optional postfix to insert after the object phrase in the self message. Default: null
+	- `other_infix?`: An optional infix to insert between the verb and object phrase in the other message. Default: null
+	- `other_postfix?`: An optional postfix to insert after the object phrase in the other message. Default: null
+*/
+/mob/proc/visible_action_message(var/using_verb, var/object_phrase, var/dangerous = ACTION_DANGER_NONE, var/blind_message = null, var/range = world.view, var/self_infix = null, var/self_postfix = null, var/other_infix = null, var/other_postfix = null)
+	var/self_message = get_action_string(TRUE, using_verb, object_phrase, self_infix, self_postfix)
+	var/other_message = get_action_string(FALSE, using_verb, object_phrase, other_infix, other_postfix)
+	switch(dangerous)
+		if(ACTION_DANGER_NONE)
+			other_message = SPAN_NOTICE(other_message)
+			self_message = SPAN_NOTICE(self_message)
+		if(ACTION_DANGER_OTHERS)
+			other_message = SPAN_DANGER(other_message)
+			self_message = SPAN_WARNING(self_message)
+		if(ACTION_DANGER_ALL)
+			other_message = SPAN_DANGER(other_message)
+			self_message = SPAN_DANGER(self_message)
+		else // fallback for stuff like lighter styling
+			other_message = SPAN_CLASS(dangerous, other_message)
+			self_message = SPAN_CLASS(dangerous, self_message)
+	visible_message(
+		other_message,
+		self_message,
+		blind_message,
+		range
+	)
+
+/mob/proc/targeted_visible_action_message(var/mob/target, var/using_verb, var/object_phrase, var/dangerous = ACTION_DANGER_NONE, var/blind_message = null, var/range = world.view, var/self_infix = null, var/self_postfix = null, var/other_infix = null, var/other_postfix = null)
+	var/self_message = get_targeted_action_string(target, TRUE, using_verb, object_phrase, self_infix, self_postfix)
+	var/other_message = get_targeted_action_string(target, FALSE, using_verb, object_phrase, other_infix, other_postfix)
+	switch(dangerous)
+		if(ACTION_DANGER_NONE)
+			other_message = SPAN_NOTICE(other_message)
+			self_message = SPAN_NOTICE(self_message)
+		if(ACTION_DANGER_OTHERS)
+			other_message = SPAN_DANGER(other_message)
+			self_message = SPAN_WARNING(self_message)
+		if(ACTION_DANGER_ALL)
+			other_message = SPAN_DANGER(other_message)
+			self_message = SPAN_DANGER(self_message)
+		else // fallback for stuff like lighter styling
+			other_message = SPAN_CLASS(dangerous, other_message)
+			self_message = SPAN_CLASS(dangerous, self_message)
+	visible_message(
+		other_message,
+		self_message,
+		blind_message,
+		range
+	)
+
+/mob/proc/self_action_message(var/using_verb, var/object_phrase, var/dangerous = ACTION_DANGER_NONE, var/infix, var/postfix)
+	var/the_message = get_targeted_action_string(src, TRUE, using_verb, object_phrase, infix, postfix)
+	switch(dangerous)
+		if(ACTION_DANGER_NONE)
+			the_message = SPAN_NOTICE(the_message)
+		if(ACTION_DANGER_OTHERS)
+			the_message = SPAN_WARNING(the_message)
+		if(ACTION_DANGER_ALL)
+			the_message = SPAN_DANGER(the_message)
+		else // fallback for stuff like lighter styling
+			the_message = SPAN_CLASS(dangerous, the_message)
+	to_chat(src, the_message)
 
 // Show a message to all mobs and objects in earshot of this one
 // This would be for audible actions by the src mob
@@ -129,7 +246,7 @@
 // self_message (optional) is what the src mob hears.
 // deaf_message (optional) is what deaf people will see.
 // hearing_distance (optional) is the range, how many tiles away the message can be heard.
-/mob/audible_message(var/message, var/self_message, var/deaf_message, var/hearing_distance = world.view, var/check_ghosts = null, var/narrate = FALSE, var/radio_message)
+/mob/audible_message(message, self_message, deaf_message, hearing_distance = world.view, check_ghosts = null, narrate = FALSE, radio_message = null, atom/source = null)
 	var/turf/T = get_turf(src)
 	var/list/mobs = list()
 	var/list/objs = list()
@@ -145,18 +262,18 @@
 			mob_message = add_ghost_track(mob_message, M)
 
 		if(self_message && M == src)
-			M.show_message(self_message, AUDIBLE_MESSAGE, deaf_message, VISIBLE_MESSAGE)
+			M.show_message(self_message, AUDIBLE_MESSAGE, deaf_message, VISIBLE_MESSAGE, source = source)
 		else if(is_invisible_to(M) || narrate) // Cannot view the invisible
-			M.show_message(mob_message, AUDIBLE_MESSAGE, deaf_message, VISIBLE_MESSAGE)
+			M.show_message(mob_message, AUDIBLE_MESSAGE, deaf_message, VISIBLE_MESSAGE, source = source)
 		else
-			M.show_message(mob_message, AUDIBLE_MESSAGE)
+			M.show_message(mob_message, AUDIBLE_MESSAGE, source = source)
 
 	for(var/o in objs)
 		var/obj/O = o
 		if(radio_message)
-			O.hear_talk(src, radio_message, null, GET_DECL(/decl/language/noise))
+			O.hear_talk(src, radio_message, null, null, GET_DECL(/decl/language/noise))
 		else
-			O.show_message(message, AUDIBLE_MESSAGE, deaf_message, VISIBLE_MESSAGE)
+			O.show_message(message, AUDIBLE_MESSAGE, deaf_message, VISIBLE_MESSAGE, source = source)
 
 /mob/proc/add_ghost_track(var/message, var/mob/observer/ghost/M)
 	ASSERT(istype(M))
@@ -186,6 +303,7 @@
 
 #define ENCUMBERANCE_MOVEMENT_MOD 0.35
 /mob/proc/get_movement_delay(var/travel_dir)
+	SHOULD_CALL_PARENT(TRUE)
 	. = 0
 	if(isturf(loc))
 		var/turf/T = loc
@@ -199,8 +317,13 @@
 		. += move_intent.move_delay
 	else
 		. += _automove_delay
-	. = max(. + (ENCUMBERANCE_MOVEMENT_MOD * encumbrance()), 1)
 
+	if(isnull(modifier_movement_slowdown))
+		modifier_movement_slowdown = 0
+		for(var/modifier_type in get_mob_modifiers())
+			var/decl/mob_modifier/modifier = RESOLVE_TO_DECL(modifier_type)
+			modifier_movement_slowdown += modifier.movement_slowdown
+	. = max(. + modifier_movement_slowdown + (ENCUMBERANCE_MOVEMENT_MOD * encumbrance()), 1)
 #undef ENCUMBERANCE_MOVEMENT_MOD
 
 /mob/proc/encumbrance()
@@ -316,7 +439,7 @@
 
 /mob/proc/show_stripping_window(mob/user)
 
-	if(user.incapacitated()  || !user.Adjacent(src) || !user.check_dexterity(DEXTERITY_SIMPLE_MACHINES))
+	if(user.incapacitated() || !user.Adjacent(src) || !user.check_dexterity(DEXTERITY_SIMPLE_MACHINES, fail_message = "You lack the dexterity to remove \the [src]'s equipment."))
 		return
 
 	user.set_machine(src)
@@ -579,10 +702,10 @@
 	return ..()
 
 /mob/proc/pull_damage()
-	return 0
+	return FALSE
 
 /mob/living/human/pull_damage()
-	if(!current_posture.prone|| get_damage(BRUTE) + get_damage(BURN) < 100)
+	if(buckled || !current_posture.prone || get_damage(BRUTE) + get_damage(BURN) < 100)
 		return FALSE
 	for(var/obj/item/organ/external/e in get_external_organs())
 		if((e.status & ORGAN_BROKEN) && !e.splinted)
@@ -597,7 +720,7 @@
 		return TRUE
 	if(!anchored && istype(over, /obj/vehicle/train))
 		var/obj/vehicle/train/beep = over
-		if(!beep.load(src))
+		if(!beep.load_onto_vehicle(src))
 			to_chat(user, SPAN_WARNING("You were unable to load \the [src] onto \the [over]."))
 		return TRUE
 	. = ..()
@@ -695,7 +818,7 @@
 	else
 		. = FALSE
 
-	anchored = buckled ? (!istype(buckled) || !buckled.buckle_movable) : initial(anchored)
+	set_anchored(buckled ? (!istype(buckled) || !buckled.buckle_movable) : initial(anchored))
 	reset_layer()
 
 	if(. || force_update)
@@ -845,6 +968,7 @@
 			return ..(facing_dir)
 	else
 		return ..()
+	return FALSE
 
 /mob/proc/set_stat(var/new_stat)
 	. = stat != new_stat
@@ -1015,10 +1139,10 @@
 		return (active_hand.get_manual_dexterity() & ~dex_malus)
 	return active_hand.get_manual_dexterity()
 
-/mob/proc/check_dexterity(var/dex_level = DEXTERITY_FULL, var/silent = FALSE)
+/mob/proc/check_dexterity(var/dex_level = DEXTERITY_FULL, var/silent = FALSE, var/fail_message = "You don't have the dexterity to do this!")
 	. = (get_dexterity(silent) & dex_level) == dex_level
-	if(!. && !silent)
-		to_chat(src, FEEDBACK_YOU_LACK_DEXTERITY)
+	if(!. && !silent && fail_message)
+		to_chat(src, SPAN_WARNING(fail_message))
 
 /mob/proc/lose_hair()
 	return
@@ -1074,17 +1198,17 @@
 		return FALSE
 	return TRUE
 
-/mob/proc/get_species()
+/mob/proc/get_species() as /decl/species
 	RETURN_TYPE(/decl/species)
 	return
 
-/mob/proc/get_bodytype()
+/mob/proc/get_bodytype() as /decl/bodytype
 	RETURN_TYPE(/decl/bodytype)
 
 // Bit of a stub for now, but should return the bodytype specific
 // to the slot and organ being checked in the future instead of
 // always using the mob root bodytype.
-/mob/proc/get_equipment_bodytype(slot, bodypart)
+/mob/proc/get_equipment_bodytype(slot, bodypart) as /decl/bodytype
 	RETURN_TYPE(/decl/bodytype)
 	var/decl/bodytype/root_bodytype = get_bodytype()
 	return root_bodytype?.resolve_to_equipment_bodytype(src)
@@ -1321,7 +1445,7 @@
 /mob/proc/set_skin_tone(value)
 	return
 
-/mob/proc/get_skin_tone(value)
+/mob/proc/get_skin_tone()
 	return
 
 /mob/proc/force_update_limbs()
@@ -1346,10 +1470,15 @@
 	var/decl/butchery_data/butchery_decl = GET_DECL(butchery_data)
 	. = butchery_decl?.meat_name || name
 
-/mob/reset_movement_delay()
+// we change the base type of our delay handler...
+/mob/get_next_move_time()
 	var/datum/movement_handler/mob/delay/delay = locate() in movement_handlers
-	if(istype(delay))
-		delay.next_move = world.time
+	return delay?.next_move
+
+/mob/set_next_move_time(new_time)
+	var/datum/movement_handler/mob/delay/delay = locate() in movement_handlers
+	if(delay)
+		delay.next_move = new_time
 
 /mob/proc/do_attack_windup_checking(atom/target)
 	return TRUE
@@ -1396,8 +1525,11 @@
 	for(var/turf/neighbor in RANGE_TURFS(my_turf, 1))
 		if(neighbor == my_turf)
 			continue
-		if(neighbor.contains_dense_objects(exceptions = src))
+		if(neighbor.is_wall() || neighbor.is_floor())
 			return neighbor
+		var/dense_object = neighbor.get_first_dense_object(exceptions = src)
+		if(dense_object)
+			return dense_object
 		platform = neighbor.get_supporting_platform() || (locate(/obj/structure/lattice) in neighbor)
 		if(platform)
 			return platform
@@ -1439,10 +1571,10 @@
 		return FALSE
 
 	// Check footwear.
-	if(!magboots_only && has_non_slip_footing())
-		return FALSE
+	if(magboots_only)
+		return !((has_gravity() || has_magnetised_footing()) && get_solid_footing())
 
-	if((has_gravity() || has_magnetised_footing()) && get_solid_footing())
+	if(has_non_slip_footing())
 		return FALSE
 
 	// Slip!
@@ -1484,3 +1616,35 @@
 /mob/proc/is_cloaked()
 	return FALSE
 
+/mob/proc/is_fully_cloaked()
+	return is_cloaked()
+
+/mob/proc/get_background_datum_by_flag(background_flag)
+	var/list/all_categories = global.using_map.get_background_categories()
+	for(var/cat_type in all_categories)
+		var/decl/background_category/background_cat = all_categories[cat_type]
+		if(background_cat.background_flags && (background_cat.background_flags & background_flag))
+			return get_background_datum(cat_type)
+
+/mob/proc/get_background_datum(cat_type)
+	return global.using_map.default_background_info[cat_type]
+
+// Check if this mob can full-auto fire a gun at a target.
+/mob/proc/mob_can_autofire(obj/item/gun/gun, atom/target)
+	return TRUE // TODO: dexterity check? That will be handled by the item itself probably.
+
+// Stubs to make some AI logic easier to write.
+/mob/proc/can_cloak(ignore_timing = FALSE)
+	return FALSE
+
+/mob/proc/apply_cloak()
+	return
+
+/mob/proc/remove_cloak()
+	return
+
+/mob/proc/get_available_maneuvers()
+	return
+
+/mob/proc/get_acrobatics_multiplier(var/decl/maneuver/attempting_maneuver)
+	return 1

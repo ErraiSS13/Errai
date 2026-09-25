@@ -41,20 +41,13 @@
 	name              = "snow"
 	icon              = 'icons/turf/flooring/snow.dmi'
 	icon_state        = "snow0"
-	_flooring         = list(
-		/decl/flooring/grass,
-		/decl/flooring/snow
-	)
+	_flooring         = @'["' + /decl/flooring/grass::uid + @'","' + /decl/flooring/snow::uid + @'"]'
 
 /turf/floor/grass/wild
 	name              = "wild grass"
 	icon              = 'icons/turf/flooring/wildgrass.dmi'
 	icon_state        = "wildgrass"
-	_flooring         = list(
-		/decl/flooring/grass,
-		/decl/flooring/grass/wild
-	)
-	_base_flooring    = /decl/flooring/dirt
+	_flooring         = @'["' + /decl/flooring/grass::uid + @'","' + /decl/flooring/grass/wild::uid + @'"]'
 
 /turf/floor/ice
 	name              = "ice"
@@ -92,12 +85,24 @@
 	height            = -(FLUID_SHALLOW)
 	fill_reagent_type = /decl/material/liquid/water
 
+/turf/floor/mud/water/salt
+	contaminant_reagent_type = /decl/material/solid/sodiumchloride
+	contaminant_proportion = 0.10 // 1:10 salt:water, NOT 10% salt
+
 /turf/floor/mud/water/deep
 	color             = COLOR_BLUE
 	height            = -(FLUID_DEEP)
 
+/turf/floor/mud/water/deep/salt
+	contaminant_reagent_type = /decl/material/solid/sodiumchloride
+	contaminant_proportion = 0.10 // 1:10 salt:water
+
 /turf/floor/mud/flooded
 	flooded           = /decl/material/liquid/water
+
+/turf/floor/mud/flooded/salt
+	contaminant_reagent_type = /decl/material/solid/sodiumchloride
+	contaminant_proportion = 0.10 // 1:10 salt:water
 
 /turf/floor/dry
 	name              = "dry mud"
@@ -112,21 +117,26 @@
 	color             = "#ae9e66"
 	_flooring         = /decl/flooring/sand
 
-/turf/floor/rock/basalt/sand
-	name = "sand"
-	icon = 'icons/turf/flooring/sand.dmi'
-	icon_state = "sand0"
-	color = "#ae9e66"
-	_flooring = /decl/flooring/sand
-
 /turf/floor/rock/sand/water
 	color             = COLOR_SKY_BLUE
 	height            = -(FLUID_SHALLOW)
 	fill_reagent_type = /decl/material/liquid/water
 
+/turf/floor/rock/sand/water/salt
+	contaminant_reagent_type = /decl/material/solid/sodiumchloride
+	contaminant_proportion = 0.10 // 1:10 salt:water
+
 /turf/floor/rock/sand/water/deep
 	color             = COLOR_BLUE
 	height            = -(FLUID_DEEP)
+
+/turf/floor/rock/sand/water/deep/salt
+	contaminant_reagent_type = /decl/material/solid/sodiumchloride
+	contaminant_proportion = 0.10 // 1:10 salt:water
+
+/turf/floor/rock/sand/water/contaminated
+	contaminant_reagent_type = /decl/material/gas/chlorine
+	contaminant_proportion = 0.10
 
 /turf/floor/seafloor
 	name              = "sea floor"
@@ -137,6 +147,10 @@
 /turf/floor/seafloor/flooded
 	flooded           = /decl/material/liquid/water
 	color             = COLOR_LIQUID_WATER
+
+/turf/floor/seafloor/flooded/salt
+	contaminant_reagent_type = /decl/material/solid/sodiumchloride
+	contaminant_proportion = 0.10 // 1:10 salt:water
 
 /turf/floor/shrouded
 	name              = "packed sand"

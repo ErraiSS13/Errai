@@ -37,7 +37,7 @@
 /decl/tool_archetype/shovel
 	name         = "shovel"
 	tool_sound   = 'sound/items/shovel_dirt.ogg'
-	tool_message = "digging"
+	tool_message = "digging into"
 
 /decl/tool_archetype/pick
 	name         = "pick"
@@ -62,6 +62,11 @@
 	name         = "shears"
 	tool_sound   = 'sound/weapons/bladeslice.ogg'
 	tool_message = "shearing"
+
+/decl/tool_archetype/chisel
+	name         = "chisel"
+	tool_sound   = 'sound/items/shovel_dirt.ogg'
+	tool_message = "chiseling"
 
 /decl/tool_archetype/knife
 	name         = "knife"

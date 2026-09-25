@@ -9,7 +9,7 @@
 	var/reverse = 0 //if resulting object faces opposite its dir (like light fixtures)
 	var/fully_construct = FALSE // Results in a machine with all parts auto-installed and ready to go if TRUE; if FALSE, the machine will spawn without removable expected parts
 
-/obj/item/frame/get_contained_matter()
+/obj/item/frame/get_contained_matter(include_reagents = TRUE)
 	. = ..()
 	if(fully_construct)
 		var/list/cost = atom_info_repository.get_matter_for(build_machine_type)
@@ -103,32 +103,6 @@
 	fully_construct = TRUE
 	name = "wall-mounted relay kit"
 	desc = "An all-in-one wall-mounted relay kit, comes preassembled."
-
-/obj/item/frame/light
-	name = "light fixture frame"
-	desc = "Used for building lights."
-	icon = 'icons/obj/lighting.dmi'
-	icon_state = "tube-construct-item"
-	build_machine_type = /obj/machinery/light
-	reverse = 1
-
-/obj/item/frame/light/small
-	name = "small light fixture frame"
-	icon_state = "bulb-construct-item"
-	material = /decl/material/solid/metal/steel
-	build_machine_type = /obj/machinery/light/small
-
-/obj/item/frame/light/spot
-	name = "spotlight fixture frame"
-	icon_state = "tube-construct-item"
-	material = /decl/material/solid/metal/steel
-	build_machine_type = /obj/machinery/light/spot
-
-/obj/item/frame/light/nav
-	name = "navigation light fixture frame"
-	icon_state = "tube-construct-item"
-	material = /decl/material/solid/metal/steel
-	build_machine_type = /obj/machinery/light/navigation
 
 /obj/item/frame/button
 	name = "button frame"
